@@ -447,184 +447,355 @@
         /* ─── ADMIN PANEL ─── */
         #admin-overlay {
             display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(6px);
+            background: rgba(7,14,22,0.85);
+            backdrop-filter: blur(16px);
             z-index: 9999; align-items: center; justify-content: center;
         }
         #admin-overlay.open { display: flex; }
         .admin-modal {
-            background: #1c2a3a; width: min(480px, 95vw); border-radius: 16px;
-            padding: 2.5rem; border: 1px solid rgba(255,255,255,0.1); position: relative;
+            background: linear-gradient(145deg, #0f1f30, #0B1C2C);
+            width: min(460px, 95vw); border-radius: 20px;
+            padding: 0; border: 1px solid rgba(184,137,58,0.25);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+            position: relative; overflow: hidden;
         }
-        .admin-modal h2 { font-family: 'Lora', serif; color: white; font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .admin-modal p { color: rgba(255,255,255,0.55); font-size: 0.875rem; margin-bottom: 1.75rem; }
-        .admin-input-group { margin-bottom: 1.25rem; }
-        .admin-input-group label { display: block; font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
+        .admin-modal-header {
+            background: linear-gradient(135deg, #0B1C2C 0%, #14355F 100%);
+            padding: 2.5rem 2.5rem 2rem;
+            border-bottom: 1px solid rgba(184,137,58,0.2);
+            position: relative;
+        }
+        .admin-modal-header::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #14355F, #9C3D1E, #B8893A);
+        }
+        .admin-modal-logo { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.25rem; }
+        .admin-modal-logo span { font-family: 'Lora', serif; font-size: 1.2rem; font-weight: 700; color: white; }
+        .admin-modal h2 {
+            font-family: 'Lora', serif; color: white; font-size: 1.6rem;
+            font-weight: 700; margin-bottom: 0.35rem; line-height: 1.2;
+        }
+        .admin-modal p { color: rgba(255,255,255,0.45); font-size: 0.82rem; font-family: 'Poppins', sans-serif; }
+        .admin-modal-body { padding: 2rem 2.5rem 2.5rem; }
+        .admin-input-group { margin-bottom: 1.1rem; }
+        .admin-input-group label {
+            display: block; font-size: 0.72rem; font-weight: 700;
+            color: rgba(255,255,255,0.45); margin-bottom: 0.45rem;
+            text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;
+        }
+        .admin-input-wrap { position: relative; }
+        .admin-input-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.35; pointer-events: none; }
         .admin-input-group input {
-            width: 100%; padding: 0.8rem 1rem; border-radius: 8px;
-            border: 1.5px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05);
-            color: white; font-family: inherit; font-size: 0.95rem;
+            width: 100%; padding: 0.8rem 1rem 0.8rem 2.6rem; border-radius: 10px;
+            border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);
+            color: white; font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+            transition: border-color 0.2s, background 0.2s;
         }
-        .admin-input-group input:focus { outline: none; border-color: var(--terracotta); }
-        .admin-err { color: #ff6b6b; font-size: 0.825rem; margin-top: 0.5rem; display: none; }
+        .admin-input-group input:focus {
+            outline: none; border-color: #B8893A; background: rgba(184,137,58,0.07);
+        }
+        .admin-err {
+            color: #ff7b6b; font-size: 0.8rem; margin-bottom: 0.75rem;
+            display: none; background: rgba(255,123,107,0.1); padding: 0.6rem 0.9rem;
+            border-radius: 7px; border: 1px solid rgba(255,123,107,0.2);
+            font-family: 'Poppins', sans-serif;
+        }
+        .admin-sign-btn {
+            width: 100%; padding: 0.9rem; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #9C3D1E, #B8893A);
+            color: white; font-family: 'Lora', serif; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: all 0.25s; letter-spacing: 0.02em;
+            box-shadow: 0 4px 16px rgba(156,61,30,0.4);
+        }
+        .admin-sign-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(156,61,30,0.5); }
         .admin-close {
             position: absolute; top: 1rem; right: 1rem;
-            background: none; border: none; color: rgba(255,255,255,0.4);
-            cursor: pointer; font-size: 1.25rem; padding: 0.25rem;
+            background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.5);
+            cursor: pointer; width: 30px; height: 30px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem;
+            transition: all 0.2s;
         }
-        .admin-close:hover { color: white; }
+        .admin-close:hover { background: rgba(255,255,255,0.15); color: white; }
 
         /* ─── DASHBOARD ─── */
         #dashboard-overlay {
             display: none; position: fixed; inset: 0;
-            background: #0f2240; z-index: 9998; overflow-y: auto;
+            background: #070e16; z-index: 9998; overflow-y: auto;
         }
         #dashboard-overlay.open { display: block; }
+
+        /* Header */
         .dash-header {
-            background: #0a1a30; padding: 1rem 2rem;
+            background: #0B1C2C;
+            padding: 0 1.5rem;
+            height: 62px;
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; z-index: 10;
+            border-bottom: 1px solid rgba(184,137,58,0.2);
+            position: sticky; top: 0; z-index: 10;
         }
-        .dash-title { font-family: 'Lora', serif; color: white; font-size: 1.25rem; }
-        .dash-actions { display: flex; gap: 0.75rem; align-items: center; }
+        .dash-header::after {
+            content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+            background: linear-gradient(90deg, #14355F 33%, #9C3D1E 66%, #B8893A 100%);
+        }
+        .dash-title {
+            font-family: 'Lora', serif; color: white; font-size: 1.05rem; font-weight: 600;
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .dash-title-sub { font-family: 'Poppins', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.35); margin-left: 0.5rem; font-weight: 400; }
+        .dash-actions { display: flex; gap: 0.6rem; align-items: center; }
         .dash-btn {
-            padding: 0.5rem 1.1rem; border-radius: 7px; font-size: 0.875rem;
-            font-weight: 600; cursor: pointer; border: none; font-family: inherit;
-            transition: all 0.2s;
+            padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.825rem;
+            font-weight: 600; cursor: pointer; border: none; font-family: 'Poppins', sans-serif;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem;
         }
-        .dash-btn-primary { background: var(--terracotta); color: white; }
-        .dash-btn-primary:hover { background: var(--terracotta-light); }
-        .dash-btn-ghost { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
-        .dash-btn-ghost:hover { background: rgba(255,255,255,0.14); color: white; }
-        .dash-body { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 62px); }
+        .dash-btn-primary { background: linear-gradient(135deg,#9C3D1E,#B8893A); color: white; box-shadow: 0 2px 10px rgba(156,61,30,0.35); }
+        .dash-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(156,61,30,0.5); }
+        .dash-btn-cobalt { background: #14355F; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.1); }
+        .dash-btn-cobalt:hover { background: #1E4A80; color: white; }
+        .dash-btn-ghost { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.08); }
+        .dash-btn-ghost:hover { background: rgba(255,255,255,0.12); color: white; }
+        .dash-btn-pdf { background: linear-gradient(135deg,#14355F,#1E4A80); color: white; }
+        .dash-btn-pdf:hover { background: #1E4A80; transform: translateY(-1px); }
+        .dash-btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+
+        /* Layout */
+        .dash-body { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 62px); }
+
+        /* Sidebar */
         .dash-sidebar {
-            background: #0c1e32; border-right: 1px solid rgba(255,255,255,0.06);
-            padding: 1.5rem 0;
+            background: #0a1520; border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 1.25rem 0;
         }
-        .dash-sidebar nav ul { list-style: none; }
+        .dash-sidebar-section { padding: 0 0.75rem; margin-bottom: 0.25rem; }
+        .dash-sidebar-label {
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+            color: rgba(255,255,255,0.22); padding: 0.6rem 0.75rem 0.3rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        .dash-sidebar nav ul { list-style: none; padding: 0 0.75rem; }
         .dash-sidebar nav ul li a {
-            display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1.5rem;
-            color: rgba(255,255,255,0.55); font-size: 0.875rem; font-weight: 500;
-            text-decoration: none; transition: all 0.2s;
+            display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.75rem;
+            color: rgba(255,255,255,0.5); font-size: 0.825rem; font-weight: 500;
+            text-decoration: none; transition: all 0.2s; border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
         }
-        .dash-sidebar nav ul li a:hover, .dash-sidebar nav ul li a.active {
-            color: white; background: rgba(255,255,255,0.06);
-            border-left: 3px solid var(--terracotta);
+        .dash-sidebar nav ul li a:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.05); }
+        .dash-sidebar nav ul li a.active {
+            color: white; background: rgba(156,61,30,0.18);
+            border-left: 3px solid #9C3D1E; padding-left: calc(0.75rem - 3px);
         }
-        .dash-sidebar nav ul li a .nav-icon { width: 18px; text-align: center; font-size: 1rem; }
-        .dash-content { padding: 2rem; }
+        .dash-sidebar nav ul li a .nav-icon { width: 20px; height: 20px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; }
+        .dash-sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 0.75rem 1.5rem; }
+
+        /* Content area */
+        .dash-content { padding: 1.75rem 2rem; background: #0d1a26; }
         .dash-section { display: none; }
         .dash-section.active { display: block; }
         .dash-section-title {
-            font-family: 'Lora', serif; color: white; font-size: 1.3rem; margin-bottom: 1.5rem;
-            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Lora', serif; color: white; font-size: 1.2rem; font-weight: 600;
+            margin-bottom: 1.5rem; display: flex; justify-content: space-between;
+            align-items: center; padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        /* Post Editor */
-        .post-editor {
-            background: #152235; border-radius: 12px; padding: 2rem;
-            border: 1px solid rgba(255,255,255,0.08);
+
+        /* Stats */
+        .stats-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card {
+            background: #0B1C2C; border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px; padding: 1.25rem 1.5rem;
+            border-top: 3px solid transparent;
+            transition: border-color 0.2s;
         }
-        .post-editor-grid { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; }
-        .editor-main {}
-        .editor-sidebar {}
-        .dash-field { margin-bottom: 1.25rem; }
-        .dash-field label { display: block; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .stat-card:nth-child(1) { border-top-color: #B8893A; }
+        .stat-card:nth-child(2) { border-top-color: #9C3D1E; }
+        .stat-card:nth-child(3) { border-top-color: #14355F; }
+        .stat-card:nth-child(4) { border-top-color: #1E4A80; }
+        .stat-card .s-num {
+            font-family: 'Lora', serif; font-size: 2.2rem; font-weight: 700;
+            color: white; line-height: 1;
+        }
+        .stat-card .s-lbl { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 0.35rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        /* Posts table */
+        .table-wrap { background: #0B1C2C; border-radius: 12px; border: 1px solid rgba(255,255,255,0.07); overflow: hidden; }
+        .posts-table { width: 100%; border-collapse: collapse; }
+        .posts-table th {
+            text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.3); padding: 0.9rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            font-family: 'Poppins', sans-serif; font-weight: 700; background: #0a1520;
+        }
+        .posts-table td { padding: 0.9rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); font-size: 0.85rem; vertical-align: middle; font-family: 'Poppins', sans-serif; }
+        .posts-table tr:last-child td { border-bottom: none; }
+        .posts-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+        .post-type-pill {
+            display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; padding: 0.22rem 0.65rem; border-radius: 50px; color: white;
+        }
+        .pill-report { background: #9C3D1E; }
+        .pill-analysis { background: #14355F; }
+        .pill-paper { background: #1E4A80; }
+        .pill-announcement { background: #B8893A; }
+        .post-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .post-action-btn {
+            padding: 0.28rem 0.65rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
+            cursor: pointer; border: none; font-family: 'Poppins', sans-serif; transition: all 0.15s;
+        }
+        .btn-edit { background: rgba(30,74,128,0.3); color: #7ab0e8; border: 1px solid rgba(30,74,128,0.4); }
+        .btn-edit:hover { background: #1E4A80; color: white; }
+        .btn-pdf-dl { background: rgba(184,137,58,0.2); color: #D4A554; border: 1px solid rgba(184,137,58,0.3); }
+        .btn-pdf-dl:hover { background: #B8893A; color: white; }
+        .btn-del { background: rgba(156,61,30,0.2); color: #e07b5a; border: 1px solid rgba(156,61,30,0.3); }
+        .btn-del:hover { background: #9C3D1E; color: white; }
+
+        /* Post editor */
+        .post-editor { background: #0B1C2C; border-radius: 14px; padding: 1.75rem; border: 1px solid rgba(255,255,255,0.07); }
+        .post-editor-grid { display: grid; grid-template-columns: 1fr 290px; gap: 1.5rem; }
+        .dash-field { margin-bottom: 1.1rem; }
+        .dash-field label {
+            display: block; font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.4);
+            margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.1em;
+            font-family: 'Poppins', sans-serif;
+        }
         .dash-field input, .dash-field select, .dash-field textarea {
-            width: 100%; padding: 0.8rem 1rem; border-radius: 8px;
-            border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
-            color: white; font-family: inherit; font-size: 0.9rem; transition: border-color 0.2s;
+            width: 100%; padding: 0.7rem 0.9rem; border-radius: 8px;
+            border: 1.5px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.04);
+            color: white; font-family: 'Poppins', sans-serif; font-size: 0.875rem;
+            transition: border-color 0.2s;
         }
         .dash-field input:focus, .dash-field select:focus, .dash-field textarea:focus {
-            outline: none; border-color: var(--terracotta);
+            outline: none; border-color: #B8893A; background: rgba(184,137,58,0.05);
         }
-        .dash-field select option { background: #1c2a3a; }
-        .dash-field textarea { resize: vertical; min-height: 200px; line-height: 1.6; }
+        .dash-field select option { background: #0B1C2C; }
+        .dash-field textarea { resize: vertical; min-height: 200px; line-height: 1.65; }
+
+        /* Rich toolbar */
         .rich-toolbar {
-            display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem; margin-bottom: -1px;
-            background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1);
-            border-radius: 8px 8px 0 0;
+            display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0.6rem;
+            background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.09);
+            border-radius: 8px 8px 0 0; border-bottom: none;
         }
         .rich-toolbar button {
-            padding: 0.35rem 0.7rem; border-radius: 5px; border: none;
-            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7);
-            cursor: pointer; font-size: 0.8rem; font-weight: 600;
-            transition: all 0.15s;
+            padding: 0.28rem 0.6rem; border-radius: 5px; border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.65);
+            cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.15s;
+            font-family: 'Poppins', sans-serif;
         }
-        .rich-toolbar button:hover { background: var(--terracotta); color: white; }
+        .rich-toolbar button:hover { background: #9C3D1E; color: white; border-color: #9C3D1E; }
         #editor-content {
-            min-height: 280px; padding: 1rem; width: 100%;
-            border: 1.5px solid rgba(255,255,255,0.1); border-top: none;
-            border-radius: 0 0 8px 8px; background: rgba(255,255,255,0.04);
-            color: white; font-family: inherit; font-size: 0.9rem; line-height: 1.7;
-            outline: none; resize: vertical;
+            min-height: 260px; padding: 0.9rem; width: 100%;
+            border: 1.5px solid rgba(255,255,255,0.09); border-top: none;
+            border-radius: 0 0 8px 8px; background: rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.85); font-family: 'Poppins', sans-serif;
+            font-size: 0.875rem; line-height: 1.7; outline: none; resize: vertical;
         }
-        .embed-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
-        .embed-btn {
-            padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
-            border: 1.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05);
-            color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.2s;
+
+        /* Sidebar cards */
+        .sidebar-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 10px; padding: 1.1rem; margin-bottom: 0.9rem;
         }
-        .embed-btn:hover { background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.3); }
+        .sidebar-card h5 {
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: rgba(255,255,255,0.3); margin-bottom: 0.9rem;
+            font-family: 'Poppins', sans-serif;
+        }
         .cover-preview {
-            width: 100%; aspect-ratio: 16/9; background: rgba(255,255,255,0.04);
-            border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px;
+            width: 100%; aspect-ratio: 16/9; background: rgba(255,255,255,0.03);
+            border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; transition: border-color 0.2s; overflow: hidden;
         }
-        .cover-preview:hover { border-color: var(--terracotta); }
+        .cover-preview:hover { border-color: #B8893A; }
         .cover-preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .cover-preview .upload-hint { color: rgba(255,255,255,0.4); font-size: 0.8rem; text-align: center; padding: 1rem; }
-        .cover-preview .upload-hint span { display: block; font-size: 2rem; margin-bottom: 0.5rem; }
-        .sidebar-card {
-            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem;
+        .cover-preview .upload-hint { color: rgba(255,255,255,0.3); font-size: 0.75rem; text-align: center; padding: 1rem; font-family: 'Poppins', sans-serif; }
+        .embed-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .embed-btn {
+            padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.15s;
+            font-family: 'Poppins', sans-serif;
         }
-        .sidebar-card h5 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 1rem; }
-        /* Posts list */
-        .posts-table { width: 100%; border-collapse: collapse; }
-        .posts-table th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-        .posts-table td { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); font-size: 0.875rem; vertical-align: middle; }
-        .posts-table tr:hover td { background: rgba(255,255,255,0.03); }
-        .post-type-pill {
-            display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
-            text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 4px; color: white;
+        .embed-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2); }
+        .editor-save-row { display: flex; flex-direction: column; gap: 0.6rem; }
+        .editor-save-row button { width: 100%; padding: 0.75rem; text-align: center; justify-content: center; }
+
+        /* Recent list */
+        .recent-pub-row {
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-        .pill-report { background: var(--terracotta); }
-        .pill-analysis { background: var(--teal); }
-        .pill-paper { background: var(--navy-light); }
-        .pill-announcement { background: var(--gold); }
-        .post-actions { display: flex; gap: 0.5rem; }
-        .post-action-btn {
-            padding: 0.25rem 0.6rem; border-radius: 5px; font-size: 0.75rem; font-weight: 600;
-            cursor: pointer; border: none; font-family: inherit;
+        .recent-pub-row:last-child { border-bottom: none; }
+        .recent-pub-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .recent-pub-title { font-size: 0.85rem; color: rgba(255,255,255,0.75); flex: 1; font-family: 'Poppins', sans-serif; }
+        .recent-pub-type { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        /* PDF preview modal */
+        #pdf-preview-modal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            z-index: 10001; align-items: center; justify-content: center;
         }
-        .btn-edit { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
-        .btn-edit:hover { background: rgba(255,255,255,0.15); color: white; }
-        .btn-del { background: rgba(200,90,42,0.15); color: var(--terracotta-light); }
-        .btn-del:hover { background: var(--terracotta); color: white; }
+        #pdf-preview-modal.open { display: flex; }
+        .pdf-modal-box {
+            background: #0B1C2C; width: min(680px, 96vw); max-height: 90vh;
+            border-radius: 16px; border: 1px solid rgba(184,137,58,0.3);
+            overflow: hidden; display: flex; flex-direction: column;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+        }
+        .pdf-modal-header {
+            padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; justify-content: space-between; align-items: center;
+            background: #0a1520;
+        }
+        .pdf-modal-header h3 { font-family: 'Lora', serif; color: white; font-size: 1.05rem; }
+        .pdf-modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+        /* Letterhead preview */
+        .lh-preview {
+            background: white; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4); font-family: 'Poppins', sans-serif;
+        }
+        .lh-header {
+            background: #0B1C2C; padding: 1.5rem 2rem 1.25rem;
+            display: flex; justify-content: space-between; align-items: flex-start;
+        }
+        .lh-header-left h1 { font-family: 'Lora', serif; font-size: 1.5rem; font-weight: 700; color: white; }
+        .lh-header-left p { font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+        .lh-tribar { display: flex; gap: 3px; margin-top: 0.75rem; }
+        .lh-tribar span { height: 3px; flex: 1; border-radius: 2px; }
+        .lh-meta { background: #E8DCC8; padding: 0.75rem 2rem; display: flex; gap: 2rem; align-items: center; }
+        .lh-meta-item { font-size: 0.72rem; color: #0B1C2C; }
+        .lh-meta-item strong { display: block; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: #9C3D1E; }
+        .lh-body { padding: 1.75rem 2rem; }
+        .lh-body h2 { font-family: 'Lora', serif; font-size: 1.3rem; color: #0B1C2C; margin-bottom: 0.5rem; }
+        .lh-body p { font-size: 0.82rem; color: #3d5068; line-height: 1.7; }
+        .lh-footer-bar { height: 4px; background: linear-gradient(90deg, #14355F 33%, #9C3D1E 66%, #B8893A 100%); }
+        .lh-footer { background: #0B1C2C; padding: 0.75rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .lh-footer span { font-size: 0.65rem; color: rgba(255,255,255,0.4); font-family: 'Poppins', sans-serif; }
+        .pdf-modal-footer { padding: 1.25rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 0.75rem; justify-content: flex-end; background: #0a1520; }
+
         /* Embed modal */
         #embed-modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
             z-index: 10000; align-items: center; justify-content: center;
         }
         #embed-modal.open { display: flex; }
         .embed-modal-box {
-            background: #1c2a3a; width: min(540px, 95vw); border-radius: 14px;
-            padding: 2rem; border: 1px solid rgba(255,255,255,0.1);
+            background: #0B1C2C; width: min(540px, 95vw); border-radius: 14px;
+            padding: 2rem; border: 1px solid rgba(184,137,58,0.2);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6);
         }
-        .embed-modal-box h3 { color: white; font-size: 1.15rem; margin-bottom: 0.5rem; }
-        .embed-modal-box p { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 1.25rem; }
+        .embed-modal-box h3 { font-family: 'Lora', serif; color: white; font-size: 1.1rem; margin-bottom: 0.4rem; }
+        .embed-modal-box p { color: rgba(255,255,255,0.45); font-size: 0.82rem; margin-bottom: 1.25rem; font-family: 'Poppins', sans-serif; }
         .embed-textarea {
             width: 100%; padding: 0.8rem; border-radius: 8px; min-height: 100px;
-            border: 1.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
-            color: white; font-family: monospace; font-size: 0.85rem; resize: vertical;
+            border: 1.5px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.04);
+            color: white; font-family: monospace; font-size: 0.82rem; resize: vertical;
         }
-        .embed-textarea:focus { outline: none; border-color: var(--terracotta); }
+        .embed-textarea:focus { outline: none; border-color: #B8893A; }
         .embed-modal-actions { display: flex; gap: 0.75rem; margin-top: 1rem; justify-content: flex-end; }
-        /* Stats cards */
-        .stats-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.25rem; }
-        .stat-card .s-num { font-family: 'Lora', serif; font-size: 2rem; color: var(--terracotta); font-weight: 700; }
-        .stat-card .s-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.45); margin-top: 0.25rem; }
+
 
         /* ─── RESPONSIVE ─── */
         @media (max-width: 1024px) {
@@ -1677,42 +1848,70 @@
 </footer>
 
 <!-- ═══════════════════════════════════════════
-     ADMIN LOGIN MODAL
+     ADMIN LOGIN MODAL — Redesigned
 ═══════════════════════════════════════════ -->
 <div id="admin-overlay">
     <div class="admin-modal">
         <button class="admin-close" onclick="closeAdmin()">✕</button>
-        <h2>Admin Login</h2>
-        <p>3Bi Content Management System — authorized personnel only.</p>
-        <div class="admin-input-group">
-            <label>Username</label>
-            <input type="text" id="admin-user" placeholder="Enter username" autocomplete="off">
+        <div class="admin-modal-header">
+            <div class="admin-modal-logo">
+                <svg width="36" height="33" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="52" height="48" rx="8" fill="rgba(255,255,255,0.08)"/>
+                    <polygon points="5,41 11,18 17,41" fill="#9C3D1E"/>
+                    <polygon points="17,41 26,10 35,41" fill="#B8893A"/>
+                    <polygon points="35,41 41,22 47,41" fill="#14355F"/>
+                    <rect x="4" y="43" width="14" height="2" rx="1" fill="#14355F"/>
+                    <rect x="19" y="43" width="14" height="2" rx="1" fill="#9C3D1E"/>
+                    <rect x="34" y="43" width="14" height="2" rx="1" fill="#B8893A"/>
+                </svg>
+                <span>3Bi</span>
+            </div>
+            <h2>Admin Portal</h2>
+            <p>Build Back Better Initiative · Content Management System</p>
         </div>
-        <div class="admin-input-group">
-            <label>Password</label>
-            <input type="password" id="admin-pass" placeholder="Enter password">
+        <div class="admin-modal-body">
+            <div class="admin-input-group">
+                <label>Username</label>
+                <div class="admin-input-wrap">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="7" r="4" stroke="white" stroke-width="1.5"/>
+                        <path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <input type="text" id="admin-user" placeholder="Enter username" autocomplete="off">
+                </div>
+            </div>
+            <div class="admin-input-group">
+                <label>Password</label>
+                <div class="admin-input-wrap">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="9" width="12" height="9" rx="2" stroke="white" stroke-width="1.5"/>
+                        <path d="M7 9V6a3 3 0 016 0v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="10" cy="13.5" r="1.5" fill="white"/>
+                    </svg>
+                    <input type="password" id="admin-pass" placeholder="Enter password">
+                </div>
+            </div>
+            <div class="admin-err" id="admin-err">Incorrect username or password. Please try again.</div>
+            <button class="admin-sign-btn" onclick="doLogin()">Sign In to Dashboard</button>
+            <p style="text-align:center; margin-top:1rem; font-size:0.72rem; color:rgba(255,255,255,0.2);">Authorised personnel only · 3Bi Build Back Better Initiative</p>
         </div>
-        <div class="admin-err" id="admin-err">Incorrect username or password.</div>
-        <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:0.5rem; font-size:0.95rem;" onclick="doLogin()">Sign In</button>
     </div>
 </div>
 
 <!-- ═══════════════════════════════════════════
-     ADMIN DASHBOARD
+     ADMIN DASHBOARD — Redesigned
 ═══════════════════════════════════════════ -->
 <div id="dashboard-overlay">
     <div class="dash-header">
         <div class="dash-title">
-            <svg style="width:32px;height:30px;vertical-align:middle;margin-right:10px;" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
-                <rect width="52" height="48" rx="8" fill="#0B1C2C"/>
-                <rect x="4"  y="43" width="14" height="2.5" rx="1" fill="#14355F"/>
-                <rect x="19" y="43" width="14" height="2.5" rx="1" fill="#9C3D1E"/>
-                <rect x="34" y="43" width="14" height="2.5" rx="1" fill="#B8893A"/>
+            <svg style="width:30px;height:28px;" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
+                <rect width="52" height="48" rx="8" fill="#14355F"/>
                 <polygon points="5,41 11,18 17,41" fill="#9C3D1E"/>
                 <polygon points="17,41 26,10 35,41" fill="#B8893A"/>
-                <polygon points="35,41 41,22 47,41" fill="#14355F"/>
+                <polygon points="35,41 41,22 47,41" fill="#1E4A80"/>
             </svg>
-            3Bi Admin Dashboard
+            3Bi Admin
+            <span class="dash-title-sub">Content Management System</span>
         </div>
         <div class="dash-actions">
             <button class="dash-btn dash-btn-primary" onclick="showDashSection('new-post')">+ New Publication</button>
@@ -1720,40 +1919,91 @@
         </div>
     </div>
     <div class="dash-body">
+        <!-- Sidebar -->
         <div class="dash-sidebar">
+            <div class="dash-sidebar-label">Main</div>
             <nav>
                 <ul>
-                    <li><a href="#" onclick="showDashSection('overview')" class="active" id="nav-overview"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-overview"/></svg></span> Overview</a></li>
-                    <li><a href="#" onclick="showDashSection('all-posts')" id="nav-all-posts"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-pubs"/></svg></span> All Publications</a></li>
-                    <li><a href="#" onclick="showDashSection('new-post')" id="nav-new-post"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-edit"/></svg></span> New Publication</a></li>
-                    <li><a href="#" onclick="showDashSection('media')" id="nav-media"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-media"/></svg></span> Media Library</a></li>
-                    <li><a href="#" onclick="showDashSection('settings')" id="nav-settings"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-settings"/></svg></span> Site Settings</a></li>
+                    <li><a href="#" onclick="showDashSection('overview')" class="active" id="nav-overview">
+                        <span class="nav-icon"><svg width="18" height="18"><use href="#icon-overview"/></svg></span> Overview
+                    </a></li>
+                    <li><a href="#" onclick="showDashSection('all-posts')" id="nav-all-posts">
+                        <span class="nav-icon"><svg width="18" height="18"><use href="#icon-pubs"/></svg></span> All Publications
+                    </a></li>
+                    <li><a href="#" onclick="showDashSection('new-post')" id="nav-new-post">
+                        <span class="nav-icon"><svg width="18" height="18"><use href="#icon-edit"/></svg></span> New Publication
+                    </a></li>
+                </ul>
+            </nav>
+            <div class="dash-sidebar-divider"></div>
+            <div class="dash-sidebar-label">Assets</div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showDashSection('media')" id="nav-media">
+                        <span class="nav-icon"><svg width="18" height="18"><use href="#icon-media"/></svg></span> Media Library
+                    </a></li>
+                    <li><a href="#" onclick="showDashSection('pdf-templates')" id="nav-pdftemplate">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="2" width="14" height="16" rx="2" stroke="#B8893A" stroke-width="1.4"/>
+                                <line x1="6" y1="7" x2="14" y2="7" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/>
+                                <line x1="6" y1="10" x2="14" y2="10" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/>
+                                <line x1="6" y1="13" x2="11" y2="13" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                        </span> PDF Letterhead
+                    </a></li>
+                </ul>
+            </nav>
+            <div class="dash-sidebar-divider"></div>
+            <div class="dash-sidebar-label">System</div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showDashSection('settings')" id="nav-settings">
+                        <span class="nav-icon"><svg width="18" height="18"><use href="#icon-settings"/></svg></span> Settings
+                    </a></li>
                 </ul>
             </nav>
         </div>
+
+        <!-- Content -->
         <div class="dash-content">
 
-            <!-- Overview -->
+            <!-- ── OVERVIEW ── -->
             <div class="dash-section active" id="ds-overview">
                 <div class="dash-section-title">Dashboard Overview</div>
                 <div class="stats-cards">
-                    <div class="stat-card"><div class="s-num" id="stat-total">0</div><div class="s-lbl">Total Publications</div></div>
-                    <div class="stat-card"><div class="s-num" id="stat-reports">0</div><div class="s-lbl">Reports</div></div>
-                    <div class="stat-card"><div class="s-num" id="stat-analysis">0</div><div class="s-lbl">Analysis</div></div>
-                    <div class="stat-card"><div class="s-num" id="stat-papers">0</div><div class="s-lbl">Policy Papers</div></div>
+                    <div class="stat-card">
+                        <div class="s-num" id="stat-total">0</div>
+                        <div class="s-lbl">Total Publications</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="s-num" id="stat-reports">0</div>
+                        <div class="s-lbl">Reports</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="s-num" id="stat-analysis">0</div>
+                        <div class="s-lbl">Analysis</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="s-num" id="stat-papers">0</div>
+                        <div class="s-lbl">Policy Papers</div>
+                    </div>
                 </div>
-                <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:2rem;">
-                    <h4 style="color:rgba(255,255,255,0.7); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1.5rem;">Recent Publications</h4>
-                    <div id="dash-recent-list" style="color:rgba(255,255,255,0.5); font-size:0.875rem;">No publications yet. Create your first one.</div>
+                <div class="table-wrap" style="padding:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+                        <h4 style="color:rgba(255,255,255,0.6); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.12em; font-family:'Poppins',sans-serif; font-weight:700;">Recent Publications</h4>
+                        <button class="dash-btn dash-btn-cobalt dash-btn-sm" onclick="showDashSection('all-posts')">View All</button>
+                    </div>
+                    <div id="dash-recent-list"><span style="color:rgba(255,255,255,0.25); font-size:0.85rem; font-family:'Poppins',sans-serif;">No publications yet. Create your first one.</span></div>
                 </div>
             </div>
 
-            <!-- All Posts -->
+            <!-- ── ALL PUBLICATIONS ── -->
             <div class="dash-section" id="ds-all-posts">
                 <div class="dash-section-title">All Publications
-                    <button class="dash-btn dash-btn-primary" onclick="showDashSection('new-post')">+ New</button>
+                    <button class="dash-btn dash-btn-primary" onclick="showDashSection('new-post')">+ New Publication</button>
                 </div>
-                <div style="overflow-x:auto;">
+                <div class="table-wrap">
                     <table class="posts-table">
                         <thead>
                             <tr>
@@ -1765,18 +2015,19 @@
                             </tr>
                         </thead>
                         <tbody id="posts-tbody">
-                            <tr><td colspan="5" style="color:rgba(255,255,255,0.3); text-align:center; padding:2rem;">No publications yet.</td></tr>
+                            <tr><td colspan="5" style="color:rgba(255,255,255,0.25); text-align:center; padding:2.5rem; font-family:'Poppins',sans-serif;">No publications yet.</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- New Post -->
+            <!-- ── NEW / EDIT PUBLICATION ── -->
             <div class="dash-section" id="ds-new-post">
                 <div class="dash-section-title" id="editor-title">New Publication</div>
                 <div class="post-editor">
                     <input type="hidden" id="edit-post-id" value="">
                     <div class="post-editor-grid">
+                        <!-- Main editor -->
                         <div class="editor-main">
                             <div class="dash-field">
                                 <label>Publication Title *</label>
@@ -1787,36 +2038,40 @@
                                 <textarea id="post-excerpt" placeholder="A brief 2-3 sentence summary shown in listings..." style="min-height:80px;"></textarea>
                             </div>
                             <div class="dash-field">
-                                <label>Content</label>
+                                <label>Full Content</label>
                                 <div class="rich-toolbar">
                                     <button onclick="fmtText('bold')"><b>B</b></button>
                                     <button onclick="fmtText('italic')"><i>I</i></button>
                                     <button onclick="fmtText('underline')"><u>U</u></button>
                                     <button onclick="insertHeading()">H2</button>
                                     <button onclick="insertBullet()">• List</button>
-                                    <button onclick="insertHr()">— HR</button>
+                                    <button onclick="insertHr()">─ HR</button>
                                     <button onclick="openEmbedModal('link')">🔗 Link</button>
-                                    <button onclick="openEmbedModal('embed')">{'</>'}Embed</button>
+                                    <button onclick="openEmbedModal('embed')">&lt;/&gt; Embed</button>
                                     <button onclick="openEmbedModal('tweet')">🐦 Tweet</button>
                                     <button onclick="openEmbedModal('audio')">🎙️ Audio</button>
                                     <button onclick="openEmbedModal('video')">▶ Video</button>
                                 </div>
-                                <textarea id="editor-content" placeholder="Write your full publication content here... You can use HTML or plain text. Use the toolbar above to embed links, tweets, iframes, audio and more."></textarea>
+                                <textarea id="editor-content" placeholder="Write your full publication content here. Use HTML or plain text. Use the toolbar to embed links, tweets, iframes, audio and more."></textarea>
                             </div>
                             <div class="dash-field">
-                                <label>External Link (PDF, DOI, external report URL)</label>
+                                <label>External Link (PDF, DOI, report URL)</label>
                                 <input type="url" id="post-link" placeholder="https://...">
                             </div>
                         </div>
+                        <!-- Editor sidebar -->
                         <div class="editor-sidebar">
                             <div class="sidebar-card">
                                 <h5>Cover Image</h5>
                                 <div class="cover-preview" onclick="triggerCoverUpload()" id="cover-preview-box">
                                     <img id="cover-img-preview" src="" alt="">
-                                    <div class="upload-hint"><span>🖼️</span>Click to upload cover image</div>
+                                    <div class="upload-hint">
+                                        <svg width="28" height="28" style="margin:0 auto 6px;display:block;opacity:0.3"><use href="#icon-media"/></svg>
+                                        Click to upload
+                                    </div>
                                 </div>
                                 <input type="file" id="cover-file-input" accept="image/*" style="display:none" onchange="handleCoverUpload(this)">
-                                <input type="text" id="post-cover-url" placeholder="Or paste image URL..." style="margin-top:0.6rem; padding:0.6rem; width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:white; font-size:0.8rem;" oninput="updateCoverFromUrl(this.value)">
+                                <input type="text" id="post-cover-url" placeholder="Or paste image URL..." style="margin-top:0.5rem; padding:0.55rem 0.8rem; width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); border-radius:6px; color:rgba(255,255,255,0.7); font-size:0.78rem; font-family:'Poppins',sans-serif;" oninput="updateCoverFromUrl(this.value)">
                             </div>
                             <div class="sidebar-card">
                                 <h5>Publication Details</h5>
@@ -1848,52 +2103,151 @@
                                     <label>Author(s)</label>
                                     <input type="text" id="post-author" placeholder="3Bi Research Team">
                                 </div>
-                            </div>
-                            <div class="sidebar-card">
-                                <h5>Quick Embed Tools</h5>
-                                <div class="embed-btns">
-                                    <button class="embed-btn" onclick="openEmbedModal('tweet')">🐦 Embed Tweet</button>
-                                    <button class="embed-btn" onclick="openEmbedModal('embed')">📺 Embed Code</button>
-                                    <button class="embed-btn" onclick="openEmbedModal('audio')">🎙️ Audio</button>
-                                    <button class="embed-btn" onclick="openEmbedModal('video')">▶ Video</button>
-                                    <button class="embed-btn" onclick="openEmbedModal('link')">🔗 Add Link</button>
+                                <div class="dash-field">
+                                    <label>Reference Code</label>
+                                    <input type="text" id="post-ref" placeholder="e.g. 3BI/2025/PB/001">
                                 </div>
                             </div>
-                            <div style="display:flex; flex-direction:column; gap:0.75rem;">
-                                <button class="dash-btn dash-btn-primary" style="width:100%; padding:0.8rem;" onclick="savePost()">💾 Save Publication</button>
-                                <button class="dash-btn dash-btn-ghost" style="width:100%; padding:0.7rem;" onclick="resetEditor()">Clear Form</button>
+                            <div class="sidebar-card">
+                                <h5>Quick Embeds</h5>
+                                <div class="embed-btns">
+                                    <button class="embed-btn" onclick="openEmbedModal('tweet')">🐦 Tweet</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('embed')">📺 Embed</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('audio')">🎙️ Audio</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('video')">▶ Video</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('link')">🔗 Link</button>
+                                </div>
+                            </div>
+                            <div class="editor-save-row">
+                                <button class="dash-btn dash-btn-primary" onclick="savePost()">💾 Save Publication</button>
+                                <button class="dash-btn dash-btn-ghost" onclick="resetEditor()">Clear Form</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Media Library -->
+            <!-- ── MEDIA LIBRARY ── -->
             <div class="dash-section" id="ds-media">
                 <div class="dash-section-title">Media Library</div>
-                <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:3rem; text-align:center;">
+                <div class="table-wrap" style="padding:3rem; text-align:center;">
                     <div style="margin-bottom:1rem;"><svg width="48" height="48"><use href="#icon-media"/></svg></div>
-                    <p style="color:rgba(255,255,255,0.5);">Upload cover images directly from the publication editor, or paste image URLs from external hosting (Google Drive, Dropbox, Cloudinary, etc.).</p>
+                    <p style="color:rgba(255,255,255,0.4); font-family:'Poppins',sans-serif; font-size:0.875rem; max-width:420px; margin:0 auto;">Upload cover images from the publication editor, or paste image URLs from Google Drive, Dropbox, Cloudinary, etc.</p>
                     <div id="media-thumbs" style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:2rem; justify-content:center;"></div>
                 </div>
             </div>
 
-            <!-- Settings -->
+            <!-- ── PDF LETTERHEAD ── -->
+            <div class="dash-section" id="ds-pdf-templates">
+                <div class="dash-section-title">PDF Letterhead</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <!-- Preview card -->
+                    <div class="table-wrap" style="padding:1.5rem;">
+                        <h5 style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); margin-bottom:1.25rem; font-family:'Poppins',sans-serif;">Letterhead Preview</h5>
+                        <div class="lh-preview">
+                            <div class="lh-header">
+                                <div class="lh-header-left">
+                                    <h1>3Bi</h1>
+                                    <p>Build Back Better Initiative</p>
+                                    <div class="lh-tribar">
+                                        <span style="background:#14355F;"></span>
+                                        <span style="background:#9C3D1E;"></span>
+                                        <span style="background:#B8893A;"></span>
+                                    </div>
+                                </div>
+                                <svg width="44" height="40" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
+                                    <polygon points="5,41 11,18 17,41" fill="#9C3D1E"/>
+                                    <polygon points="17,41 26,10 35,41" fill="#B8893A"/>
+                                    <polygon points="35,41 41,22 47,41" fill="#14355F"/>
+                                </svg>
+                            </div>
+                            <div class="lh-meta">
+                                <div class="lh-meta-item"><strong>Type</strong>Policy Report</div>
+                                <div class="lh-meta-item"><strong>Theme</strong>Climate-Conflict Nexus</div>
+                                <div class="lh-meta-item"><strong>Date</strong>2025</div>
+                            </div>
+                            <div class="lh-body">
+                                <h2>Publication Title Here</h2>
+                                <p>This is where your publication content appears, formatted with the 3Bi brand letterhead including the Meroe Mark, Nile Palette colours, and tricolour stripe.</p>
+                            </div>
+                            <div class="lh-footer-bar"></div>
+                            <div class="lh-footer">
+                                <span>Build Back Better Initiative · Sudan &amp; East Africa</span>
+                                <span>www.3bisudan.org · info@3bi.org</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Instructions card -->
+                    <div class="table-wrap" style="padding:1.5rem;">
+                        <h5 style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); margin-bottom:1.25rem; font-family:'Poppins',sans-serif;">How PDF Export Works</h5>
+                        <div style="display:flex; flex-direction:column; gap:1rem;">
+                            <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+                                <div style="width:24px; height:24px; border-radius:50%; background:#9C3D1E; color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0; font-family:'Poppins',sans-serif;">1</div>
+                                <p style="font-size:0.825rem; color:rgba(255,255,255,0.55); font-family:'Poppins',sans-serif; margin:0; line-height:1.6;">Go to <strong style="color:rgba(255,255,255,0.8);">All Publications</strong> and click the <strong style="color:#D4A554;">PDF</strong> button next to any report, analysis, or policy paper.</p>
+                            </div>
+                            <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+                                <div style="width:24px; height:24px; border-radius:50%; background:#B8893A; color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0; font-family:'Poppins',sans-serif;">2</div>
+                                <p style="font-size:0.825rem; color:rgba(255,255,255,0.55); font-family:'Poppins',sans-serif; margin:0; line-height:1.6;">A preview of the <strong style="color:rgba(255,255,255,0.8);">branded letterhead</strong> will appear showing the Meroe Mark, Nile Palette, and tricolour stripe.</p>
+                            </div>
+                            <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+                                <div style="width:24px; height:24px; border-radius:50%; background:#14355F; color:white; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0; font-family:'Poppins',sans-serif;">3</div>
+                                <p style="font-size:0.825rem; color:rgba(255,255,255,0.55); font-family:'Poppins',sans-serif; margin:0; line-height:1.6;">Click <strong style="color:rgba(255,255,255,0.8);">Download PDF</strong> to generate and save the publication as a branded PDF file.</p>
+                            </div>
+                        </div>
+                        <div style="margin-top:1.5rem; padding:1rem; background:rgba(184,137,58,0.1); border:1px solid rgba(184,137,58,0.2); border-radius:8px;">
+                            <p style="font-size:0.78rem; color:#D4A554; font-family:'Poppins',sans-serif; margin:0; line-height:1.6;"><strong>Brand compliant:</strong> All PDFs use the official Nile Palette (#0B1C2C, #9C3D1E, #B8893A, #14355F), Meroe pyramid mark, and tricolour footer stripe as per the 3Bi Brand Guidelines v1.0.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Test PDF button -->
+                <div class="table-wrap" style="padding:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <p style="color:rgba(255,255,255,0.7); font-family:'Poppins',sans-serif; font-size:0.875rem; font-weight:600; margin-bottom:0.25rem;">Generate a Test PDF</p>
+                        <p style="color:rgba(255,255,255,0.35); font-family:'Poppins',sans-serif; font-size:0.78rem; margin:0;">Preview the full branded letterhead with sample content.</p>
+                    </div>
+                    <button class="dash-btn dash-btn-pdf" onclick="previewPdf('__test__')">Preview Letterhead PDF</button>
+                </div>
+            </div>
+
+            <!-- ── SETTINGS ── -->
             <div class="dash-section" id="ds-settings">
                 <div class="dash-section-title">Site Settings</div>
-                <div class="post-editor" style="max-width:600px;">
+                <div class="post-editor" style="max-width:560px;">
                     <div class="dash-field"><label>Site Title</label><input type="text" value="3Bi — Build Back Better Initiative"></div>
                     <div class="dash-field"><label>Tagline</label><input type="text" value="Evidence for Resilience"></div>
                     <div class="dash-field"><label>Contact Email</label><input type="email" value="contact@3bisudan.org"></div>
                     <div class="dash-field"><label>Twitter Handle</label><input type="text" value="@3BiSudan"></div>
+                    <div class="dash-field"><label>Website</label><input type="text" value="www.3bisudan.org"></div>
+                    <div style="height:1px; background:rgba(255,255,255,0.07); margin:1.25rem 0;"></div>
                     <div class="dash-field">
                         <label>Change Admin Password</label>
                         <input type="password" id="new-pass" placeholder="New password (leave blank to keep current)">
                     </div>
-                    <button class="dash-btn dash-btn-primary" style="padding:0.8rem 2rem;" onclick="saveSettings()">Save Settings</button>
+                    <button class="dash-btn dash-btn-primary" style="padding:0.75rem 2rem;" onclick="saveSettings()">Save Settings</button>
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PDF PREVIEW MODAL
+═══════════════════════════════════════════ -->
+<div id="pdf-preview-modal">
+    <div class="pdf-modal-box">
+        <div class="pdf-modal-header">
+            <h3>PDF Letterhead Preview</h3>
+            <button class="admin-close" onclick="closePdfModal()" style="position:static;">✕</button>
+        </div>
+        <div class="pdf-modal-body">
+            <div class="lh-preview" id="pdf-lh-preview">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        <div class="pdf-modal-footer">
+            <button class="dash-btn dash-btn-ghost" onclick="closePdfModal()">Cancel</button>
+            <button class="dash-btn dash-btn-pdf" id="pdf-download-btn" onclick="downloadPdf()">⬇ Download PDF</button>
         </div>
     </div>
 </div>
@@ -1913,401 +2267,431 @@
     </div>
 </div>
 
+<!-- jsPDF for client-side branded PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <!-- ═══════════════════════════════════════════
      JAVASCRIPT
 ═══════════════════════════════════════════ -->
 <script>
-// ─── CREDENTIALS (changeable via settings) ───
 const CREDS = { user: 'admin3bi', pass: '3BiSudan2026!' };
 let currentEmbedType = '';
+let currentPdfPostId = null;
 
-// ─── SECRET ADMIN ACCESS — via URL hash #3bi-admin-panel (not linked anywhere on site) ───
 function openAdmin() {
     document.getElementById('admin-overlay').classList.add('open');
     document.getElementById('admin-err').style.display = 'none';
     document.getElementById('admin-user').value = '';
     document.getElementById('admin-pass').value = '';
 }
-// Listen for the secret hash — access by navigating to: yoursite.com/#3bi-admin-panel
 function checkAdminHash() {
     if (window.location.hash === '#3bi-admin-panel') {
         openAdmin();
-        // Clear the hash from URL bar so it's not visible
         history.replaceState(null, '', window.location.pathname);
     }
 }
 window.addEventListener('hashchange', checkAdminHash);
 window.addEventListener('load', checkAdminHash);
 
-// ─── NAVBAR SCROLL ───
 window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
 });
-
-// ─── MOBILE MENU ───
 document.getElementById('mobileToggle').addEventListener('click', function() {
-    const nl = document.getElementById('nav-links');
-    nl.classList.toggle('mobile-open');
+    document.getElementById('nav-links').classList.toggle('mobile-open');
 });
 
-// ─── PAGE NAVIGATION ───
 function showSection(id) {
     document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
     const el = document.getElementById(id);
-    if (el) {
-        el.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    // Show footer only on home
+    if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     const footer = document.getElementById('site-footer');
     if (footer) footer.style.display = (id === 'home') ? 'block' : 'none';
-    // Close mobile menu
     document.getElementById('nav-links').classList.remove('mobile-open');
     renderPublications();
 }
-
-// Show footer by default on home
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('site-footer').style.display = 'block';
-    renderPublications();
-    updateDashboardStats();
-    // Set today as default post date
+    renderPublications(); updateDashboardStats();
     const d = document.getElementById('post-date');
     if (d) d.value = new Date().toISOString().split('T')[0];
 });
 
-// ─── ADMIN LOGIN ───
-function closeAdmin() {
-    document.getElementById('admin-overlay').classList.remove('open');
-}
+function closeAdmin() { document.getElementById('admin-overlay').classList.remove('open'); }
 function doLogin() {
     const u = document.getElementById('admin-user').value.trim();
     const p = document.getElementById('admin-pass').value;
-    const storedPass = localStorage.getItem('3bi_admin_pass') || CREDS.pass;
-    if (u === CREDS.user && p === storedPass) {
-        closeAdmin();
-        openDashboard();
-    } else {
-        document.getElementById('admin-err').style.display = 'block';
-    }
+    const sp = localStorage.getItem('3bi_admin_pass') || CREDS.pass;
+    if (u === CREDS.user && p === sp) { closeAdmin(); openDashboard(); }
+    else { document.getElementById('admin-err').style.display = 'block'; }
 }
 document.getElementById('admin-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
-// ─── DASHBOARD ───
 function openDashboard() {
     document.getElementById('dashboard-overlay').classList.add('open');
-    showDashSection('overview');
-    updateDashboardStats();
-    renderPostsTable();
+    showDashSection('overview'); updateDashboardStats(); renderPostsTable();
 }
-function closeDashboard() {
-    document.getElementById('dashboard-overlay').classList.remove('open');
-}
+function closeDashboard() { document.getElementById('dashboard-overlay').classList.remove('open'); }
 function showDashSection(id) {
     document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
-    document.getElementById('ds-' + id).classList.add('active');
+    const sec = document.getElementById('ds-' + id);
+    if (sec) sec.classList.add('active');
     document.querySelectorAll('.dash-sidebar nav a').forEach(a => a.classList.remove('active'));
-    const navEl = document.getElementById('nav-' + id.replace('-',''));
+    const navMap = {'overview':'nav-overview','all-posts':'nav-all-posts','new-post':'nav-new-post','media':'nav-media','pdf-templates':'nav-pdftemplate','settings':'nav-settings'};
+    const navEl = document.getElementById(navMap[id] || '');
     if (navEl) navEl.classList.add('active');
     if (id === 'all-posts') renderPostsTable();
     if (id === 'overview') updateDashboardStats();
 }
 
-// ─── PUBLICATIONS DATA ───
-function getPosts() {
-    try { return JSON.parse(localStorage.getItem('3bi_posts') || '[]'); } catch { return []; }
-}
-function savePosts(posts) {
-    localStorage.setItem('3bi_posts', JSON.stringify(posts));
-}
+function getPosts() { try { return JSON.parse(localStorage.getItem('3bi_posts') || '[]'); } catch { return []; } }
+function savePosts(posts) { localStorage.setItem('3bi_posts', JSON.stringify(posts)); }
 
 function savePost() {
     const title = document.getElementById('post-title').value.trim();
     if (!title) { alert('Please enter a title.'); return; }
     const editId = document.getElementById('edit-post-id').value;
     const posts = getPosts();
+    const refEl = document.getElementById('post-ref');
     const post = {
-        id: editId || Date.now().toString(),
-        title,
+        id: editId || Date.now().toString(), title,
         excerpt: document.getElementById('post-excerpt').value.trim(),
         content: document.getElementById('editor-content').value.trim(),
         type: document.getElementById('post-type').value,
         theme: document.getElementById('post-theme').value,
         date: document.getElementById('post-date').value,
         author: document.getElementById('post-author').value.trim() || '3Bi Research Team',
+        ref: refEl ? refEl.value.trim() : '',
         cover: document.getElementById('post-cover-url').value.trim(),
         link: document.getElementById('post-link').value.trim(),
     };
-    if (editId) {
-        const idx = posts.findIndex(p => p.id === editId);
-        if (idx !== -1) posts[idx] = post; else posts.unshift(post);
-    } else {
-        posts.unshift(post);
-    }
+    if (editId) { const idx = posts.findIndex(p => p.id === editId); if (idx !== -1) posts[idx] = post; else posts.unshift(post); }
+    else posts.unshift(post);
     savePosts(posts);
-    alert('Publication saved successfully!');
-    resetEditor();
-    showDashSection('all-posts');
-    renderPublications();
-    updateDashboardStats();
+    alert('Publication saved!');
+    resetEditor(); showDashSection('all-posts'); renderPublications(); updateDashboardStats();
 }
 
 function resetEditor() {
-    ['post-title','post-excerpt','editor-content','post-link','post-author','post-cover-url'].forEach(id => {
-        document.getElementById(id).value = '';
-    });
+    ['post-title','post-excerpt','editor-content','post-link','post-author','post-cover-url','post-ref'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('edit-post-id').value = '';
     document.getElementById('editor-title').textContent = 'New Publication';
     document.getElementById('post-type').value = 'report';
     document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
-    document.getElementById('cover-img-preview').style.display = 'none';
-    document.querySelector('.cover-preview .upload-hint').style.display = '';
+    const img = document.getElementById('cover-img-preview'); if(img) img.style.display='none';
+    const hint = document.querySelector('.cover-preview .upload-hint'); if(hint) hint.style.display='';
 }
-
 function editPost(id) {
-    const posts = getPosts();
-    const p = posts.find(x => x.id === id);
-    if (!p) return;
+    const p = getPosts().find(x => x.id === id); if (!p) return;
     document.getElementById('edit-post-id').value = p.id;
     document.getElementById('post-title').value = p.title;
-    document.getElementById('post-excerpt').value = p.excerpt || '';
-    document.getElementById('editor-content').value = p.content || '';
+    document.getElementById('post-excerpt').value = p.excerpt||'';;
+    document.getElementById('editor-content').value = p.content||'';
     document.getElementById('post-type').value = p.type;
     document.getElementById('post-theme').value = p.theme;
     document.getElementById('post-date').value = p.date;
     document.getElementById('post-author').value = p.author;
-    document.getElementById('post-cover-url').value = p.cover || '';
-    document.getElementById('post-link').value = p.link || '';
+    const refEl = document.getElementById('post-ref'); if(refEl) refEl.value = p.ref||'';;
+    document.getElementById('post-cover-url').value = p.cover||'';
+    document.getElementById('post-link').value = p.link||'';
     document.getElementById('editor-title').textContent = 'Edit Publication';
     if (p.cover) updateCoverFromUrl(p.cover);
     showDashSection('new-post');
 }
-
 function deletePost(id) {
-    if (!confirm('Delete this publication? This cannot be undone.')) return;
-    const posts = getPosts().filter(p => p.id !== id);
-    savePosts(posts);
-    renderPostsTable();
-    renderPublications();
-    updateDashboardStats();
+    if (!confirm('Delete this publication?')) return;
+    savePosts(getPosts().filter(p => p.id !== id));
+    renderPostsTable(); renderPublications(); updateDashboardStats();
 }
 
-// ─── RENDER PUBLICATIONS (public site) ───
 function renderPublications() {
     const posts = getPosts();
     const grid = document.getElementById('main-pub-grid');
     const noPubs = document.getElementById('no-pubs');
     if (!grid) return;
     const filterEl = document.querySelector('.filter-btn.active');
-    const activeFilter = filterEl ? filterEl.dataset.filter || 'all' : 'all';
-    const filtered = activeFilter === 'all' ? posts : posts.filter(p => p.type === activeFilter);
-    if (filtered.length === 0) {
-        grid.innerHTML = '';
-        if (noPubs) noPubs.style.display = 'block';
-        return;
-    }
-    if (noPubs) noPubs.style.display = 'none';
+    const activeFilter = filterEl ? filterEl.dataset.filter||'all' : 'all';
+    const filtered = activeFilter==='all' ? posts : posts.filter(p=>p.type===activeFilter);
+    if (!filtered.length) { grid.innerHTML=''; if(noPubs) noPubs.style.display='block'; return; }
+    if (noPubs) noPubs.style.display='none';
     grid.innerHTML = filtered.map(p => pubCardHTML(p)).join('');
 }
-
 function pubCardHTML(p) {
     const coverHTML = p.cover
         ? `<img src="${escHtml(p.cover)}" alt="${escHtml(p.title)}" onerror="this.style.display='none'">`
         : `<div class="pub-cover-placeholder"><svg width="44" height="44"><use href="#icon-doc"/></svg></div>`;
-    const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
-    const typeClass = p.type || 'paper';
-    const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US', { month:'long', year:'numeric' }) : '';
+    const typeLabels={report:'Report',paper:'Policy Paper',analysis:'Analysis',announcement:'Announcement'};
+    const dateStr=p.date?new Date(p.date).toLocaleDateString('en-US',{month:'long',year:'numeric'}):'';
+    const canPdf=['report','paper','analysis'].includes(p.type);
     return `<div class="pub-card" data-type="${escHtml(p.type)}">
-        <div class="pub-cover">
-            <div class="pub-type-badge ${escHtml(typeClass)}">${typeLabels[p.type] || p.type}</div>
-            ${coverHTML}
-        </div>
+        <div class="pub-cover"><div class="pub-type-badge ${escHtml(p.type)}">${typeLabels[p.type]||p.type}</div>${coverHTML}</div>
         <div class="pub-body">
-            <div class="pub-meta">${dateStr}${p.theme ? ' · ' + escHtml(p.theme) : ''}</div>
+            <div class="pub-meta">${dateStr}${p.theme?' · '+escHtml(p.theme):''}</div>
             <h3 class="pub-title">${escHtml(p.title)}</h3>
-            <p class="pub-excerpt">${escHtml(p.excerpt || '')}</p>
+            <p class="pub-excerpt">${escHtml(p.excerpt||'')}</p>
             <div class="pub-footer">
-                <a href="${p.link ? escHtml(p.link) : '#'}" class="pub-read-link" ${p.link ? 'target="_blank" rel="noopener"' : `onclick="openPub('${p.id}')"`}>Read ${typeLabels[p.type] || 'More'} →</a>
-                <span style="font-size:0.78rem;color:var(--text-light)">${escHtml(p.author || '3Bi')}</span>
+                <a href="${p.link?escHtml(p.link):'#'}" class="pub-read-link" ${p.link?'target="_blank" rel="noopener"':`onclick="openPub('${p.id}')"`}>Read ${typeLabels[p.type]||'More'} →</a>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    ${canPdf?`<button onclick="previewPdf('${p.id}')" style="background:none;border:none;cursor:pointer;padding:0;color:var(--gold);font-size:0.78rem;font-weight:600;font-family:'Poppins',sans-serif;" title="Download PDF">⬇ PDF</button>`:''}
+                    <span style="font-size:0.78rem;color:var(--text-light)">${escHtml(p.author||'3Bi')}</span>
+                </div>
             </div>
-        </div>
-    </div>`;
+        </div></div>`;
 }
-
-function filterPubs(type, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); b.dataset.filter = b.dataset.filter; });
-    btn.classList.add('active');
-    btn.dataset.filter = type;
-    renderPublications();
+function filterPubs(type,btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); btn.dataset.filter=type; renderPublications();
 }
-
 function openPub(id) {
-    const p = getPosts().find(x => x.id === id);
-    if (!p) return;
-    const win = window.open('', '_blank');
-    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escHtml(p.title)} | 3Bi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>body{font-family:'Poppins',sans-serif;max-width:800px;margin:0 auto;padding:3rem 2rem;color:#1e2d3d;line-height:1.8}
-    h1{font-family:'Lora',serif;font-size:2.2rem;color:#0f2240;margin-bottom:0.5rem}
-    .meta{color:#617592;font-size:0.9rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid #f5f1eb}
-    img{max-width:100%;border-radius:8px;margin-bottom:2rem}
-    .content{font-size:1.05rem}</style></head><body>
-    ${p.cover ? `<img src="${escHtml(p.cover)}" alt="Cover">` : ''}
-    <h1>${escHtml(p.title)}</h1>
-    <div class="meta">${p.date ? new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : ''} · ${escHtml(p.theme||'')} · ${escHtml(p.author||'3Bi')}</div>
-    <div class="content">${p.content || escHtml(p.excerpt || '')}</div>
-    </body></html>`);
+    const p=getPosts().find(x=>x.id===id); if(!p) return;
+    const win=window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escHtml(p.title)} | 3Bi</title><link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"><style>body{font-family:'Poppins',sans-serif;max-width:800px;margin:0 auto;padding:3rem 2rem;color:#0B1C2C;line-height:1.8}h1{font-family:'Lora',serif;font-size:2.2rem;color:#0B1C2C;margin-bottom:0.5rem}.meta{color:#7A8A98;font-size:0.9rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid #E8DCC8}img{max-width:100%;border-radius:8px;margin-bottom:2rem}.content{font-size:1.05rem}</style></head><body>${p.cover?`<img src="${escHtml(p.cover)}" alt="Cover">`:''}
+    <h1>${escHtml(p.title)}</h1><div class="meta">${p.date?new Date(p.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):''}${p.theme?' · '+escHtml(p.theme):''}${p.author?' · '+escHtml(p.author):''}</div><div class="content">${p.content||escHtml(p.excerpt||'')}</div></body></html>`);
 }
 
-// ─── DASHBOARD RENDER ───
 function renderPostsTable() {
-    const posts = getPosts();
-    const tbody = document.getElementById('posts-tbody');
-    if (!tbody) return;
-    if (!posts.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="color:rgba(255,255,255,0.3);text-align:center;padding:2rem">No publications yet.</td></tr>';
-        return;
-    }
-    const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
-    tbody.innerHTML = posts.map(p => `<tr>
-        <td style="max-width:280px;word-break:break-word">${escHtml(p.title)}</td>
-        <td><span class="post-type-pill pill-${p.type}">${typeLabels[p.type]||p.type}</span></td>
-        <td style="font-size:0.825rem;color:rgba(255,255,255,0.6)">${escHtml(p.theme||'')}</td>
-        <td style="font-size:0.825rem;color:rgba(255,255,255,0.5)">${p.date||''}</td>
-        <td><div class="post-actions">
-            <button class="post-action-btn btn-edit" onclick="editPost('${p.id}')">Edit</button>
-            <button class="post-action-btn btn-del" onclick="deletePost('${p.id}')">Delete</button>
-        </div></td>
-    </tr>`).join('');
+    const posts=getPosts(); const tbody=document.getElementById('posts-tbody'); if(!tbody) return;
+    if(!posts.length){tbody.innerHTML='<tr><td colspan="5" style="color:rgba(255,255,255,0.25);text-align:center;padding:2.5rem;font-family:Poppins,sans-serif">No publications yet.</td></tr>';return;}
+    const tl={report:'Report',paper:'Policy Paper',analysis:'Analysis',announcement:'Announcement'};
+    tbody.innerHTML=posts.map(p=>{
+        const canPdf=['report','paper','analysis'].includes(p.type);
+        return `<tr><td style="max-width:260px;word-break:break-word">${escHtml(p.title)}</td>
+            <td><span class="post-type-pill pill-${p.type}">${tl[p.type]||p.type}</span></td>
+            <td style="color:rgba(255,255,255,0.5)">${escHtml(p.theme||'')}</td>
+            <td style="color:rgba(255,255,255,0.4)">${p.date||''}</td>
+            <td><div class="post-actions">
+                <button class="post-action-btn btn-edit" onclick="editPost('${p.id}')">Edit</button>
+                ${canPdf?`<button class="post-action-btn btn-pdf-dl" onclick="previewPdf('${p.id}')">PDF</button>`:''}
+                <button class="post-action-btn btn-del" onclick="deletePost('${p.id}')">Delete</button>
+            </div></td></tr>`;
+    }).join('');
 }
-
 function updateDashboardStats() {
-    const posts = getPosts();
-    const el = id => document.getElementById(id);
-    if (el('stat-total')) el('stat-total').textContent = posts.length;
-    if (el('stat-reports')) el('stat-reports').textContent = posts.filter(p=>p.type==='report').length;
-    if (el('stat-analysis')) el('stat-analysis').textContent = posts.filter(p=>p.type==='analysis').length;
-    if (el('stat-papers')) el('stat-papers').textContent = posts.filter(p=>p.type==='paper').length;
-    const rl = document.getElementById('dash-recent-list');
-    if (rl) {
-        if (!posts.length) { rl.innerHTML = '<span style="color:rgba(255,255,255,0.3)">No publications yet. Create your first one.</span>'; return; }
-        rl.innerHTML = posts.slice(0,5).map(p=>`<div style="padding:0.7rem 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);font-size:0.875rem">${escHtml(p.title)} <span style="color:rgba(255,255,255,0.3);font-size:0.78rem">(${p.type})</span></div>`).join('');
+    const posts=getPosts(); const g=id=>document.getElementById(id);
+    if(g('stat-total')) g('stat-total').textContent=posts.length;
+    if(g('stat-reports')) g('stat-reports').textContent=posts.filter(p=>p.type==='report').length;
+    if(g('stat-analysis')) g('stat-analysis').textContent=posts.filter(p=>p.type==='analysis').length;
+    if(g('stat-papers')) g('stat-papers').textContent=posts.filter(p=>p.type==='paper').length;
+    const rl=g('dash-recent-list'); if(!rl) return;
+    if(!posts.length){rl.innerHTML='<span style="color:rgba(255,255,255,0.25);font-size:0.85rem;font-family:Poppins,sans-serif">No publications yet.</span>';return;}
+    const dc={report:'#9C3D1E',paper:'#1E4A80',analysis:'#14355F',announcement:'#B8893A'};
+    rl.innerHTML=posts.slice(0,6).map(p=>`<div class="recent-pub-row"><div class="recent-pub-dot" style="background:${dc[p.type]||'#B8893A'}"></div><span class="recent-pub-title">${escHtml(p.title)}</span><span class="recent-pub-type">${p.type}</span></div>`).join('');
+}
+
+// ─── PDF GENERATION — 3Bi Branded Letterhead ───
+const BRAND={nileInk:[11,28,44],cobalt:[20,53,95],cobaltLt:[30,74,128],sienna:[156,61,30],gold:[184,137,58],sand:[232,220,200],sandLt:[245,239,227],grey:[122,138,152],white:[255,255,255]};
+let _pdfFilename='';
+
+function previewPdf(postId) {
+    currentPdfPostId=postId;
+    let p=null;
+    if(postId==='__test__') {
+        p={id:'__test__',title:'Sample Policy Report — 3Bi Letterhead',type:'report',theme:'Climate-Conflict Nexus',date:new Date().toISOString().split('T')[0],author:'3Bi Research Team',ref:'3BI/2025/PB/001',excerpt:'This demonstrates the 3Bi branded letterhead. The Nile Palette, Meroe pyramid mark, Lora typography, and tricolour stripe are applied per Brand Guidelines v1.0.',content:'Sample content for the PDF letterhead preview.'};
+    } else { p=getPosts().find(x=>x.id===postId); }
+    if(!p) return;
+    const tl={report:'Policy Report',paper:'Policy Paper',analysis:'Policy Analysis',announcement:'Announcement'};
+    const ds=p.date?new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    const rc=p.ref||`3BI/${new Date().getFullYear()}/${(p.type||'PB').toUpperCase().slice(0,2)}/001`;
+    document.getElementById('pdf-lh-preview').innerHTML=`
+        <div class="lh-header">
+            <div class="lh-header-left"><h1>3Bi</h1><p>Build Back Better Initiative &nbsp;·&nbsp; Sudan &amp; East Africa &nbsp;·&nbsp; Est. 2019</p>
+            <div class="lh-tribar" style="margin-top:0.6rem;display:flex;gap:3px;">
+                <span style="background:#14355F;height:3px;flex:1;border-radius:2px;display:inline-block;"></span>
+                <span style="background:#9C3D1E;height:3px;flex:1;border-radius:2px;display:inline-block;"></span>
+                <span style="background:#B8893A;height:3px;flex:1;border-radius:2px;display:inline-block;"></span>
+            </div></div>
+            <svg width="52" height="48" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="5,41 11,18 17,41" fill="#9C3D1E"/><polygon points="17,41 26,10 35,41" fill="#B8893A"/><polygon points="35,41 41,22 47,41" fill="#14355F"/>
+                <rect x="4" y="43" width="14" height="2" rx="1" fill="#14355F"/><rect x="19" y="43" width="14" height="2" rx="1" fill="#9C3D1E"/><rect x="34" y="43" width="14" height="2" rx="1" fill="#B8893A"/>
+            </svg>
+        </div>
+        <div class="lh-meta">
+            <div class="lh-meta-item"><strong>Document Type</strong>${tl[p.type]||p.type}</div>
+            <div class="lh-meta-item"><strong>Theme</strong>${escHtml(p.theme||'General')}</div>
+            <div class="lh-meta-item"><strong>Date</strong>${ds}</div>
+            <div class="lh-meta-item"><strong>Ref</strong>${escHtml(rc)}</div>
+        </div>
+        <div class="lh-body"><h2>${escHtml(p.title)}</h2>
+            <p style="font-weight:600;color:#14355F;font-size:0.8rem;margin-bottom:0.75rem;font-family:'Poppins',sans-serif">${escHtml(p.author||'3Bi Research Team')}</p>
+            <p>${escHtml(p.excerpt||p.content?.substring(0,300)||'No summary available.')}</p>
+            ${p.content&&p.content.length>300?'<p style="color:#9C3D1E;font-size:0.78rem;font-family:Poppins,sans-serif;margin-top:0.5rem">[Full content included in downloaded PDF]</p>':''}
+        </div>
+        <div class="lh-footer-bar"></div>
+        <div class="lh-footer"><span>Build Back Better Initiative (3Bi) &nbsp;·&nbsp; Sudan &amp; East Africa</span><span>www.3bisudan.org &nbsp;·&nbsp; info@3bi.org</span></div>`;
+    _pdfFilename=(p.title||'3bi-pub').replace(/[^a-z0-9]/gi,'_').toLowerCase()+'.pdf';
+    document.getElementById('pdf-preview-modal').classList.add('open');
+}
+function closePdfModal(){ document.getElementById('pdf-preview-modal').classList.remove('open'); currentPdfPostId=null; }
+
+function downloadPdf() {
+    const id=currentPdfPostId; let p=null;
+    if(id==='__test__'){p={title:'Sample Policy Report — 3Bi Letterhead',type:'report',theme:'Climate-Conflict Nexus',date:new Date().toISOString().split('T')[0],author:'3Bi Research Team',ref:'3BI/2025/PB/001',content:'This is a sample publication demonstrating the 3Bi branded PDF letterhead.\n\nThe Nile Palette\nFive purposeful colours: Nile Ink (#0B1C2C), Cobalt Deep (#14355F), Desert Sienna (#9C3D1E), Nubian Gold (#B8893A), and Savanna Sand (#E8DCC8).\n\nThe Meroe Mark\nThree ascending pyramid silhouettes representing Research, Policy, and Community.\n\nThe Tricolour Stripe\nCobalt Deep / Desert Sienna / Nubian Gold applied across header and footer.\n\nAll design decisions follow the 3Bi Brand Guidelines v1.0.'};
+    }else{p=getPosts().find(x=>x.id===id);}
+    if(!p) return;
+    const btn=document.getElementById('pdf-download-btn');
+    btn.textContent='Generating...'; btn.disabled=true;
+    try {
+        const {jsPDF}=window.jspdf;
+        const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+        const W=210,H=297,mL=20,mR=20,bW=W-mL-mR;
+        const tl={report:'POLICY REPORT',paper:'POLICY PAPER',analysis:'POLICY ANALYSIS',announcement:'ANNOUNCEMENT'};
+        const ds=p.date?new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+        const rc=p.ref||`3BI/${new Date().getFullYear()}/${(p.type||'PB').toUpperCase().slice(0,2)}/001`;
+
+        // HEADER BAND
+        doc.setFillColor(...BRAND.nileInk); doc.rect(0,0,W,44,'F');
+        // Pyramids
+        doc.setFillColor(...BRAND.sienna); doc.triangle(W-50,40,W-44,14,W-38,40,'F');
+        doc.setFillColor(...BRAND.gold);   doc.triangle(W-38,40,W-29,7, W-20,40,'F');
+        doc.setFillColor(...BRAND.cobalt); doc.triangle(W-20,40,W-14,20,W-8, 40,'F');
+        doc.setFillColor(...BRAND.cobalt); doc.rect(W-50,41,12,2,'F');
+        doc.setFillColor(...BRAND.sienna); doc.rect(W-38,41,12,2,'F');
+        doc.setFillColor(...BRAND.gold);   doc.rect(W-26,41,18,2,'F');
+        // 3Bi text
+        doc.setFont('helvetica','bold'); doc.setFontSize(30); doc.setTextColor(...BRAND.white);
+        doc.text('3Bi',mL,22);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,215,225);
+        doc.text('BUILD BACK BETTER INITIATIVE',mL,29);
+        // Tricolour stripe
+        doc.setFillColor(...BRAND.cobalt); doc.rect(mL,33,bW*0.33,2,'F');
+        doc.setFillColor(...BRAND.sienna); doc.rect(mL+bW*0.33,33,bW*0.33,2,'F');
+        doc.setFillColor(...BRAND.gold);   doc.rect(mL+bW*0.66,33,bW*0.34,2,'F');
+        doc.setFontSize(7); doc.setTextColor(150,165,180);
+        doc.text('Sudan · East Africa · Est. 2019',mL,40);
+
+        // METADATA BAND
+        doc.setFillColor(...BRAND.sand); doc.rect(0,44,W,22,'F');
+        const mi=[{l:'DOCUMENT TYPE',v:tl[p.type]||p.type?.toUpperCase()},{l:'THEME',v:p.theme||'General'},{l:'DATE',v:ds},{l:'REF',v:rc}];
+        const cW=bW/4;
+        mi.forEach((item,i)=>{
+            const x=mL+i*cW;
+            doc.setFont('helvetica','bold'); doc.setFontSize(5.5); doc.setTextColor(...BRAND.sienna);
+            doc.text(item.l,x,52);
+            doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...BRAND.nileInk);
+            doc.text(String(item.v),x,58,{maxWidth:cW-2});
+        });
+
+        // TITLE BLOCK
+        let y=76;
+        doc.setFillColor(...BRAND.cobalt); doc.roundedRect(mL,y-5,38,7,1.5,1.5,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...BRAND.white);
+        doc.text(tl[p.type]||'PUBLICATION',mL+3,y);
+        y+=9;
+        doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...BRAND.nileInk);
+        const tlines=doc.splitTextToSize(p.title,bW);
+        doc.text(tlines,mL,y); y+=tlines.length*8+4;
+        doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...BRAND.cobalt);
+        doc.text(p.author||'3Bi Research Team',mL,y); y+=6;
+        doc.setDrawColor(...BRAND.gold); doc.setLineWidth(0.8);
+        doc.line(mL,y,W-mR,y); y+=8;
+
+        // BODY
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...BRAND.nileInk);
+        const raw=(p.content||p.excerpt||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"'). replace(/&#39;/g,"'").replace(/\n\n+/g,'\n\n').trim();
+        const paras=raw.split('\n\n').filter(Boolean);
+        const fY=H-20;
+        for(const para of paras){
+            if(y>fY-10){
+                doc.addPage();
+                doc.setFillColor(...BRAND.nileInk); doc.rect(0,0,W,13,'F');
+                doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...BRAND.white);
+                doc.text('3Bi',mL,9);
+                doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(200,215,225);
+                doc.text('Build Back Better Initiative',mL+10,9);
+                doc.setTextColor(150,165,180);
+                doc.text(String(doc.internal.getCurrentPageInfo().pageNumber),W-mR,9,{align:'right'});
+                doc.setFillColor(...BRAND.cobalt); doc.rect(0,13,W*0.33,1.2,'F');
+                doc.setFillColor(...BRAND.sienna); doc.rect(W*0.33,13,W*0.33,1.2,'F');
+                doc.setFillColor(...BRAND.gold);   doc.rect(W*0.66,13,W*0.34,1.2,'F');
+                y=23;
+            }
+            doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(...BRAND.nileInk);
+            const ls=doc.splitTextToSize(para.trim(),bW);
+            doc.text(ls,mL,y); y+=ls.length*5.5+4;
+        }
+
+        // FOOTER all pages
+        const tp=doc.internal.getNumberOfPages();
+        for(let pg=1;pg<=tp;pg++){
+            doc.setPage(pg);
+            doc.setFillColor(...BRAND.cobalt); doc.rect(0,H-20,W*0.33,2.5,'F');
+            doc.setFillColor(...BRAND.sienna); doc.rect(W*0.33,H-20,W*0.33,2.5,'F');
+            doc.setFillColor(...BRAND.gold);   doc.rect(W*0.66,H-20,W*0.34,2.5,'F');
+            doc.setFillColor(...BRAND.nileInk); doc.rect(0,H-17.5,W,17.5,'F');
+            doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(160,175,190);
+            doc.text('Build Back Better Initiative (3Bi)  ·  Sudan & East Africa  ·  Est. 2019',mL,H-10);
+            doc.text(`www.3bisudan.org  ·  info@3bi.org  ·  REF: ${rc}`,mL,H-5.5);
+            doc.setTextColor(BRAND.gold[0],BRAND.gold[1],BRAND.gold[2]);
+            doc.text(`${pg} / ${tp}`,W-mR,H-7.5,{align:'right'});
+        }
+        doc.save(_pdfFilename);
+        btn.textContent='✓ Downloaded!';
+        setTimeout(()=>{btn.textContent='⬇ Download PDF';btn.disabled=false;},2500);
+    } catch(e) {
+        console.error('PDF error:',e);
+        alert('PDF generation failed. Please check your internet connection (jsPDF CDN required).');
+        btn.textContent='⬇ Download PDF'; btn.disabled=false;
     }
 }
 
-// ─── RICH TEXT ───
-function fmtText(cmd) {
-    const ta = document.getElementById('editor-content');
-    const start = ta.selectionStart, end = ta.selectionEnd;
-    const sel = ta.value.substring(start, end);
-    const tags = { bold: ['<strong>','</strong>'], italic: ['<em>','</em>'], underline: ['<u>','</u>'] };
-    const [o, c] = tags[cmd];
-    ta.value = ta.value.substring(0,start) + o + sel + c + ta.value.substring(end);
+function fmtText(cmd){
+    const ta=document.getElementById('editor-content');
+    const s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e);
+    const tags={bold:['<strong>','</strong>'],italic:['<em>','</em>'],underline:['<u>','</u>']};
+    const [o,c]=tags[cmd];
+    ta.value=ta.value.substring(0,s)+o+sel+c+ta.value.substring(e);
 }
-function insertHeading() {
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.substring(0,pos) + '\n<h2></h2>\n' + ta.value.substring(pos);
-}
-function insertBullet() {
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.substring(0,pos) + '\n<ul>\n  <li></li>\n</ul>\n' + ta.value.substring(pos);
-}
-function insertHr() {
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.substring(0,pos) + '\n<hr>\n' + ta.value.substring(pos);
-}
+function insertHeading(){const ta=document.getElementById('editor-content');const p=ta.selectionStart;ta.value=ta.value.substring(0,p)+'\n<h2></h2>\n'+ta.value.substring(p);}
+function insertBullet(){const ta=document.getElementById('editor-content');const p=ta.selectionStart;ta.value=ta.value.substring(0,p)+'\n<ul>\n  <li></li>\n</ul>\n'+ta.value.substring(p);}
+function insertHr(){const ta=document.getElementById('editor-content');const p=ta.selectionStart;ta.value=ta.value.substring(0,p)+'\n<hr>\n'+ta.value.substring(p);}
 
-// ─── EMBED MODAL ───
-const embedConfig = {
-    link: { title:'Insert Link', desc:'Paste the URL and optionally wrap selected text.', placeholder:'https://...' },
-    embed: { title:'Insert Embed Code', desc:'Paste any iframe or embed code (PDF viewer, Datawrapper, Google Maps, etc.)', placeholder:'<iframe src="..." ...></iframe>' },
-    tweet: { title:'Embed Tweet / X Post', desc:'Paste the tweet URL or embed code from Twitter/X.', placeholder:'https://twitter.com/... or <blockquote class="twitter-tweet">...</blockquote>' },
-    audio: { title:'Embed Audio', desc:'Paste an audio file URL or embed code (SoundCloud, Spotify, etc.)', placeholder:'https://soundcloud.com/... or <iframe ...></iframe>' },
-    video: { title:'Embed Video', desc:'Paste a YouTube/Vimeo URL or embed code.', placeholder:'https://www.youtube.com/watch?v=... or <iframe ...></iframe>' },
+const embedConfig={
+    link:{title:'Insert Link',desc:'Paste the URL.',placeholder:'https://...'},
+    embed:{title:'Insert Embed Code',desc:'Paste any iframe or embed code.',placeholder:'<iframe src="..." ...></iframe>'},
+    tweet:{title:'Embed Tweet / X Post',desc:'Paste the tweet URL or embed code.',placeholder:'https://twitter.com/...'},
+    audio:{title:'Embed Audio',desc:'Paste an audio URL or embed code.',placeholder:'https://soundcloud.com/...'},
+    video:{title:'Embed Video',desc:'Paste a YouTube/Vimeo URL or embed code.',placeholder:'https://www.youtube.com/watch?v=...'},
 };
-function openEmbedModal(type) {
-    currentEmbedType = type;
-    const cfg = embedConfig[type] || embedConfig.embed;
-    document.getElementById('embed-modal-title').textContent = cfg.title;
-    document.getElementById('embed-modal-desc').textContent = cfg.desc;
-    document.getElementById('embed-input').placeholder = cfg.placeholder;
-    document.getElementById('embed-input').value = '';
+function openEmbedModal(type){
+    currentEmbedType=type; const cfg=embedConfig[type]||embedConfig.embed;
+    document.getElementById('embed-modal-title').textContent=cfg.title;
+    document.getElementById('embed-modal-desc').textContent=cfg.desc;
+    document.getElementById('embed-input').placeholder=cfg.placeholder;
+    document.getElementById('embed-input').value='';
     document.getElementById('embed-modal').classList.add('open');
 }
-function closeEmbedModal() {
-    document.getElementById('embed-modal').classList.remove('open');
-}
-function insertEmbed() {
-    const val = document.getElementById('embed-input').value.trim();
-    if (!val) { closeEmbedModal(); return; }
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    let snippet = '';
-    if (currentEmbedType === 'link') {
-        snippet = `<a href="${val}" target="_blank" rel="noopener">${val}</a>`;
-    } else if (currentEmbedType === 'tweet') {
-        if (val.startsWith('http')) {
-            snippet = `<blockquote class="twitter-tweet"><a href="${val}"></a></blockquote><script async src="https://platform.twitter.com/widgets.js"><\/script>`;
-        } else snippet = val;
-    } else if (currentEmbedType === 'video' && val.includes('youtube.com/watch')) {
-        const vid = val.split('v=')[1]?.split('&')[0];
-        snippet = vid ? `<iframe width="100%" height="360" src="https://www.youtube.com/embed/${vid}" frameborder="0" allowfullscreen></iframe>` : val;
-    } else if (currentEmbedType === 'audio' && val.startsWith('http') && !val.includes('<')) {
-        snippet = `<audio controls style="width:100%"><source src="${val}"></audio>`;
-    } else {
-        snippet = val;
-    }
-    ta.value = ta.value.substring(0, pos) + '\n' + snippet + '\n' + ta.value.substring(pos);
+function closeEmbedModal(){document.getElementById('embed-modal').classList.remove('open');}
+function insertEmbed(){
+    const val=document.getElementById('embed-input').value.trim();
+    if(!val){closeEmbedModal();return;}
+    const ta=document.getElementById('editor-content'); const pos=ta.selectionStart;
+    let s=val;
+    if(currentEmbedType==='link') s=`<a href="${val}" target="_blank" rel="noopener">${val}</a>`;
+    else if(currentEmbedType==='tweet'&&val.startsWith('http')) s=`<blockquote class="twitter-tweet"><a href="${val}"></a></blockquote><script async src="https://platform.twitter.com/widgets.js"><\/script>`;
+    else if(currentEmbedType==='video'&&val.includes('youtube.com/watch')){const vid=val.split('v=')[1]?.split('&')[0];s=vid?`<iframe width="100%" height="360" src="https://www.youtube.com/embed/${vid}" frameborder="0" allowfullscreen></iframe>`:val;}
+    else if(currentEmbedType==='audio'&&val.startsWith('http')&&!val.includes('<')) s=`<audio controls style="width:100%"><source src="${val}"></audio>`;
+    ta.value=ta.value.substring(0,pos)+'\n'+s+'\n'+ta.value.substring(pos);
     closeEmbedModal();
 }
 
-// ─── COVER IMAGE ───
-function triggerCoverUpload() { document.getElementById('cover-file-input').click(); }
-function handleCoverUpload(input) {
-    if (!input.files?.[0]) return;
-    const reader = new FileReader();
-    reader.onload = e => updateCoverFromUrl(e.target.result);
-    reader.readAsDataURL(input.files[0]);
-}
-function updateCoverFromUrl(url) {
-    if (!url) return;
-    document.getElementById('post-cover-url').value = url;
-    const img = document.getElementById('cover-img-preview');
-    img.src = url;
-    img.style.display = 'block';
-    document.querySelector('.cover-preview .upload-hint').style.display = 'none';
-}
+function triggerCoverUpload(){document.getElementById('cover-file-input').click();}
+function handleCoverUpload(input){if(!input.files?.[0])return;const r=new FileReader();r.onload=e=>updateCoverFromUrl(e.target.result);r.readAsDataURL(input.files[0]);}
+function updateCoverFromUrl(url){if(!url)return;document.getElementById('post-cover-url').value=url;const img=document.getElementById('cover-img-preview');img.src=url;img.style.display='block';document.querySelector('.cover-preview .upload-hint').style.display='none';}
 
-// ─── CONTACT FORM ───
-function submitContactForm() {
-    const email = document.getElementById('cf-email').value.trim();
-    const msg = document.getElementById('cf-msg').value.trim();
-    if (!email || !msg) { alert('Please fill in at least your email and message.'); return; }
-    document.getElementById('cf-success').style.display = 'block';
-    ['cf-fname','cf-lname','cf-email','cf-org','cf-msg'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('cf-subject').value = '';
+function submitContactForm(){
+    const email=document.getElementById('cf-email').value.trim();
+    const msg=document.getElementById('cf-msg').value.trim();
+    if(!email||!msg){alert('Please fill in your email and message.');return;}
+    document.getElementById('cf-success').style.display='block';
+    ['cf-fname','cf-lname','cf-email','cf-org','cf-msg'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('cf-subject').value='';
 }
+function saveSettings(){const np=document.getElementById('new-pass').value;if(np)localStorage.setItem('3bi_admin_pass',np);alert('Settings saved.');document.getElementById('new-pass').value='';}
 
-// ─── SETTINGS ───
-function saveSettings() {
-    const np = document.getElementById('new-pass').value;
-    if (np) localStorage.setItem('3bi_admin_pass', np);
-    alert('Settings saved.');
-    document.getElementById('new-pass').value = '';
-}
+function escHtml(str){if(!str)return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ─── UTILITY ───
-function escHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// Close modals on overlay click
-document.getElementById('admin-overlay').addEventListener('click', function(e) { if (e.target === this) closeAdmin(); });
-document.getElementById('embed-modal').addEventListener('click', function(e) { if (e.target === this) closeEmbedModal(); });
+document.getElementById('admin-overlay').addEventListener('click',function(e){if(e.target===this)closeAdmin();});
+document.getElementById('embed-modal').addEventListener('click',function(e){if(e.target===this)closeEmbedModal();});
+document.getElementById('pdf-preview-modal').addEventListener('click',function(e){if(e.target===this)closePdfModal();});
 </script>
 </body>
 </html>
