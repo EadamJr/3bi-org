@@ -250,10 +250,12 @@
         .focus-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--terracotta); transform: scaleX(0); transition: transform 0.3s; }
         .focus-card:hover::after { transform: scaleX(1); }
         .focus-icon {
-            width: 52px; height: 52px; border-radius: 12px;
+            width: 60px; height: 60px; border-radius: 14px;
             background: var(--sand); display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; margin-bottom: 1.25rem;
+            margin-bottom: 1.25rem; overflow: visible;
+            box-shadow: 0 4px 14px rgba(11,28,44,0.13), 0 1px 3px rgba(11,28,44,0.08);
         }
+        .focus-icon svg { width: 44px; height: 44px; display: block; }
         .focus-card h3 { font-family: 'Lora', serif; font-size: 1.1rem; color: var(--navy); margin-bottom: 0.6rem; }
         .focus-card p { font-size: 0.9rem; color: var(--text-light); line-height: 1.75; }
 
@@ -659,7 +661,324 @@
 <body>
 
 <!-- ═══════════════════════════════════════════
-     NAVBAR
+     BRANDED SVG ICON LIBRARY — Nile Palette
+     All icons use: Nile Ink #0B1C2C, Cobalt Deep #14355F,
+     Desert Sienna #9C3D1E, Nubian Gold #B8893A, Sand #E8DCC8
+═══════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+
+    <!-- ICON 1: Climate-Conflict Nexus
+         A sun radiating heat above a cracked, parched earth plane,
+         with a tension bolt/spark — climate stress meets conflict -->
+    <symbol id="icon-climate" viewBox="0 0 44 44">
+      <defs>
+        <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#D4A554"/>
+          <stop offset="100%" stop-color="#B8893A"/>
+        </radialGradient>
+        <linearGradient id="earthGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#C44E28"/>
+          <stop offset="100%" stop-color="#9C3D1E"/>
+        </linearGradient>
+        <filter id="sunGlow">
+          <feGaussianBlur stdDeviation="1.2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- Earth base — cracked terracotta plane -->
+      <ellipse cx="22" cy="36" rx="18" ry="5" fill="url(#earthGrad)" opacity="0.25"/>
+      <rect x="4" y="33" width="36" height="7" rx="3" fill="url(#earthGrad)"/>
+      <!-- Cracks in earth -->
+      <path d="M10 33 L13 37 L11 40" stroke="#0B1C2C" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <path d="M20 33 L22 36 L25 34 L27 38" stroke="#0B1C2C" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <path d="M31 33 L30 37 L33 39" stroke="#0B1C2C" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <!-- Sun core -->
+      <circle cx="22" cy="16" r="6.5" fill="url(#sunGrad)" filter="url(#sunGlow)"/>
+      <circle cx="22" cy="16" r="4.5" fill="#D4A554"/>
+      <!-- Sun rays -->
+      <g stroke="#B8893A" stroke-width="1.4" stroke-linecap="round" opacity="0.85">
+        <line x1="22" y1="6"  x2="22" y2="4"/>
+        <line x1="22" y1="26" x2="22" y2="28"/>
+        <line x1="12" y1="16" x2="10" y2="16"/>
+        <line x1="32" y1="16" x2="34" y2="16"/>
+        <line x1="15" y1="9"  x2="13.5" y2="7.5"/>
+        <line x1="29" y1="23" x2="30.5" y2="24.5"/>
+        <line x1="29" y1="9"  x2="30.5" y2="7.5"/>
+        <line x1="15" y1="23" x2="13.5" y2="24.5"/>
+      </g>
+      <!-- Conflict spark / lightning bolt -->
+      <path d="M26 14 L23 19 L25.5 19 L22 26 L29 18 L26.5 18 Z"
+            fill="#9C3D1E" stroke="#0B1C2C" stroke-width="0.4" opacity="0.95"/>
+    </symbol>
+
+    <!-- ICON 2: Governance & Democratization
+         Three Meroitic-style pillars (echoing the Meroe Mark)
+         supporting an arch — institutional architecture -->
+    <symbol id="icon-governance" viewBox="0 0 44 44">
+      <defs>
+        <linearGradient id="pillarGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#1E4A80"/>
+          <stop offset="100%" stop-color="#14355F"/>
+        </linearGradient>
+        <linearGradient id="archGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#B8893A"/>
+          <stop offset="100%" stop-color="#9C3D1E"/>
+        </linearGradient>
+        <filter id="pillarShadow">
+          <feDropShadow dx="1.5" dy="2" stdDeviation="1.5" flood-color="#0B1C2C" flood-opacity="0.3"/>
+        </filter>
+      </defs>
+      <!-- Base platform -->
+      <rect x="4" y="37" width="36" height="4" rx="2" fill="#14355F"/>
+      <rect x="2" y="39" width="40" height="3" rx="1.5" fill="#0B1C2C" opacity="0.4"/>
+      <!-- Three pillars -->
+      <!-- Pillar left -->
+      <rect x="8"  y="22" width="5" height="15" rx="1" fill="url(#pillarGrad)" filter="url(#pillarShadow)"/>
+      <rect x="7"  y="20" width="7" height="3"  rx="1" fill="#B8893A"/>
+      <rect x="7"  y="35" width="7" height="2.5" rx="1" fill="#1E4A80"/>
+      <!-- Pillar centre -->
+      <rect x="19.5" y="19" width="5" height="18" rx="1" fill="url(#pillarGrad)" filter="url(#pillarShadow)"/>
+      <rect x="18.5" y="17" width="7" height="3"  rx="1" fill="#B8893A"/>
+      <rect x="18.5" y="35" width="7" height="2.5" rx="1" fill="#1E4A80"/>
+      <!-- Pillar right -->
+      <rect x="31" y="22" width="5" height="15" rx="1" fill="url(#pillarGrad)" filter="url(#pillarShadow)"/>
+      <rect x="30" y="20" width="7" height="3"  rx="1" fill="#B8893A"/>
+      <rect x="30" y="35" width="7" height="2.5" rx="1" fill="#1E4A80"/>
+      <!-- Entablature / lintel -->
+      <rect x="5" y="14" width="34" height="4" rx="1.5" fill="url(#archGrad)"/>
+      <!-- Pediment triangle -->
+      <polygon points="22,5 5,14 39,14" fill="#9C3D1E" opacity="0.9"/>
+      <polygon points="22,7 8,14 36,14" fill="#B8893A" opacity="0.6"/>
+      <!-- Star / seal in pediment -->
+      <circle cx="22" cy="11" r="2" fill="#E8DCC8" opacity="0.9"/>
+    </symbol>
+
+    <!-- ICON 3: Humanitarian-Development Nexus
+         Two cupped hands forming a shelter arch over a rising seedling/figure
+         — protection transitioning to growth -->
+    <symbol id="icon-humanitarian" viewBox="0 0 44 44">
+      <defs>
+        <linearGradient id="handGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#C44E28"/>
+          <stop offset="100%" stop-color="#9C3D1E"/>
+        </linearGradient>
+        <linearGradient id="growGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="#14355F"/>
+          <stop offset="100%" stop-color="#1E4A80"/>
+        </linearGradient>
+        <filter id="handShadow">
+          <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#0B1C2C" flood-opacity="0.25"/>
+        </filter>
+      </defs>
+      <!-- Left hand / arm -->
+      <path d="M4 38 Q4 26 10 20 Q14 16 18 18 L16 22 Q14 21 12 24 Q9 28 9 38 Z"
+            fill="url(#handGrad)" filter="url(#handShadow)"/>
+      <!-- Right hand / arm -->
+      <path d="M40 38 Q40 26 34 20 Q30 16 26 18 L28 22 Q30 21 32 24 Q35 28 35 38 Z"
+            fill="url(#handGrad)" filter="url(#handShadow)"/>
+      <!-- Arch/roof shape formed by hands -->
+      <path d="M10 24 Q22 10 34 24" stroke="#B8893A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M11 25 Q22 12 33 25" stroke="#D4A554" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.6"/>
+      <!-- Rising figure/person inside -->
+      <circle cx="22" cy="28" r="3" fill="url(#growGrad)"/>
+      <path d="M22 31 L22 38" stroke="url(#growGrad)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M18 34 L22 32 L26 34" stroke="url(#growGrad)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <!-- Growth rays from person -->
+      <circle cx="22" cy="28" r="5" fill="none" stroke="#B8893A" stroke-width="0.7" opacity="0.5" stroke-dasharray="2,2"/>
+    </symbol>
+
+    <!-- ICON 4: Public Health Systems
+         A network/node diagram forming a cross with a central pulse/heartbeat
+         — community nodes connected through health infrastructure -->
+    <symbol id="icon-health" viewBox="0 0 44 44">
+      <defs>
+        <radialGradient id="nodeGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#1E4A80"/>
+          <stop offset="100%" stop-color="#14355F"/>
+        </radialGradient>
+        <linearGradient id="crossGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#C44E28"/>
+          <stop offset="100%" stop-color="#9C3D1E"/>
+        </linearGradient>
+        <filter id="nodeShadow">
+          <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0B1C2C" flood-opacity="0.3"/>
+        </filter>
+      </defs>
+      <!-- Connection lines -->
+      <line x1="22" y1="10" x2="22" y2="34" stroke="#A8B4BC" stroke-width="1" opacity="0.5"/>
+      <line x1="10" y1="22" x2="34" y2="22" stroke="#A8B4BC" stroke-width="1" opacity="0.5"/>
+      <line x1="12" y1="12" x2="32" y2="32" stroke="#A8B4BC" stroke-width="0.8" opacity="0.3"/>
+      <line x1="32" y1="12" x2="12" y2="32" stroke="#A8B4BC" stroke-width="0.8" opacity="0.3"/>
+      <!-- Outer community nodes -->
+      <circle cx="22" cy="7"  r="3.5" fill="url(#nodeGrad)" filter="url(#nodeShadow)"/>
+      <circle cx="22" cy="37" r="3.5" fill="url(#nodeGrad)" filter="url(#nodeShadow)"/>
+      <circle cx="7"  cy="22" r="3.5" fill="url(#nodeGrad)" filter="url(#nodeShadow)"/>
+      <circle cx="37" cy="22" r="3.5" fill="url(#nodeGrad)" filter="url(#nodeShadow)"/>
+      <circle cx="11" cy="11" r="2.5" fill="#B8893A" opacity="0.8"/>
+      <circle cx="33" cy="11" r="2.5" fill="#B8893A" opacity="0.8"/>
+      <circle cx="11" cy="33" r="2.5" fill="#B8893A" opacity="0.8"/>
+      <circle cx="33" cy="33" r="2.5" fill="#B8893A" opacity="0.8"/>
+      <!-- Medical cross — central hub -->
+      <rect x="18" y="14" width="8" height="16" rx="2" fill="url(#crossGrad)" filter="url(#nodeShadow)"/>
+      <rect x="14" y="18" width="16" height="8" rx="2" fill="url(#crossGrad)"/>
+      <!-- Pulse line across cross -->
+      <path d="M14 22 L17 22 L18.5 18 L20.5 26 L22 22 L24 22 L25.5 19 L27 22 L30 22"
+            stroke="#E8DCC8" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- ICON 5: Grassroots Empowerment
+         A stylised tree whose roots form a network of connected people/nodes
+         — community grows from the ground up -->
+    <symbol id="icon-grassroots" viewBox="0 0 44 44">
+      <defs>
+        <linearGradient id="trunkGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#B8893A"/>
+          <stop offset="100%" stop-color="#9C3D1E"/>
+        </linearGradient>
+        <radialGradient id="canopyGrad" cx="50%" cy="60%" r="60%">
+          <stop offset="0%" stop-color="#1E4A80"/>
+          <stop offset="70%" stop-color="#14355F"/>
+          <stop offset="100%" stop-color="#0B1C2C"/>
+        </radialGradient>
+        <filter id="leafShadow">
+          <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#0B1C2C" flood-opacity="0.25"/>
+        </filter>
+      </defs>
+      <!-- Root network below ground -->
+      <line x1="22" y1="36" x2="10" y2="42" stroke="#B8893A" stroke-width="1.3" stroke-linecap="round" opacity="0.7"/>
+      <line x1="22" y1="36" x2="34" y2="42" stroke="#B8893A" stroke-width="1.3" stroke-linecap="round" opacity="0.7"/>
+      <line x1="22" y1="36" x2="22" y2="43" stroke="#B8893A" stroke-width="1.3" stroke-linecap="round" opacity="0.7"/>
+      <line x1="22" y1="38" x2="14" y2="44" stroke="#9C3D1E" stroke-width="0.9" stroke-linecap="round" opacity="0.5"/>
+      <line x1="22" y1="38" x2="30" y2="44" stroke="#9C3D1E" stroke-width="0.9" stroke-linecap="round" opacity="0.5"/>
+      <!-- Root node dots (community people) -->
+      <circle cx="10" cy="42" r="2.2" fill="#9C3D1E"/>
+      <circle cx="34" cy="42" r="2.2" fill="#9C3D1E"/>
+      <circle cx="22" cy="43" r="2.2" fill="#B8893A"/>
+      <circle cx="14" cy="44" r="1.5" fill="#9C3D1E" opacity="0.7"/>
+      <circle cx="30" cy="44" r="1.5" fill="#9C3D1E" opacity="0.7"/>
+      <!-- Ground line -->
+      <rect x="4" y="35" width="36" height="1.5" rx="0.75" fill="#9C3D1E" opacity="0.3"/>
+      <!-- Trunk -->
+      <path d="M19 35 Q20 28 22 24 Q24 28 25 35 Z" fill="url(#trunkGrad)"/>
+      <!-- Canopy — three layered circles like ascending pyramids -->
+      <circle cx="22" cy="18" r="10" fill="url(#canopyGrad)" filter="url(#leafShadow)" opacity="0.95"/>
+      <circle cx="16" cy="20" r="7"  fill="url(#canopyGrad)" opacity="0.85"/>
+      <circle cx="28" cy="20" r="7"  fill="url(#canopyGrad)" opacity="0.85"/>
+      <circle cx="22" cy="13" r="7"  fill="#14355F" opacity="0.9"/>
+      <!-- Highlight on canopy -->
+      <circle cx="19" cy="12" r="2.5" fill="#1E4A80" opacity="0.6"/>
+      <!-- Fist/raised hand silhouette in canopy — empowerment symbol -->
+      <path d="M21 21 L21 16 M22 21 L22 15 M23 21 L23 16 M20 21 L20 17 M24 21 L24 17 M19.5 17 Q19 15 20.5 15 L23.5 15 Q25 15 24.5 17 L23 21 L21 21 Z"
+            stroke="#E8DCC8" stroke-width="0.7" fill="#E8DCC8" opacity="0.5" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- CROSS-CUTTING THEME ICONS (small, for list items) -->
+
+    <!-- Gender & Social Inclusion: Interlocking circles -->
+    <symbol id="icon-gender" viewBox="0 0 20 20">
+      <circle cx="7"  cy="10" r="5" fill="none" stroke="#14355F" stroke-width="1.5"/>
+      <circle cx="13" cy="10" r="5" fill="none" stroke="#9C3D1E" stroke-width="1.5"/>
+      <path d="M10 6.5 Q12 10 10 13.5 Q8 10 10 6.5Z" fill="#B8893A" opacity="0.7"/>
+    </symbol>
+
+    <!-- Youth Leadership: Rising arrow through circle -->
+    <symbol id="icon-youth" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="7" fill="none" stroke="#14355F" stroke-width="1.5"/>
+      <line x1="10" y1="14" x2="10" y2="6" stroke="#9C3D1E" stroke-width="1.8" stroke-linecap="round"/>
+      <polyline points="7,9 10,6 13,9" stroke="#9C3D1E" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- Data & Evidence: Three ascending bars (Meroe motif) -->
+    <symbol id="icon-data" viewBox="0 0 20 20">
+      <rect x="2"  y="13" width="4" height="5" rx="1" fill="#9C3D1E"/>
+      <rect x="8"  y="9"  width="4" height="9" rx="1" fill="#B8893A"/>
+      <rect x="14" y="5"  width="4" height="13" rx="1" fill="#14355F"/>
+      <line x1="1" y1="18" x2="19" y2="18" stroke="#0B1C2C" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+    </symbol>
+
+    <!-- Regional Integration: Globe with connecting arc -->
+    <symbol id="icon-regional" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="7.5" fill="none" stroke="#14355F" stroke-width="1.5"/>
+      <ellipse cx="10" cy="10" rx="3.5" ry="7.5" fill="none" stroke="#9C3D1E" stroke-width="1"/>
+      <line x1="2.5" y1="10" x2="17.5" y2="10" stroke="#B8893A" stroke-width="1" opacity="0.7"/>
+      <line x1="4" y1="6"   x2="16" y2="6"  stroke="#A8B4BC" stroke-width="0.8" opacity="0.5"/>
+      <line x1="4" y1="14"  x2="16" y2="14" stroke="#A8B4BC" stroke-width="0.8" opacity="0.5"/>
+    </symbol>
+
+    <!-- Dashboard nav icons (replacing emoji in admin) -->
+    <!-- Overview/chart -->
+    <symbol id="icon-overview" viewBox="0 0 20 20">
+      <rect x="2" y="12" width="4" height="6" rx="1" fill="#9C3D1E" opacity="0.8"/>
+      <rect x="8" y="7"  width="4" height="11" rx="1" fill="#B8893A" opacity="0.8"/>
+      <rect x="14" y="3" width="4" height="15" rx="1" fill="#14355F" opacity="0.8"/>
+    </symbol>
+    <!-- Publications -->
+    <symbol id="icon-pubs" viewBox="0 0 20 20">
+      <rect x="3" y="2" width="11" height="14" rx="1.5" fill="#14355F" opacity="0.8"/>
+      <rect x="6" y="4" width="11" height="14" rx="1.5" fill="#1E4A80" opacity="0.9" stroke="#0B1C2C" stroke-width="0.5"/>
+      <line x1="9" y1="8"  x2="15" y2="8"  stroke="#E8DCC8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <line x1="9" y1="11" x2="15" y2="11" stroke="#E8DCC8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+      <line x1="9" y1="14" x2="13" y2="14" stroke="#E8DCC8" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+    </symbol>
+    <!-- Edit/pen -->
+    <symbol id="icon-edit" viewBox="0 0 20 20">
+      <path d="M13 3 L17 7 L7 17 L3 17 L3 13 Z" fill="#14355F" stroke="#0B1C2C" stroke-width="0.5"/>
+      <line x1="11" y1="5" x2="15" y2="9" stroke="#B8893A" stroke-width="1.2"/>
+    </symbol>
+    <!-- Media/image -->
+    <symbol id="icon-media" viewBox="0 0 20 20">
+      <rect x="2" y="4" width="16" height="12" rx="2" fill="#14355F" opacity="0.8"/>
+      <circle cx="7" cy="8" r="2" fill="#B8893A" opacity="0.9"/>
+      <path d="M2 13 L7 9 L11 13 L14 10 L18 14" stroke="#E8DCC8" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+    </symbol>
+    <!-- Settings/gear -->
+    <symbol id="icon-settings" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="3" fill="none" stroke="#14355F" stroke-width="2"/>
+      <path d="M10 2 L10 4 M10 16 L10 18 M2 10 L4 10 M16 10 L18 10 M4.3 4.3 L5.7 5.7 M14.3 14.3 L15.7 15.7 M15.7 4.3 L14.3 5.7 M5.7 14.3 L4.3 15.7"
+            stroke="#9C3D1E" stroke-width="1.8" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Contact icons -->
+    <symbol id="icon-email" viewBox="0 0 20 20">
+      <rect x="2" y="5" width="16" height="11" rx="2" fill="#14355F" opacity="0.15" stroke="#14355F" stroke-width="1.3"/>
+      <path d="M2 6 L10 12 L18 6" stroke="#14355F" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="icon-location" viewBox="0 0 20 20">
+      <path d="M10 2 C6.7 2 4 4.7 4 8 C4 12.5 10 18 10 18 C10 18 16 12.5 16 8 C16 4.7 13.3 2 10 2Z"
+            fill="none" stroke="#14355F" stroke-width="1.3"/>
+      <circle cx="10" cy="8" r="2.5" fill="#9C3D1E" opacity="0.8"/>
+    </symbol>
+    <symbol id="icon-twitter" viewBox="0 0 20 20">
+      <path d="M3 3 L17 17 M3 17 L17 3" stroke="#14355F" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/>
+      <path d="M3 3 L9 3 L17 17 L11 17 Z" fill="#14355F" opacity="0.15"/>
+    </symbol>
+    <symbol id="icon-linkedin" viewBox="0 0 20 20">
+      <rect x="2" y="2" width="16" height="16" rx="3" fill="#14355F" opacity="0.15" stroke="#14355F" stroke-width="1.2"/>
+      <circle cx="6.5" cy="7" r="1.5" fill="#14355F"/>
+      <line x1="6.5" y1="10" x2="6.5" y2="15" stroke="#14355F" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M10 10 L10 15 M10 12 Q10 9.5 13 9.5 L13 15" stroke="#9C3D1E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Pub cover placeholder -->
+    <symbol id="icon-doc" viewBox="0 0 44 44">
+      <rect x="8" y="4" width="28" height="36" rx="3" fill="#E8DCC8" stroke="#D6CCBA" stroke-width="1"/>
+      <rect x="8" y="4" width="28" height="8"  rx="3" fill="#14355F"/>
+      <rect x="8" y="9" width="28" height="3" fill="#14355F"/>
+      <rect x="12" y="17" width="20" height="2" rx="1" fill="#A8B4BC" opacity="0.7"/>
+      <rect x="12" y="21" width="18" height="2" rx="1" fill="#A8B4BC" opacity="0.5"/>
+      <rect x="12" y="25" width="20" height="2" rx="1" fill="#A8B4BC" opacity="0.5"/>
+      <rect x="12" y="29" width="14" height="2" rx="1" fill="#A8B4BC" opacity="0.4"/>
+      <!-- Tricolour stripe at base -->
+      <rect x="8"  y="37" width="9"  height="3" rx="1" fill="#14355F"/>
+      <rect x="18" y="37" width="9"  height="3" rx="1" fill="#9C3D1E"/>
+      <rect x="28" y="37" width="8"  height="3" rx="1" fill="#B8893A"/>
+    </symbol>
+
+  </defs>
+</svg>
+
+
 ═══════════════════════════════════════════ -->
 <nav class="navbar" id="navbar">
     <div class="nav-top">
@@ -841,27 +1160,27 @@
             </div>
             <div class="focus-grid">
                 <div class="focus-card">
-                    <div class="focus-icon">🌡️</div>
+                    <div class="focus-icon"><svg><use href="#icon-climate"/></svg></div>
                     <h3>Climate-Conflict Nexus</h3>
                     <p>Climate change impacts on conflict, displacement, and resource competition in fragile contexts.</p>
                 </div>
                 <div class="focus-card">
-                    <div class="focus-icon">🏛️</div>
+                    <div class="focus-icon"><svg><use href="#icon-governance"/></svg></div>
                     <h3>Governance &amp; Democratization</h3>
                     <p>Post-conflict governance, transitional justice, and democratic institution-building for Sudan's transition.</p>
                 </div>
                 <div class="focus-card">
-                    <div class="focus-icon">🤝</div>
+                    <div class="focus-icon"><svg><use href="#icon-humanitarian"/></svg></div>
                     <h3>Humanitarian-Development Nexus</h3>
                     <p>Bridging emergency response with long-term development to break cycles of crisis and aid dependency.</p>
                 </div>
                 <div class="focus-card">
-                    <div class="focus-icon">🏥</div>
+                    <div class="focus-icon"><svg><use href="#icon-health"/></svg></div>
                     <h3>Public Health Systems</h3>
                     <p>Health system resilience, community health networks, and disease surveillance in conflict-affected settings.</p>
                 </div>
                 <div class="focus-card">
-                    <div class="focus-icon">🌱</div>
+                    <div class="focus-icon"><svg><use href="#icon-grassroots"/></svg></div>
                     <h3>Grassroots Empowerment</h3>
                     <p>Community-led governance, Resistance Committees, civil society strengthening, and participatory policy-making.</p>
                 </div>
@@ -888,7 +1207,7 @@
             <div class="pub-grid" id="home-pub-grid">
                 <!-- Populated by JS -->
                 <div class="pub-card">
-                    <div class="pub-cover"><div class="pub-type-badge report">Report</div><div class="pub-cover-placeholder">📄</div></div>
+                    <div class="pub-cover"><div class="pub-type-badge report">Report</div><div class="pub-cover-placeholder"><svg width="44" height="44"><use href="#icon-doc"/></svg></div></div>
                     <div class="pub-body">
                         <div class="pub-meta">December 2024 · Climate-Conflict</div>
                         <h3 class="pub-title">Climate Displacement and Conflict in the Sahel: Implications for Sudan's Borderlands</h3>
@@ -897,7 +1216,7 @@
                     </div>
                 </div>
                 <div class="pub-card">
-                    <div class="pub-cover"><div class="pub-type-badge analysis">Analysis</div><div class="pub-cover-placeholder">📊</div></div>
+                    <div class="pub-cover"><div class="pub-type-badge analysis">Analysis</div><div class="pub-cover-placeholder"><svg width="44" height="44"><use href="#icon-doc"/></svg></div></div>
                     <div class="pub-body">
                         <div class="pub-meta">November 2024 · Governance</div>
                         <h3 class="pub-title">Emergency Response Rooms: Documenting Sudan's Indigenous Crisis Infrastructure</h3>
@@ -906,7 +1225,7 @@
                     </div>
                 </div>
                 <div class="pub-card">
-                    <div class="pub-cover"><div class="pub-type-badge paper">Policy Brief</div><div class="pub-cover-placeholder">📝</div></div>
+                    <div class="pub-cover"><div class="pub-type-badge paper">Policy Brief</div><div class="pub-cover-placeholder"><svg width="44" height="44"><use href="#icon-doc"/></svg></div></div>
                     <div class="pub-body">
                         <div class="pub-meta">October 2024 · Humanitarian-Dev Nexus</div>
                         <h3 class="pub-title">Beyond Emergency: A Framework for Transitioning Sudan's Humanitarian Response</h3>
@@ -942,7 +1261,7 @@
                 <!-- Populated by JS from localStorage publications -->
             </div>
             <div id="no-pubs" style="text-align:center; padding:4rem; color:var(--text-light); display:none;">
-                <div style="font-size:3rem; margin-bottom:1rem;">📂</div>
+                <div style="margin-bottom:1rem;"><svg width="48" height="48" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="10" width="40" height="28" rx="3" fill="#14355F" opacity="0.5"/><rect x="2" y="10" width="18" height="5" rx="2" fill="#14355F" opacity="0.8"/><rect x="2" y="13" width="40" height="25" rx="3" fill="#14355F" opacity="0.7"/><line x1="12" y1="22" x2="32" y2="22" stroke="#E8DCC8" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><line x1="12" y1="27" x2="28" y2="27" stroke="#E8DCC8" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/></svg></div>
                 <p>No publications yet. Check back soon.</p>
             </div>
         </div>
@@ -1184,19 +1503,19 @@
                 <p class="sec-desc">Five primary thematic areas and cross-cutting themes guide 3Bi's research agenda.</p>
             </div>
             <div class="focus-grid">
-                <div class="focus-card"><div class="focus-icon">🌡️</div><h3>Climate-Conflict Nexus</h3><p>Climate change-induced disasters exacerbate ongoing conflicts and displacement. We analyze resource competition, migration patterns, and adaptation strategies in fragile contexts.</p></div>
-                <div class="focus-card"><div class="focus-icon">🏛️</div><h3>Governance &amp; Democratization</h3><p>Post-conflict governance, transitional justice, and democratic institution-building. We document the role of civil society in Sudan's democratic transition.</p></div>
-                <div class="focus-card"><div class="focus-icon">🤝</div><h3>Humanitarian-Development Nexus</h3><p>Integrated approaches beyond emergency response. We analyze pathways from crisis relief to sustainable development and institutional resilience.</p></div>
-                <div class="focus-card"><div class="focus-icon">🏥</div><h3>Public Health Systems</h3><p>Health system resilience, disease surveillance, and community health in conflict-affected settings. We draw on our COVID-19 response experience.</p></div>
-                <div class="focus-card"><div class="focus-icon">🌱</div><h3>Grassroots Empowerment</h3><p>Community-led governance, civil society strengthening, and participatory policy-making. We document innovations like Sudan's Resistance Committees and Emergency Response Rooms.</p></div>
+                <div class="focus-card"><div class="focus-icon"><svg><use href="#icon-climate"/></svg></div><h3>Climate-Conflict Nexus</h3><p>Climate change-induced disasters exacerbate ongoing conflicts and displacement. We analyze resource competition, migration patterns, and adaptation strategies in fragile contexts.</p></div>
+                <div class="focus-card"><div class="focus-icon"><svg><use href="#icon-governance"/></svg></div><h3>Governance &amp; Democratization</h3><p>Post-conflict governance, transitional justice, and democratic institution-building. We document the role of civil society in Sudan's democratic transition.</p></div>
+                <div class="focus-card"><div class="focus-icon"><svg><use href="#icon-humanitarian"/></svg></div><h3>Humanitarian-Development Nexus</h3><p>Integrated approaches beyond emergency response. We analyze pathways from crisis relief to sustainable development and institutional resilience.</p></div>
+                <div class="focus-card"><div class="focus-icon"><svg><use href="#icon-health"/></svg></div><h3>Public Health Systems</h3><p>Health system resilience, disease surveillance, and community health in conflict-affected settings. We draw on our COVID-19 response experience.</p></div>
+                <div class="focus-card"><div class="focus-icon"><svg><use href="#icon-grassroots"/></svg></div><h3>Grassroots Empowerment</h3><p>Community-led governance, civil society strengthening, and participatory policy-making. We document innovations like Sudan's Resistance Committees and Emergency Response Rooms.</p></div>
                 <div class="focus-card" style="background:var(--navy); border-color:var(--navy);">
                     <div style="color:rgba(255,255,255,0.9);">
                         <h3 style="color:var(--terracotta-light);">Cross-Cutting Themes</h3>
                         <ul style="list-style:none; margin-top:0.75rem;">
-                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.08);">⚥ Gender &amp; Social Inclusion</li>
-                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.08);">👥 Youth Leadership</li>
-                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.08);">📊 Data &amp; Evidence</li>
-                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0;">🌍 Regional Integration</li>
+                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.08);"><svg width="18" height="18" style="vertical-align:middle;margin-right:6px"><use href="#icon-gender"/></svg>Gender &amp; Social Inclusion</li>
+                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.08);"><svg width="18" height="18" style="vertical-align:middle;margin-right:6px"><use href="#icon-youth"/></svg>Youth Leadership</li>
+                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0; border-bottom:1px solid rgba(255,255,255,0.08);"><svg width="18" height="18" style="vertical-align:middle;margin-right:6px"><use href="#icon-data"/></svg>Data &amp; Evidence</li>
+                            <li style="color:rgba(255,255,255,0.7); font-size:0.875rem; padding:0.3rem 0;"><svg width="18" height="18" style="vertical-align:middle;margin-right:6px"><use href="#icon-regional"/></svg>Regional Integration</li>
                         </ul>
                     </div>
                 </div>
@@ -1244,19 +1563,19 @@
                     <p>Whether you're a government ministry, international organization, civil society group, researcher, or political institution — we're ready to collaborate on evidence-based solutions for Sudan and East Africa.</p>
                     <div class="contact-items">
                         <div class="contact-item">
-                            <div class="contact-icon">✉️</div>
+                            <div class="contact-icon"><svg width="22" height="22"><use href="#icon-email"/></svg></div>
                             <div class="contact-item-body"><label>Email</label><span>contact@3bisudan.org</span></div>
                         </div>
                         <div class="contact-item">
-                            <div class="contact-icon">🌍</div>
+                            <div class="contact-icon"><svg width="22" height="22"><use href="#icon-location"/></svg></div>
                             <div class="contact-item-body"><label>Region</label><span>Sudan &amp; East Africa</span></div>
                         </div>
                         <div class="contact-item">
-                            <div class="contact-icon">🐦</div>
+                            <div class="contact-icon"><svg width="22" height="22"><use href="#icon-twitter"/></svg></div>
                             <div class="contact-item-body"><label>Twitter / X</label><span>@3BiSudan</span></div>
                         </div>
                         <div class="contact-item">
-                            <div class="contact-icon">💼</div>
+                            <div class="contact-icon"><svg width="22" height="22"><use href="#icon-linkedin"/></svg></div>
                             <div class="contact-item-body"><label>LinkedIn</label><span>3Bi Build Back Better Initiative</span></div>
                         </div>
                     </div>
@@ -1404,11 +1723,11 @@
         <div class="dash-sidebar">
             <nav>
                 <ul>
-                    <li><a href="#" onclick="showDashSection('overview')" class="active" id="nav-overview"><span class="nav-icon">📊</span> Overview</a></li>
-                    <li><a href="#" onclick="showDashSection('all-posts')" id="nav-all-posts"><span class="nav-icon">📚</span> All Publications</a></li>
-                    <li><a href="#" onclick="showDashSection('new-post')" id="nav-new-post"><span class="nav-icon">✍️</span> New Publication</a></li>
-                    <li><a href="#" onclick="showDashSection('media')" id="nav-media"><span class="nav-icon">🖼️</span> Media Library</a></li>
-                    <li><a href="#" onclick="showDashSection('settings')" id="nav-settings"><span class="nav-icon">⚙️</span> Site Settings</a></li>
+                    <li><a href="#" onclick="showDashSection('overview')" class="active" id="nav-overview"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-overview"/></svg></span> Overview</a></li>
+                    <li><a href="#" onclick="showDashSection('all-posts')" id="nav-all-posts"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-pubs"/></svg></span> All Publications</a></li>
+                    <li><a href="#" onclick="showDashSection('new-post')" id="nav-new-post"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-edit"/></svg></span> New Publication</a></li>
+                    <li><a href="#" onclick="showDashSection('media')" id="nav-media"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-media"/></svg></span> Media Library</a></li>
+                    <li><a href="#" onclick="showDashSection('settings')" id="nav-settings"><span class="nav-icon"><svg width="18" height="18"><use href="#icon-settings"/></svg></span> Site Settings</a></li>
                 </ul>
             </nav>
         </div>
@@ -1553,7 +1872,7 @@
             <div class="dash-section" id="ds-media">
                 <div class="dash-section-title">Media Library</div>
                 <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:3rem; text-align:center;">
-                    <div style="font-size:3rem; margin-bottom:1rem;">🖼️</div>
+                    <div style="margin-bottom:1rem;"><svg width="48" height="48"><use href="#icon-media"/></svg></div>
                     <p style="color:rgba(255,255,255,0.5);">Upload cover images directly from the publication editor, or paste image URLs from external hosting (Google Drive, Dropbox, Cloudinary, etc.).</p>
                     <div id="media-thumbs" style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:2rem; justify-content:center;"></div>
                 </div>
@@ -1794,7 +2113,7 @@ function renderPublications() {
 function pubCardHTML(p) {
     const coverHTML = p.cover
         ? `<img src="${escHtml(p.cover)}" alt="${escHtml(p.title)}" onerror="this.style.display='none'">`
-        : `<div class="pub-cover-placeholder">📄</div>`;
+        : `<div class="pub-cover-placeholder"><svg width="44" height="44"><use href="#icon-doc"/></svg></div>`;
     const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
     const typeClass = p.type || 'paper';
     const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US', { month:'long', year:'numeric' }) : '';
