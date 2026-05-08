@@ -670,25 +670,114 @@
         .dash-field textarea { resize: vertical; min-height: 200px; line-height: 1.65; }
 
         /* Rich toolbar */
-        .rich-toolbar {
-            display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0.6rem;
-            background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.09);
-            border-radius: 8px 8px 0 0; border-bottom: none;
+        /* ── WORD-STYLE EDITOR ── */
+        .word-editor-wrap {
+            border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px;
+            overflow: hidden; background: #fff;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
         }
-        .rich-toolbar button {
-            padding: 0.28rem 0.6rem; border-radius: 5px; border: 1px solid rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.65);
-            cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.15s;
-            font-family: 'Poppins', sans-serif;
+        /* Ribbon — row 1: paragraph styles + font */
+        .word-ribbon {
+            background: #1E3A5F; border-bottom: 1px solid rgba(255,255,255,0.08);
         }
-        .rich-toolbar button:hover { background: #9C3D1E; color: white; border-color: #9C3D1E; }
-        #editor-content {
-            min-height: 260px; padding: 0.9rem; width: 100%;
-            border: 1.5px solid rgba(255,255,255,0.09); border-top: none;
-            border-radius: 0 0 8px 8px; background: rgba(255,255,255,0.03);
-            color: rgba(255,255,255,0.85); font-family: 'Poppins', sans-serif;
-            font-size: 0.875rem; line-height: 1.7; outline: none; resize: vertical;
+        .word-ribbon-tabs {
+            display: flex; gap: 0; padding: 0 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
         }
+        .ribbon-tab {
+            padding: 5px 14px; font-size: 0.7rem; font-weight: 600;
+            font-family: 'Poppins',sans-serif; color: rgba(255,255,255,0.5);
+            cursor: pointer; border-bottom: 2px solid transparent;
+            transition: all 0.15s; letter-spacing: 0.04em;
+            background: none; border-top: none; border-left: none; border-right: none;
+        }
+        .ribbon-tab.active, .ribbon-tab:hover { color: white; border-bottom-color: #B8893A; }
+        .word-ribbon-row {
+            display: flex; align-items: center; gap: 2px;
+            padding: 4px 8px; flex-wrap: wrap;
+        }
+        .word-ribbon-row.hidden { display: none; }
+        .ribbon-sep {
+            width: 1px; height: 26px; background: rgba(255,255,255,0.1);
+            margin: 0 4px; flex-shrink: 0;
+        }
+        .ribbon-group { display: flex; align-items: center; gap: 2px; }
+        .ribbon-label {
+            font-size: 0.6rem; color: rgba(255,255,255,0.3); font-family: 'Poppins',sans-serif;
+            text-transform: uppercase; letter-spacing: 0.08em; padding: 0 4px 2px;
+            display: block; width: 100%; text-align: center;
+        }
+        .ribbon-group-wrap { display: flex; flex-direction: column; align-items: center; }
+        .rb {
+            padding: 3px 7px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.75);
+            cursor: pointer; font-family: 'Poppins',sans-serif;
+            font-size: 0.72rem; font-weight: 600;
+            transition: all 0.15s; white-space: nowrap;
+            height: 26px; display: inline-flex; align-items: center; justify-content: center;
+            min-width: 26px;
+        }
+        .rb:hover { background: rgba(184,137,58,0.25); color: white; border-color: #B8893A; }
+        .rb.active { background: rgba(156,61,30,0.35); color: white; border-color: #9C3D1E; }
+        .rb-wide { min-width: 52px; }
+        .rb-xl { min-width: 80px; }
+        .font-select, .size-select {
+            height: 26px; padding: 0 6px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8); font-family: 'Poppins',sans-serif; font-size: 0.72rem;
+            cursor: pointer; outline: none;
+        }
+        .font-select option, .size-select option { background: #1E3A5F; }
+        /* Word page */
+        .word-page-area {
+            background: #525659; padding: 20px 0; min-height: 500px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .word-page {
+            width: 794px; max-width: 100%;
+            min-height: 500px;
+            background: white;
+            padding: 72px 96px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            outline: none;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt; color: #000; line-height: 1.8;
+            caret-color: #000;
+        }
+        .word-page:focus { box-shadow: 0 4px 24px rgba(0,0,0,0.6); }
+        .word-page h1 { font-size: 20pt; font-weight: 700; margin: 12pt 0 6pt; color: #0B1C2C; }
+        .word-page h2 { font-size: 16pt; font-weight: 700; margin: 10pt 0 5pt; color: #14355F; }
+        .word-page h3 { font-size: 13pt; font-weight: 700; margin: 8pt 0 4pt; color: #9C3D1E; }
+        .word-page p { margin: 0 0 8pt; }
+        .word-page ul, .word-page ol { margin: 0 0 8pt 24pt; }
+        .word-page li { margin: 2pt 0; }
+        .word-page blockquote {
+            margin: 8pt 0 8pt 24pt; padding-left: 12pt;
+            border-left: 3px solid #B8893A; color: #444; font-style: italic;
+        }
+        .word-page table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
+        .word-page td, .word-page th {
+            border: 1px solid #ccc; padding: 4pt 8pt; font-size: 10pt;
+        }
+        .word-page th { background: #0B1C2C; color: white; font-weight: 700; }
+        .word-page hr { border: none; border-top: 2px solid #B8893A; margin: 12pt 0; }
+        .word-page img { max-width: 100%; height: auto; margin: 8pt 0; }
+        .word-page a { color: #14355F; }
+        /* Word status bar */
+        .word-status {
+            background: #1E3A5F; padding: 3px 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Poppins',sans-serif; font-size: 0.65rem;
+            color: rgba(255,255,255,0.45); border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .word-status span { cursor: default; }
+        /* Hidden raw content textarea for saving */
+        #editor-content { display: none; }
+
+        /* rich-toolbar kept for compatibility */
+        .rich-toolbar { display: none; }
 
         /* Sidebar cards */
         .sidebar-card {
@@ -2021,7 +2110,7 @@
                 <div class="post-editor">
                     <input type="hidden" id="edit-post-id" value="">
                     <div class="post-editor-grid">
-                        <!-- Main editor -->
+                        <!-- Main editor — Word-style WYSIWYG -->
                         <div class="editor-main">
                             <div class="dash-field">
                                 <label>Publication Title *</label>
@@ -2033,20 +2122,201 @@
                             </div>
                             <div class="dash-field">
                                 <label>Full Content</label>
-                                <div class="rich-toolbar">
-                                    <button onclick="fmtText('bold')"><b>B</b></button>
-                                    <button onclick="fmtText('italic')"><i>I</i></button>
-                                    <button onclick="fmtText('underline')"><u>U</u></button>
-                                    <button onclick="insertHeading()">H2</button>
-                                    <button onclick="insertBullet()">• List</button>
-                                    <button onclick="insertHr()">─ HR</button>
-                                    <button onclick="openEmbedModal('link')">🔗 Link</button>
-                                    <button onclick="openEmbedModal('embed')">&lt;/&gt; Embed</button>
-                                    <button onclick="openEmbedModal('tweet')">🐦 Tweet</button>
-                                    <button onclick="openEmbedModal('audio')">🎙️ Audio</button>
-                                    <button onclick="openEmbedModal('video')">▶ Video</button>
-                                </div>
-                                <textarea id="editor-content" placeholder="Write your full publication content here. Use HTML or plain text. Use the toolbar to embed links, tweets, iframes, audio and more."></textarea>
+                                <!-- Hidden textarea stores raw HTML for saving -->
+                                <textarea id="editor-content"></textarea>
+
+                                <!-- WORD-STYLE EDITOR -->
+                                <div class="word-editor-wrap">
+
+                                    <!-- Ribbon -->
+                                    <div class="word-ribbon">
+                                        <!-- Tab bar -->
+                                        <div class="word-ribbon-tabs">
+                                            <button class="ribbon-tab active" onclick="switchTab('home',this)">Home</button>
+                                            <button class="ribbon-tab" onclick="switchTab('insert',this)">Insert</button>
+                                            <button class="ribbon-tab" onclick="switchTab('format',this)">Format</button>
+                                            <button class="ribbon-tab" onclick="switchTab('table',this)">Table</button>
+                                        </div>
+
+                                        <!-- HOME TAB -->
+                                        <div class="word-ribbon-row" id="tab-home">
+                                            <!-- Clipboard -->
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb rb-wide" title="Paste" onclick="document.execCommand('paste')">📋 Paste</button>
+                                                </div>
+                                                <span class="ribbon-label">Clipboard</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <!-- Font -->
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <select class="font-select" id="fontFamily" onchange="applyFont(this.value)" title="Font">
+                                                        <option value="'Times New Roman',serif">Times New Roman</option>
+                                                        <option value="Georgia,serif">Georgia</option>
+                                                        <option value="Arial,sans-serif">Arial</option>
+                                                        <option value="'Lora',serif">Lora</option>
+                                                        <option value="'Poppins',sans-serif">Poppins</option>
+                                                        <option value="'Courier New',monospace">Courier New</option>
+                                                    </select>
+                                                    <select class="size-select" id="fontSize" onchange="applySize(this.value)" title="Size" style="width:52px;">
+                                                        <option value="8pt">8</option>
+                                                        <option value="9pt">9</option>
+                                                        <option value="10pt">10</option>
+                                                        <option value="11pt">11</option>
+                                                        <option value="12pt" selected>12</option>
+                                                        <option value="14pt">14</option>
+                                                        <option value="16pt">16</option>
+                                                        <option value="18pt">18</option>
+                                                        <option value="20pt">20</option>
+                                                        <option value="24pt">24</option>
+                                                        <option value="28pt">28</option>
+                                                        <option value="36pt">36</option>
+                                                    </select>
+                                                </div>
+                                                <span class="ribbon-label">Font</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <!-- Text format -->
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb" id="btn-bold" onclick="execCmd('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+                                                    <button class="rb" id="btn-italic" onclick="execCmd('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+                                                    <button class="rb" id="btn-underline" onclick="execCmd('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+                                                    <button class="rb" id="btn-strikethrough" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                                                    <button class="rb" onclick="execCmd('subscript')" title="Subscript">x₂</button>
+                                                    <button class="rb" onclick="execCmd('superscript')" title="Superscript">x²</button>
+                                                </div>
+                                                <span class="ribbon-label">Character</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <!-- Colour -->
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb" title="Font Colour" onclick="pickColor('fore')">🅐 <input type="color" id="foreColor" style="width:0;height:0;opacity:0;position:absolute" onchange="applyColor('fore',this.value)"></button>
+                                                    <button class="rb" title="Highlight" onclick="pickColor('back')">🖌 <input type="color" id="backColor" style="width:0;height:0;opacity:0;position:absolute" onchange="applyColor('back',this.value)"></button>
+                                                </div>
+                                                <span class="ribbon-label">Colour</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <!-- Paragraph -->
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb" onclick="execCmd('insertUnorderedList')" title="Bullet List">• List</button>
+                                                    <button class="rb" onclick="execCmd('insertOrderedList')" title="Numbered List">1. List</button>
+                                                    <button class="rb" onclick="execCmd('outdent')" title="Decrease Indent">⇤</button>
+                                                    <button class="rb" onclick="execCmd('indent')" title="Increase Indent">⇥</button>
+                                                    <button class="rb" onclick="execCmd('justifyLeft')" title="Align Left">≡L</button>
+                                                    <button class="rb" onclick="execCmd('justifyCenter')" title="Center">≡C</button>
+                                                    <button class="rb" onclick="execCmd('justifyRight')" title="Align Right">≡R</button>
+                                                    <button class="rb" onclick="execCmd('justifyFull')" title="Justify">≡J</button>
+                                                </div>
+                                                <span class="ribbon-label">Paragraph</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <!-- Styles -->
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb rb-xl" onclick="applyStyle('h1')" title="Heading 1" style="font-size:0.85rem;font-weight:700;color:#B8893A;">Heading 1</button>
+                                                    <button class="rb rb-xl" onclick="applyStyle('h2')" title="Heading 2" style="font-size:0.78rem;font-weight:700;">Heading 2</button>
+                                                    <button class="rb rb-xl" onclick="applyStyle('h3')" title="Heading 3" style="font-size:0.72rem;font-weight:600;">Heading 3</button>
+                                                    <button class="rb rb-xl" onclick="applyStyle('p')" title="Normal text">Normal</button>
+                                                </div>
+                                                <span class="ribbon-label">Styles</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- INSERT TAB -->
+                                        <div class="word-ribbon-row hidden" id="tab-insert">
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb rb-wide" onclick="insertTable()" title="Insert Table">⊞ Table</button>
+                                                    <button class="rb rb-wide" onclick="insertImage()" title="Insert Image">🖼 Image</button>
+                                                    <button class="rb rb-wide" onclick="insertLink()" title="Insert Hyperlink">🔗 Link</button>
+                                                    <button class="rb rb-wide" onclick="insertHRule()" title="Horizontal Rule">— Rule</button>
+                                                    <button class="rb rb-wide" onclick="insertBlockquote()" title="Blockquote">❝ Quote</button>
+                                                    <button class="rb rb-wide" onclick="insertPageBreak()" title="Page Break">⏎ Break</button>
+                                                </div>
+                                                <span class="ribbon-label">Insert</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb rb-wide" onclick="openEmbedModal('tweet')">🐦 Tweet</button>
+                                                    <button class="rb rb-wide" onclick="openEmbedModal('video')">▶ Video</button>
+                                                    <button class="rb rb-wide" onclick="openEmbedModal('audio')">🎙 Audio</button>
+                                                    <button class="rb rb-wide" onclick="openEmbedModal('embed')">&lt;/&gt; Embed</button>
+                                                </div>
+                                                <span class="ribbon-label">Media</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- FORMAT TAB -->
+                                        <div class="word-ribbon-row hidden" id="tab-format">
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb rb-wide" onclick="execCmd('removeFormat')" title="Clear Formatting">✕ Clear</button>
+                                                    <button class="rb rb-wide" onclick="execCmd('selectAll')" title="Select All">⬛ All</button>
+                                                    <button class="rb rb-wide" onclick="execCmd('copy')" title="Copy">⎘ Copy</button>
+                                                    <button class="rb rb-wide" onclick="execCmd('cut')" title="Cut">✂ Cut</button>
+                                                </div>
+                                                <span class="ribbon-label">Editing</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb" onclick="execCmd('undo')" title="Undo (Ctrl+Z)">↩ Undo</button>
+                                                    <button class="rb" onclick="execCmd('redo')" title="Redo (Ctrl+Y)">↪ Redo</button>
+                                                </div>
+                                                <span class="ribbon-label">History</span>
+                                            </div>
+                                            <div class="ribbon-sep"></div>
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb rb-wide" onclick="toggleSpellCheck()" title="Spell Check" id="btn-spell">✓ Spell</button>
+                                                    <button class="rb rb-wide" onclick="countWords()" title="Word Count">Σ Words</button>
+                                                </div>
+                                                <span class="ribbon-label">Review</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- TABLE TAB -->
+                                        <div class="word-ribbon-row hidden" id="tab-table">
+                                            <div class="ribbon-group-wrap">
+                                                <div class="ribbon-group">
+                                                    <button class="rb" onclick="tableCmd('insertRowAbove')">↑ Row Above</button>
+                                                    <button class="rb" onclick="tableCmd('insertRowBelow')">↓ Row Below</button>
+                                                    <button class="rb" onclick="tableCmd('insertColumnLeft')">← Col Left</button>
+                                                    <button class="rb" onclick="tableCmd('insertColumnRight')">→ Col Right</button>
+                                                    <button class="rb" style="color:#e07b5a;" onclick="tableCmd('deleteRow')">✕ Del Row</button>
+                                                    <button class="rb" style="color:#e07b5a;" onclick="tableCmd('deleteColumn')">✕ Del Col</button>
+                                                </div>
+                                                <span class="ribbon-label">Table Tools</span>
+                                            </div>
+                                        </div>
+                                    </div><!-- /word-ribbon -->
+
+                                    <!-- White page canvas -->
+                                    <div class="word-page-area">
+                                        <div class="word-page"
+                                             id="word-editor"
+                                             contenteditable="true"
+                                             spellcheck="true"
+                                             data-placeholder="Start writing your publication here..."
+                                             oninput="syncEditor()"
+                                             onkeyup="updateToolbarState()"
+                                             onmouseup="updateToolbarState()"
+                                             onfocus="updateToolbarState()">
+                                        </div>
+                                    </div>
+
+                                    <!-- Status bar -->
+                                    <div class="word-status">
+                                        <span id="word-status-info">Ready</span>
+                                        <span id="word-count-display">Words: 0</span>
+                                    </div>
+
+                                </div><!-- /word-editor-wrap -->
                             </div>
                             <div class="dash-field">
                                 <label>External Link (PDF, DOI, report URL)</label>
@@ -2343,6 +2613,9 @@ function savePosts(posts) { localStorage.setItem('3bi_posts', JSON.stringify(pos
 function savePost() {
     const title = document.getElementById('post-title').value.trim();
     if (!title) { alert('Please enter a title.'); return; }
+    // Sync word editor → hidden textarea before saving
+    const wordEd = document.getElementById('word-editor');
+    if (wordEd) document.getElementById('editor-content').value = wordEd.innerHTML;
     const editId = document.getElementById('edit-post-id').value;
     const posts = getPosts();
     const refEl = document.getElementById('post-ref');
@@ -2366,25 +2639,31 @@ function savePost() {
 }
 
 function resetEditor() {
-    ['post-title','post-excerpt','editor-content','post-link','post-author','post-cover-url','post-ref'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    ['post-title','post-excerpt','post-link','post-author','post-cover-url','post-ref'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('editor-content').value = '';
+    const wordEd = document.getElementById('word-editor');
+    if (wordEd) wordEd.innerHTML = '';
     document.getElementById('edit-post-id').value = '';
     document.getElementById('editor-title').textContent = 'New Publication';
     document.getElementById('post-type').value = 'report';
     document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
     const img = document.getElementById('cover-img-preview'); if(img) img.style.display='none';
     const hint = document.querySelector('.cover-preview .upload-hint'); if(hint) hint.style.display='';
+    const wc = document.getElementById('word-count-display'); if(wc) wc.textContent = 'Words: 0';
 }
 function editPost(id) {
     const p = getPosts().find(x => x.id === id); if (!p) return;
     document.getElementById('edit-post-id').value = p.id;
     document.getElementById('post-title').value = p.title;
-    document.getElementById('post-excerpt').value = p.excerpt||'';;
+    document.getElementById('post-excerpt').value = p.excerpt||'';
     document.getElementById('editor-content').value = p.content||'';
+    const wordEd = document.getElementById('word-editor');
+    if (wordEd) wordEd.innerHTML = p.content || '';
     document.getElementById('post-type').value = p.type;
     document.getElementById('post-theme').value = p.theme;
     document.getElementById('post-date').value = p.date;
     document.getElementById('post-author').value = p.author;
-    const refEl = document.getElementById('post-ref'); if(refEl) refEl.value = p.ref||'';;
+    const refEl = document.getElementById('post-ref'); if(refEl) refEl.value = p.ref||'';
     document.getElementById('post-cover-url').value = p.cover||'';
     document.getElementById('post-link').value = p.link||'';
     document.getElementById('editor-title').textContent = 'Edit Publication';
@@ -2627,16 +2906,496 @@ function downloadPdf() {
     }
 }
 
-function fmtText(cmd){
-    const ta=document.getElementById('editor-content');
-    const s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e);
-    const tags={bold:['<strong>','</strong>'],italic:['<em>','</em>'],underline:['<u>','</u>']};
-    const [o,c]=tags[cmd];
-    ta.value=ta.value.substring(0,s)+o+sel+c+ta.value.substring(e);
+// ── WORD EDITOR ──────────────────────────────────────────────────────────────
+
+function switchTab(name, btn) {
+    document.querySelectorAll('.word-ribbon-row').forEach(r => r.classList.add('hidden'));
+    document.querySelectorAll('.ribbon-tab').forEach(b => b.classList.remove('active'));
+    const row = document.getElementById('tab-' + name);
+    if (row) row.classList.remove('hidden');
+    if (btn) btn.classList.add('active');
 }
-function insertHeading(){const ta=document.getElementById('editor-content');const p=ta.selectionStart;ta.value=ta.value.substring(0,p)+'\n<h2></h2>\n'+ta.value.substring(p);}
-function insertBullet(){const ta=document.getElementById('editor-content');const p=ta.selectionStart;ta.value=ta.value.substring(0,p)+'\n<ul>\n  <li></li>\n</ul>\n'+ta.value.substring(p);}
-function insertHr(){const ta=document.getElementById('editor-content');const p=ta.selectionStart;ta.value=ta.value.substring(0,p)+'\n<hr>\n'+ta.value.substring(p);}
+
+function execCmd(cmd, val) {
+    document.getElementById('word-editor').focus();
+    document.execCommand(cmd, false, val || null);
+    updateToolbarState();
+    syncEditor();
+}
+
+function applyFont(font) {
+    document.getElementById('word-editor').focus();
+    document.execCommand('fontName', false, font);
+    syncEditor();
+}
+
+function applySize(size) {
+    // execCommand fontSize uses 1-7; we use style instead
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    const span = document.createElement('span');
+    span.style.fontSize = size;
+    try { range.surroundContents(span); } catch(e) {
+        span.appendChild(range.extractContents());
+        range.insertNode(span);
+    }
+    syncEditor();
+}
+
+function applyStyle(tag) {
+    document.getElementById('word-editor').focus();
+    document.execCommand('formatBlock', false, tag);
+    syncEditor();
+}
+
+function pickColor(type) {
+    document.getElementById(type === 'fore' ? 'foreColor' : 'backColor').click();
+}
+
+function applyColor(type, val) {
+    document.getElementById('word-editor').focus();
+    document.execCommand(type === 'fore' ? 'foreColor' : 'hiliteColor', false, val);
+    syncEditor();
+}
+
+function updateToolbarState() {
+    const cmds = [
+        ['bold','btn-bold'], ['italic','btn-italic'],
+        ['underline','btn-underline'], ['strikeThrough','btn-strikethrough']
+    ];
+    cmds.forEach(([cmd, id]) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.toggle('active', document.queryCommandState(cmd));
+    });
+    // Update word count
+    const text = document.getElementById('word-editor').innerText || '';
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const chars = text.length;
+    const el = document.getElementById('word-count-display');
+    if (el) el.textContent = `Words: ${words} | Chars: ${chars}`;
+}
+
+function syncEditor() {
+    // Sync contenteditable HTML → hidden textarea (for save)
+    const html = document.getElementById('word-editor').innerHTML;
+    document.getElementById('editor-content').value = html;
+    updateToolbarState();
+}
+
+function insertTable() {
+    const rows = parseInt(prompt('Number of rows:', '3')) || 3;
+    const cols = parseInt(prompt('Number of columns:', '3')) || 3;
+    let html = '<table style="border-collapse:collapse;width:100%;margin:8pt 0">';
+    for (let r = 0; r < rows; r++) {
+        html += '<tr>';
+        for (let c = 0; c < cols; c++) {
+            if (r === 0) {
+                html += '<th style="border:1px solid #ccc;padding:4pt 8pt;background:#0B1C2C;color:white;font-weight:700;">Header</th>';
+            } else {
+                html += '<td style="border:1px solid #ccc;padding:4pt 8pt;">Cell</td>';
+            }
+        }
+        html += '</tr>';
+    }
+    html += '</table><p></p>';
+    document.getElementById('word-editor').focus();
+    document.execCommand('insertHTML', false, html);
+    syncEditor();
+}
+
+function insertImage() {
+    const url = prompt('Image URL or paste a web address:');
+    if (!url) return;
+    document.getElementById('word-editor').focus();
+    document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;height:auto;margin:8pt 0;" alt="Image"><p></p>`);
+    syncEditor();
+}
+
+function insertLink() {
+    const url = prompt('Enter URL:');
+    if (!url) return;
+    const text = prompt('Link text (leave blank to use URL):', '') || url;
+    document.getElementById('word-editor').focus();
+    document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color:#14355F;">${text}</a>`);
+    syncEditor();
+}
+
+function insertHRule() {
+    document.getElementById('word-editor').focus();
+    document.execCommand('insertHTML', false, '<hr style="border:none;border-top:2px solid #B8893A;margin:12pt 0;"><p></p>');
+    syncEditor();
+}
+
+function insertBlockquote() {
+    document.getElementById('word-editor').focus();
+    document.execCommand('formatBlock', false, 'blockquote');
+    syncEditor();
+}
+
+function insertPageBreak() {
+    document.getElementById('word-editor').focus();
+    document.execCommand('insertHTML', false, '<p style="page-break-after:always;">&nbsp;</p><p></p>');
+    syncEditor();
+}
+
+function tableCmd(cmd) {
+    // Basic table row/col operations using selection
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    let node = sel.getRangeAt(0).startContainer;
+    let td = null;
+    while (node && node !== document.getElementById('word-editor')) {
+        if (node.nodeName === 'TD' || node.nodeName === 'TH') { td = node; break; }
+        node = node.parentNode;
+    }
+    if (!td) { alert('Place cursor inside a table cell first.'); return; }
+    const tr = td.parentNode;
+    const table = tr.parentNode.closest ? tr.parentNode.closest('table') : tr.closest('table');
+    const cellIndex = td.cellIndex;
+    const rowIndex = tr.rowIndex;
+
+    if (cmd === 'insertRowBelow') {
+        const newRow = table.insertRow(rowIndex + 1);
+        for (let i = 0; i < tr.cells.length; i++) {
+            const cell = newRow.insertCell(i);
+            cell.style.cssText = 'border:1px solid #ccc;padding:4pt 8pt;';
+            cell.innerHTML = '&nbsp;';
+        }
+    } else if (cmd === 'insertRowAbove') {
+        const newRow = table.insertRow(rowIndex);
+        for (let i = 0; i < tr.cells.length; i++) {
+            const cell = newRow.insertCell(i);
+            cell.style.cssText = 'border:1px solid #ccc;padding:4pt 8pt;';
+            cell.innerHTML = '&nbsp;';
+        }
+    } else if (cmd === 'deleteRow') {
+        if (table.rows.length > 1) table.deleteRow(rowIndex);
+    } else if (cmd === 'insertColumnRight' || cmd === 'insertColumnLeft') {
+        const offset = cmd === 'insertColumnRight' ? 1 : 0;
+        for (let i = 0; i < table.rows.length; i++) {
+            const cell = table.rows[i].insertCell(cellIndex + offset);
+            cell.style.cssText = i === 0 ? 'border:1px solid #ccc;padding:4pt 8pt;background:#0B1C2C;color:white;font-weight:700;' : 'border:1px solid #ccc;padding:4pt 8pt;';
+            cell.innerHTML = i === 0 ? 'Header' : '&nbsp;';
+        }
+    } else if (cmd === 'deleteColumn') {
+        for (let i = 0; i < table.rows.length; i++) {
+            if (table.rows[i].cells.length > 1) table.rows[i].deleteCell(cellIndex);
+        }
+    }
+    syncEditor();
+}
+
+function toggleSpellCheck() {
+    const ed = document.getElementById('word-editor');
+    const on = ed.spellcheck;
+    ed.spellcheck = !on;
+    const btn = document.getElementById('btn-spell');
+    if (btn) btn.classList.toggle('active', !on);
+    document.getElementById('word-status-info').textContent = `Spell check ${!on ? 'on' : 'off'}`;
+}
+
+function countWords() {
+    const text = document.getElementById('word-editor').innerText || '';
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const chars = text.length;
+    const paras = (text.match(/\n\n/g) || []).length + 1;
+    alert(`Word Count\n\nWords: ${words}\nCharacters: ${chars}\nParagraphs: ${paras}`);
+}
+
+// Placeholder text behaviour
+document.addEventListener('DOMContentLoaded', () => {
+    const ed = document.getElementById('word-editor');
+    if (!ed) return;
+    ed.addEventListener('focus', () => {
+        if (ed.innerHTML === '' || ed.innerHTML === '<br>') {
+            document.getElementById('word-status-info').textContent = 'Editing...';
+        }
+    });
+    ed.addEventListener('blur', () => {
+        document.getElementById('word-status-info').textContent = 'Ready';
+    });
+    // Keyboard shortcuts
+    ed.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === 'b') { e.preventDefault(); execCmd('bold'); }
+            if (e.key === 'i') { e.preventDefault(); execCmd('italic'); }
+            if (e.key === 'u') { e.preventDefault(); execCmd('underline'); }
+            if (e.key === 'z') { e.preventDefault(); execCmd('undo'); }
+            if (e.key === 'y') { e.preventDefault(); execCmd('redo'); }
+        }
+        setTimeout(updateToolbarState, 10);
+    });
+    // Style embed insert into editor
+    window._insertEmbedToEditor = (html) => {
+        ed.focus();
+        document.execCommand('insertHTML', false, html + '<p></p>');
+        syncEditor();
+    };
+});
+
+// Legacy compatibility stubs
+function fmtText(cmd) { execCmd({bold:'bold',italic:'italic',underline:'underline'}[cmd]||cmd); }
+function insertHeading() { applyStyle('h2'); }
+function insertBullet() { execCmd('insertUnorderedList'); }
+function insertHr() { insertHRule(); }
+
+// ── PDF ENGINE — Full formatting-aware renderer ──────────────────────────────
+
+function downloadPdf() {
+    const id = currentPdfPostId; let p = null;
+    if (id === '__test__') {
+        p = {
+            title: 'Sample Policy Report — 3Bi Letterhead', type: 'report',
+            theme: 'Climate-Conflict Nexus', date: new Date().toISOString().split('T')[0],
+            author: '3Bi Research Team', ref: '3BI/2025/PB/001',
+            content: '<h2>Introduction</h2><p>This is a <strong>sample publication</strong> demonstrating the 3Bi branded PDF letterhead with <em>full formatting support</em>.</p><h2>The Nile Palette</h2><p>Five purposeful colours: <strong>Nile Ink</strong> (#0B1C2C), <strong>Cobalt Deep</strong> (#14355F), <u>Desert Sienna</u> (#9C3D1E), Nubian Gold (#B8893A), and Savanna Sand (#E8DCC8).</p><ul><li>Bold, italic, underline — all preserved in PDF</li><li>Headings render at correct sizes</li><li>Lists formatted correctly</li></ul><h2>The Meroe Mark</h2><p>Three ascending pyramid silhouettes representing <em>Research</em>, <em>Policy</em>, and <em>Community</em>.</p><blockquote>Evidence for Resilience — this is not just our tagline, it is our operating principle.</blockquote>'
+        };
+    } else { p = getPosts().find(x => x.id === id); }
+    if (!p) return;
+    const btn = document.getElementById('pdf-download-btn');
+    btn.textContent = 'Generating...'; btn.disabled = true;
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const W = 210, H = 297, mL = 20, mR = 20, bW = W - mL - mR;
+        const tl = { report: 'POLICY REPORT', paper: 'POLICY PAPER', analysis: 'POLICY ANALYSIS', announcement: 'ANNOUNCEMENT' };
+        const ds = p.date ? new Date(p.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        const rc = p.ref || `3BI/${new Date().getFullYear()}/${(p.type||'PB').toUpperCase().slice(0,2)}/001`;
+
+        // ── HEADER BAND ──
+        doc.setFillColor(...BRAND.nileInk); doc.rect(0, 0, W, 44, 'F');
+        doc.setFillColor(...BRAND.sienna);  doc.triangle(W-50, 40, W-44, 14, W-38, 40, 'F');
+        doc.setFillColor(...BRAND.gold);    doc.triangle(W-38, 40, W-29, 7,  W-20, 40, 'F');
+        doc.setFillColor(...BRAND.cobalt);  doc.triangle(W-20, 40, W-14, 20, W-8,  40, 'F');
+        doc.setFillColor(...BRAND.cobalt);  doc.rect(W-50, 41, 12, 2, 'F');
+        doc.setFillColor(...BRAND.sienna);  doc.rect(W-38, 41, 12, 2, 'F');
+        doc.setFillColor(...BRAND.gold);    doc.rect(W-26, 41, 18, 2, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(30); doc.setTextColor(...BRAND.white);
+        doc.text('3Bi', mL, 22);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(200, 215, 225);
+        doc.text('BUILD BACK BETTER INITIATIVE', mL, 29);
+        doc.setFillColor(...BRAND.cobalt); doc.rect(mL, 33, bW*0.33, 2, 'F');
+        doc.setFillColor(...BRAND.sienna); doc.rect(mL+bW*0.33, 33, bW*0.33, 2, 'F');
+        doc.setFillColor(...BRAND.gold);   doc.rect(mL+bW*0.66, 33, bW*0.34, 2, 'F');
+        doc.setFontSize(7); doc.setTextColor(150, 165, 180);
+        doc.text('Sudan · East Africa · Est. 2019', mL, 40);
+
+        // ── METADATA BAND ──
+        doc.setFillColor(...BRAND.sand); doc.rect(0, 44, W, 22, 'F');
+        const mi = [{ l: 'DOCUMENT TYPE', v: tl[p.type] || p.type?.toUpperCase() }, { l: 'THEME', v: p.theme || 'General' }, { l: 'DATE', v: ds }, { l: 'REF', v: rc }];
+        const cW = bW / 4;
+        mi.forEach((item, i) => {
+            const x = mL + i * cW;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(5.5); doc.setTextColor(...BRAND.sienna);
+            doc.text(item.l, x, 52);
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...BRAND.nileInk);
+            doc.text(String(item.v), x, 58, { maxWidth: cW - 2 });
+        });
+
+        // ── TITLE BLOCK ──
+        let y = 76;
+        doc.setFillColor(...BRAND.cobalt); doc.roundedRect(mL, y-5, 40, 7, 1.5, 1.5, 'F');
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(...BRAND.white);
+        doc.text(tl[p.type] || 'PUBLICATION', mL+3, y);
+        y += 9;
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(18); doc.setTextColor(...BRAND.nileInk);
+        const tlines = doc.splitTextToSize(p.title, bW);
+        doc.text(tlines, mL, y); y += tlines.length * 8 + 4;
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); doc.setTextColor(...BRAND.cobalt);
+        doc.text(p.author || '3Bi Research Team', mL, y); y += 6;
+        doc.setDrawColor(...BRAND.gold); doc.setLineWidth(0.8);
+        doc.line(mL, y, W-mR, y); y += 10;
+
+        // ── BODY — HTML-aware renderer ──
+        const html = p.content || ('<p>' + (p.excerpt || '') + '</p>');
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const fY = H - 22;
+
+        function checkPage() {
+            if (y > fY) {
+                doc.addPage();
+                // Continuation header
+                doc.setFillColor(...BRAND.nileInk); doc.rect(0, 0, W, 13, 'F');
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...BRAND.white);
+                doc.text('3Bi', mL, 9);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(200, 215, 225);
+                doc.text('Build Back Better Initiative', mL + 10, 9);
+                doc.setTextColor(150, 165, 180);
+                doc.text(String(doc.internal.getCurrentPageInfo().pageNumber), W-mR, 9, { align: 'right' });
+                doc.setFillColor(...BRAND.cobalt); doc.rect(0, 13, W*0.33, 1.2, 'F');
+                doc.setFillColor(...BRAND.sienna); doc.rect(W*0.33, 13, W*0.33, 1.2, 'F');
+                doc.setFillColor(...BRAND.gold);   doc.rect(W*0.66, 13, W*0.34, 1.2, 'F');
+                y = 23;
+            }
+        }
+
+        function renderNode(node, state) {
+            state = state || { bold: false, italic: false, underline: false, indent: 0 };
+            if (node.nodeType === 3) {
+                // Text node
+                const text = node.textContent;
+                if (!text.trim() && !text.includes(' ')) return;
+                const fontStyle = state.bold && state.italic ? 'bolditalic' : state.bold ? 'bold' : state.italic ? 'italic' : 'normal';
+                doc.setFont('helvetica', fontStyle);
+                doc.setFontSize(state.fontSize || 10.5);
+                doc.setTextColor(...(state.color || BRAND.nileInk));
+                if (state.underline) {
+                    // jsPDF underline via text decoration
+                }
+                return;
+            }
+            if (node.nodeType !== 1) return;
+            const tag = node.tagName ? node.tagName.toLowerCase() : '';
+            const newState = { ...state };
+
+            if (tag === 'strong' || tag === 'b') newState.bold = true;
+            if (tag === 'em' || tag === 'i') newState.italic = true;
+            if (tag === 'u') newState.underline = true;
+            if (tag === 'h1') { newState.bold = true; newState.fontSize = 18; newState.color = BRAND.nileInk; }
+            if (tag === 'h2') { newState.bold = true; newState.fontSize = 14; newState.color = BRAND.cobalt; }
+            if (tag === 'h3') { newState.bold = true; newState.fontSize = 12; newState.color = BRAND.sienna; }
+            if (tag === 'blockquote') { newState.italic = true; newState.indent = (state.indent || 0) + 8; newState.color = [80,80,80]; }
+
+            // Block-level rendering
+            if (['h1','h2','h3','h4','p','div','blockquote'].includes(tag)) {
+                checkPage();
+                // Get full inner text for this block
+                const rawText = node.innerText || node.textContent || '';
+                if (!rawText.trim()) { y += 3; return; }
+                const fontStyle = newState.bold && newState.italic ? 'bolditalic' : newState.bold ? 'bold' : newState.italic ? 'italic' : 'normal';
+                const fSize = newState.fontSize || 10.5;
+                doc.setFont('helvetica', fontStyle);
+                doc.setFontSize(fSize);
+                doc.setTextColor(...(newState.color || BRAND.nileInk));
+                // Pre-paragraph spacing
+                const preSpacing = ['h1','h2','h3'].includes(tag) ? 5 : 0;
+                if (preSpacing && y > 30) y += preSpacing;
+                checkPage();
+                const x = mL + (newState.indent || 0);
+                const w = bW - (newState.indent || 0);
+                const lines = doc.splitTextToSize(rawText.trim(), w);
+                // Blockquote rule
+                if (tag === 'blockquote') {
+                    doc.setDrawColor(...BRAND.gold); doc.setLineWidth(1);
+                    doc.line(mL + 2, y - fSize * 0.4, mL + 2, y + lines.length * (fSize * 0.4) + 2);
+                }
+                doc.text(lines, x, y);
+                const lineH = fSize * 0.45;
+                // Underline
+                if (newState.underline) {
+                    lines.forEach((line, li) => {
+                        const tw = doc.getTextWidth(line);
+                        doc.setDrawColor(...(newState.color || BRAND.nileInk));
+                        doc.setLineWidth(0.3);
+                        doc.line(x, y + li * lineH + 0.5, x + tw, y + li * lineH + 0.5);
+                    });
+                }
+                y += lines.length * lineH + (tag === 'p' ? 3 : tag.startsWith('h') ? 4 : 3);
+                return;
+            }
+
+            // Lists
+            if (tag === 'ul' || tag === 'ol') {
+                let listIndex = 1;
+                Array.from(node.children).forEach(li => {
+                    if (li.tagName.toLowerCase() !== 'li') return;
+                    checkPage();
+                    const rawText = li.innerText || li.textContent || '';
+                    doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...BRAND.nileInk);
+                    const bullet = tag === 'ol' ? `${listIndex++}.` : '•';
+                    const indent = mL + (state.indent || 0) + 6;
+                    doc.text(bullet, indent, y);
+                    const textLines = doc.splitTextToSize(rawText.trim(), bW - 14 - (state.indent||0));
+                    doc.text(textLines, indent + 5, y);
+                    y += textLines.length * 4.8 + 1.5;
+                });
+                y += 2;
+                return;
+            }
+
+            // Table
+            if (tag === 'table') {
+                checkPage();
+                // Simple table — collect rows/cells
+                const rows = Array.from(node.querySelectorAll('tr'));
+                if (!rows.length) return;
+                const maxCols = Math.max(...rows.map(r => r.cells.length));
+                const colW = bW / maxCols;
+                const cellH = 8;
+                rows.forEach((row, ri) => {
+                    checkPage();
+                    const isHeader = row.cells[0] && row.cells[0].tagName.toLowerCase() === 'th';
+                    if (isHeader) {
+                        doc.setFillColor(...BRAND.nileInk);
+                        doc.rect(mL, y - cellH + 1.5, bW, cellH, 'F');
+                    } else {
+                        doc.setFillColor(ri % 2 === 0 ? 245 : 255, ri % 2 === 0 ? 239 : 255, ri % 2 === 0 ? 227 : 255);
+                        doc.rect(mL, y - cellH + 1.5, bW, cellH, 'F');
+                    }
+                    Array.from(row.cells).forEach((cell, ci) => {
+                        const cx = mL + ci * colW;
+                        doc.setDrawColor(200, 200, 200); doc.setLineWidth(0.3);
+                        doc.rect(cx, y - cellH + 1.5, colW, cellH);
+                        doc.setFont('helvetica', isHeader ? 'bold' : 'normal');
+                        doc.setFontSize(8); doc.setTextColor(isHeader ? 255 : 30, isHeader ? 255 : 30, isHeader ? 255 : 30);
+                        const ct = doc.splitTextToSize((cell.innerText||cell.textContent||'').trim(), colW - 3);
+                        doc.text(ct[0] || '', cx + 1.5, y);
+                    });
+                    y += cellH;
+                    checkPage();
+                });
+                y += 4;
+                return;
+            }
+
+            // HR
+            if (tag === 'hr') {
+                checkPage();
+                doc.setDrawColor(...BRAND.gold); doc.setLineWidth(0.8);
+                doc.line(mL, y, W-mR, y); y += 5;
+                return;
+            }
+
+            // Recurse into children for spans etc.
+            if (['span','a','code','sup','sub'].includes(tag)) {
+                // inline — handled via parent block's innerText approach
+                return;
+            }
+
+            // For any other container, recurse children
+            Array.from(node.childNodes).forEach(child => renderNode(child, newState));
+        }
+
+        // Render all top-level children
+        Array.from(tempDiv.childNodes).forEach(node => renderNode(node, { bold: false, italic: false, underline: false, indent: 0 }));
+
+        // ── FOOTER all pages ──
+        const tp = doc.internal.getNumberOfPages();
+        for (let pg = 1; pg <= tp; pg++) {
+            doc.setPage(pg);
+            doc.setFillColor(...BRAND.cobalt); doc.rect(0, H-20, W*0.33, 2.5, 'F');
+            doc.setFillColor(...BRAND.sienna); doc.rect(W*0.33, H-20, W*0.33, 2.5, 'F');
+            doc.setFillColor(...BRAND.gold);   doc.rect(W*0.66, H-20, W*0.34, 2.5, 'F');
+            doc.setFillColor(...BRAND.nileInk); doc.rect(0, H-17.5, W, 17.5, 'F');
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(160, 175, 190);
+            doc.text('Build Back Better Initiative (3Bi)  ·  Sudan & East Africa  ·  Est. 2019', mL, H-10);
+            doc.text(`www.3bisudan.org  ·  info@3bi.org  ·  REF: ${rc}`, mL, H-5.5);
+            doc.setTextColor(BRAND.gold[0], BRAND.gold[1], BRAND.gold[2]);
+            doc.text(`${pg} / ${tp}`, W-mR, H-7.5, { align: 'right' });
+        }
+
+        doc.save(_pdfFilename);
+        btn.textContent = '✓ Downloaded!';
+        setTimeout(() => { btn.textContent = '⬇ Download PDF'; btn.disabled = false; }, 2500);
+
+    } catch (e) {
+        console.error('PDF error:', e);
+        alert('PDF generation failed. Please check your internet connection (jsPDF CDN required).\n\n' + e.message);
+        btn.textContent = '⬇ Download PDF'; btn.disabled = false;
+    }
+}
 
 const embedConfig={
     link:{title:'Insert Link',desc:'Paste the URL.',placeholder:'https://...'},
