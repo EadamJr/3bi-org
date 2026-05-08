@@ -670,113 +670,87 @@
         .dash-field textarea { resize: vertical; min-height: 200px; line-height: 1.65; }
 
         /* Rich toolbar */
-        /* ── WORD-STYLE EDITOR ── */
-        .word-editor-wrap {
-            border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px;
-            overflow: hidden; background: #fff;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+        /* ── WORDPRESS-STYLE EDITOR ── */
+        #editor-content { display: none; }
+        .wp-editor-wrap {
+            border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: 8px; overflow: hidden;
         }
-        /* Ribbon — row 1: paragraph styles + font */
-        .word-ribbon {
-            background: #1E3A5F; border-bottom: 1px solid rgba(255,255,255,0.08);
+        .wp-toolbar {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 2px;
+            padding: 6px 8px;
+            background: #1a2d42;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .word-ribbon-tabs {
-            display: flex; gap: 0; padding: 0 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
+        .wp-btn {
+            width: 32px; height: 30px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 4px; border: none;
+            background: transparent; color: rgba(255,255,255,0.7);
+            cursor: pointer; font-size: 0.85rem; font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.15s; flex-shrink: 0;
+            position: relative;
         }
-        .ribbon-tab {
-            padding: 5px 14px; font-size: 0.7rem; font-weight: 600;
-            font-family: 'Poppins',sans-serif; color: rgba(255,255,255,0.5);
-            cursor: pointer; border-bottom: 2px solid transparent;
-            transition: all 0.15s; letter-spacing: 0.04em;
-            background: none; border-top: none; border-left: none; border-right: none;
+        .wp-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+        .wp-btn.active { background: rgba(156,61,30,0.4); color: #ff9a70; }
+        .wp-btn svg { width: 16px; height: 16px; fill: currentColor; pointer-events: none; }
+        .wp-btn[title]:hover::after {
+            content: attr(title);
+            position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%);
+            background: #0B1C2C; color: #E8DCC8; font-size: 10px; font-weight: 400;
+            padding: 3px 7px; border-radius: 4px; white-space: nowrap; z-index: 99;
+            pointer-events: none; border: 1px solid rgba(255,255,255,0.1);
         }
-        .ribbon-tab.active, .ribbon-tab:hover { color: white; border-bottom-color: #B8893A; }
-        .word-ribbon-row {
-            display: flex; align-items: center; gap: 2px;
-            padding: 4px 8px; flex-wrap: wrap;
+        .wp-sep {
+            width: 1px; height: 20px; background: rgba(255,255,255,0.1);
+            margin: 0 3px; flex-shrink: 0;
         }
-        .word-ribbon-row.hidden { display: none; }
-        .ribbon-sep {
-            width: 1px; height: 26px; background: rgba(255,255,255,0.1);
-            margin: 0 4px; flex-shrink: 0;
-        }
-        .ribbon-group { display: flex; align-items: center; gap: 2px; }
-        .ribbon-label {
-            font-size: 0.6rem; color: rgba(255,255,255,0.3); font-family: 'Poppins',sans-serif;
-            text-transform: uppercase; letter-spacing: 0.08em; padding: 0 4px 2px;
-            display: block; width: 100%; text-align: center;
-        }
-        .ribbon-group-wrap { display: flex; flex-direction: column; align-items: center; }
-        .rb {
-            padding: 3px 7px; border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.06);
-            background: rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.75);
-            cursor: pointer; font-family: 'Poppins',sans-serif;
-            font-size: 0.72rem; font-weight: 600;
-            transition: all 0.15s; white-space: nowrap;
-            height: 26px; display: inline-flex; align-items: center; justify-content: center;
-            min-width: 26px;
-        }
-        .rb:hover { background: rgba(184,137,58,0.25); color: white; border-color: #B8893A; }
-        .rb.active { background: rgba(156,61,30,0.35); color: white; border-color: #9C3D1E; }
-        .rb-wide { min-width: 52px; }
-        .rb-xl { min-width: 80px; }
-        .font-select, .size-select {
-            height: 26px; padding: 0 6px; border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.8); font-family: 'Poppins',sans-serif; font-size: 0.72rem;
+        .wp-select {
+            height: 30px; padding: 0 6px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.8);
+            font-family: 'Poppins', sans-serif; font-size: 0.75rem;
             cursor: pointer; outline: none;
         }
-        .font-select option, .size-select option { background: #1E3A5F; }
-        /* Word page */
-        .word-page-area {
-            background: #525659; padding: 20px 0; min-height: 500px;
-            display: flex; flex-direction: column; align-items: center;
+        .wp-select option { background: #0B1C2C; }
+        .wp-editor-body {
+            min-height: 420px; padding: 1.5rem;
+            background: white; color: #111;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1rem; line-height: 1.8;
+            outline: none; caret-color: #111;
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
         }
-        .word-page {
-            width: 794px; max-width: 100%;
-            min-height: 500px;
-            background: white;
-            padding: 72px 96px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            outline: none;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt; color: #000; line-height: 1.8;
-            caret-color: #000;
+        .wp-editor-body:empty:before {
+            content: "Start writing your publication here...";
+            color: #aaa; pointer-events: none;
         }
-        .word-page:focus { box-shadow: 0 4px 24px rgba(0,0,0,0.6); }
-        .word-page h1 { font-size: 20pt; font-weight: 700; margin: 12pt 0 6pt; color: #0B1C2C; }
-        .word-page h2 { font-size: 16pt; font-weight: 700; margin: 10pt 0 5pt; color: #14355F; }
-        .word-page h3 { font-size: 13pt; font-weight: 700; margin: 8pt 0 4pt; color: #9C3D1E; }
-        .word-page p { margin: 0 0 8pt; }
-        .word-page ul, .word-page ol { margin: 0 0 8pt 24pt; }
-        .word-page li { margin: 2pt 0; }
-        .word-page blockquote {
-            margin: 8pt 0 8pt 24pt; padding-left: 12pt;
-            border-left: 3px solid #B8893A; color: #444; font-style: italic;
+        .wp-editor-body h1 { font-size: 1.9rem; font-weight: 700; color: #0B1C2C; margin: 1.25rem 0 0.5rem; }
+        .wp-editor-body h2 { font-size: 1.5rem; font-weight: 700; color: #14355F; margin: 1rem 0 0.4rem; }
+        .wp-editor-body h3 { font-size: 1.2rem; font-weight: 700; color: #9C3D1E; margin: 0.8rem 0 0.3rem; }
+        .wp-editor-body p { margin: 0 0 0.9rem; }
+        .wp-editor-body ul, .wp-editor-body ol { margin: 0 0 0.9rem 1.5rem; }
+        .wp-editor-body li { margin: 0.2rem 0; }
+        .wp-editor-body blockquote {
+            margin: 1rem 0 1rem 1rem; padding: 0.5rem 1rem;
+            border-left: 4px solid #B8893A;
+            background: #fdf8f0; color: #555; font-style: italic;
         }
-        .word-page table { border-collapse: collapse; width: 100%; margin: 8pt 0; }
-        .word-page td, .word-page th {
-            border: 1px solid #ccc; padding: 4pt 8pt; font-size: 10pt;
+        .wp-editor-body hr { border: none; border-top: 2px solid #B8893A; margin: 1.25rem 0; }
+        .wp-editor-body a { color: #14355F; }
+        .wp-editor-body img { max-width: 100%; height: auto; border-radius: 4px; margin: 0.5rem 0; display: block; }
+        .wp-editor-body table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+        .wp-editor-body td, .wp-editor-body th { border: 1px solid #ddd; padding: 6px 10px; font-size: 0.9rem; }
+        .wp-editor-body th { background: #0B1C2C; color: white; font-weight: 700; }
+        .wp-footer {
+            background: #13243a; padding: 4px 12px;
+            display: flex; justify-content: space-between;
+            font-family: 'Poppins', sans-serif; font-size: 0.65rem;
+            color: rgba(255,255,255,0.35); border-top: 1px solid rgba(255,255,255,0.06);
         }
-        .word-page th { background: #0B1C2C; color: white; font-weight: 700; }
-        .word-page hr { border: none; border-top: 2px solid #B8893A; margin: 12pt 0; }
-        .word-page img { max-width: 100%; height: auto; margin: 8pt 0; }
-        .word-page a { color: #14355F; }
-        /* Word status bar */
-        .word-status {
-            background: #1E3A5F; padding: 3px 12px;
-            display: flex; justify-content: space-between; align-items: center;
-            font-family: 'Poppins',sans-serif; font-size: 0.65rem;
-            color: rgba(255,255,255,0.45); border-top: 1px solid rgba(255,255,255,0.08);
-        }
-        .word-status span { cursor: default; }
-        /* Hidden raw content textarea for saving */
-        #editor-content { display: none; }
-
-        /* rich-toolbar kept for compatibility */
         .rich-toolbar { display: none; }
 
         /* Sidebar cards */
@@ -2110,7 +2084,7 @@
                 <div class="post-editor">
                     <input type="hidden" id="edit-post-id" value="">
                     <div class="post-editor-grid">
-                        <!-- Main editor — Word-style WYSIWYG -->
+                        <!-- Main editor — WordPress-style -->
                         <div class="editor-main">
                             <div class="dash-field">
                                 <label>Publication Title *</label>
@@ -2122,201 +2096,151 @@
                             </div>
                             <div class="dash-field">
                                 <label>Full Content</label>
-                                <!-- Hidden textarea stores raw HTML for saving -->
-                                <textarea id="editor-content"></textarea>
+                                <textarea id="editor-content" style="display:none"></textarea>
+                                <div class="wp-editor-wrap">
 
-                                <!-- WORD-STYLE EDITOR -->
-                                <div class="word-editor-wrap">
+                                    <!-- Toolbar -->
+                                    <div class="wp-toolbar">
 
-                                    <!-- Ribbon -->
-                                    <div class="word-ribbon">
-                                        <!-- Tab bar -->
-                                        <div class="word-ribbon-tabs">
-                                            <button class="ribbon-tab active" onclick="switchTab('home',this)">Home</button>
-                                            <button class="ribbon-tab" onclick="switchTab('insert',this)">Insert</button>
-                                            <button class="ribbon-tab" onclick="switchTab('format',this)">Format</button>
-                                            <button class="ribbon-tab" onclick="switchTab('table',this)">Table</button>
-                                        </div>
+                                        <!-- Paragraph style -->
+                                        <select class="wp-select" title="Paragraph Style" onchange="wpFormat(this.value); this.value=''">
+                                            <option value="">Paragraph</option>
+                                            <option value="h1">Heading 1</option>
+                                            <option value="h2">Heading 2</option>
+                                            <option value="h3">Heading 3</option>
+                                            <option value="p">Normal Text</option>
+                                            <option value="blockquote">Block Quote</option>
+                                            <option value="pre">Code Block</option>
+                                        </select>
 
-                                        <!-- HOME TAB -->
-                                        <div class="word-ribbon-row" id="tab-home">
-                                            <!-- Clipboard -->
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb rb-wide" title="Paste" onclick="document.execCommand('paste')">📋 Paste</button>
-                                                </div>
-                                                <span class="ribbon-label">Clipboard</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <!-- Font -->
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <select class="font-select" id="fontFamily" onchange="applyFont(this.value)" title="Font">
-                                                        <option value="'Times New Roman',serif">Times New Roman</option>
-                                                        <option value="Georgia,serif">Georgia</option>
-                                                        <option value="Arial,sans-serif">Arial</option>
-                                                        <option value="'Lora',serif">Lora</option>
-                                                        <option value="'Poppins',sans-serif">Poppins</option>
-                                                        <option value="'Courier New',monospace">Courier New</option>
-                                                    </select>
-                                                    <select class="size-select" id="fontSize" onchange="applySize(this.value)" title="Size" style="width:52px;">
-                                                        <option value="8pt">8</option>
-                                                        <option value="9pt">9</option>
-                                                        <option value="10pt">10</option>
-                                                        <option value="11pt">11</option>
-                                                        <option value="12pt" selected>12</option>
-                                                        <option value="14pt">14</option>
-                                                        <option value="16pt">16</option>
-                                                        <option value="18pt">18</option>
-                                                        <option value="20pt">20</option>
-                                                        <option value="24pt">24</option>
-                                                        <option value="28pt">28</option>
-                                                        <option value="36pt">36</option>
-                                                    </select>
-                                                </div>
-                                                <span class="ribbon-label">Font</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <!-- Text format -->
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb" id="btn-bold" onclick="execCmd('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
-                                                    <button class="rb" id="btn-italic" onclick="execCmd('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
-                                                    <button class="rb" id="btn-underline" onclick="execCmd('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
-                                                    <button class="rb" id="btn-strikethrough" onclick="execCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
-                                                    <button class="rb" onclick="execCmd('subscript')" title="Subscript">x₂</button>
-                                                    <button class="rb" onclick="execCmd('superscript')" title="Superscript">x²</button>
-                                                </div>
-                                                <span class="ribbon-label">Character</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <!-- Colour -->
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb" title="Font Colour" onclick="pickColor('fore')">🅐 <input type="color" id="foreColor" style="width:0;height:0;opacity:0;position:absolute" onchange="applyColor('fore',this.value)"></button>
-                                                    <button class="rb" title="Highlight" onclick="pickColor('back')">🖌 <input type="color" id="backColor" style="width:0;height:0;opacity:0;position:absolute" onchange="applyColor('back',this.value)"></button>
-                                                </div>
-                                                <span class="ribbon-label">Colour</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <!-- Paragraph -->
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb" onclick="execCmd('insertUnorderedList')" title="Bullet List">• List</button>
-                                                    <button class="rb" onclick="execCmd('insertOrderedList')" title="Numbered List">1. List</button>
-                                                    <button class="rb" onclick="execCmd('outdent')" title="Decrease Indent">⇤</button>
-                                                    <button class="rb" onclick="execCmd('indent')" title="Increase Indent">⇥</button>
-                                                    <button class="rb" onclick="execCmd('justifyLeft')" title="Align Left">≡L</button>
-                                                    <button class="rb" onclick="execCmd('justifyCenter')" title="Center">≡C</button>
-                                                    <button class="rb" onclick="execCmd('justifyRight')" title="Align Right">≡R</button>
-                                                    <button class="rb" onclick="execCmd('justifyFull')" title="Justify">≡J</button>
-                                                </div>
-                                                <span class="ribbon-label">Paragraph</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <!-- Styles -->
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb rb-xl" onclick="applyStyle('h1')" title="Heading 1" style="font-size:0.85rem;font-weight:700;color:#B8893A;">Heading 1</button>
-                                                    <button class="rb rb-xl" onclick="applyStyle('h2')" title="Heading 2" style="font-size:0.78rem;font-weight:700;">Heading 2</button>
-                                                    <button class="rb rb-xl" onclick="applyStyle('h3')" title="Heading 3" style="font-size:0.72rem;font-weight:600;">Heading 3</button>
-                                                    <button class="rb rb-xl" onclick="applyStyle('p')" title="Normal text">Normal</button>
-                                                </div>
-                                                <span class="ribbon-label">Styles</span>
-                                            </div>
-                                        </div>
+                                        <div class="wp-sep"></div>
 
-                                        <!-- INSERT TAB -->
-                                        <div class="word-ribbon-row hidden" id="tab-insert">
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb rb-wide" onclick="insertTable()" title="Insert Table">⊞ Table</button>
-                                                    <button class="rb rb-wide" onclick="insertImage()" title="Insert Image">🖼 Image</button>
-                                                    <button class="rb rb-wide" onclick="insertLink()" title="Insert Hyperlink">🔗 Link</button>
-                                                    <button class="rb rb-wide" onclick="insertHRule()" title="Horizontal Rule">— Rule</button>
-                                                    <button class="rb rb-wide" onclick="insertBlockquote()" title="Blockquote">❝ Quote</button>
-                                                    <button class="rb rb-wide" onclick="insertPageBreak()" title="Page Break">⏎ Break</button>
-                                                </div>
-                                                <span class="ribbon-label">Insert</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb rb-wide" onclick="openEmbedModal('tweet')">🐦 Tweet</button>
-                                                    <button class="rb rb-wide" onclick="openEmbedModal('video')">▶ Video</button>
-                                                    <button class="rb rb-wide" onclick="openEmbedModal('audio')">🎙 Audio</button>
-                                                    <button class="rb rb-wide" onclick="openEmbedModal('embed')">&lt;/&gt; Embed</button>
-                                                </div>
-                                                <span class="ribbon-label">Media</span>
-                                            </div>
-                                        </div>
+                                        <!-- Bold -->
+                                        <button class="wp-btn" id="wpb-bold" title="Bold (Ctrl+B)" onclick="wpCmd('bold')">
+                                            <svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
+                                        </button>
 
-                                        <!-- FORMAT TAB -->
-                                        <div class="word-ribbon-row hidden" id="tab-format">
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb rb-wide" onclick="execCmd('removeFormat')" title="Clear Formatting">✕ Clear</button>
-                                                    <button class="rb rb-wide" onclick="execCmd('selectAll')" title="Select All">⬛ All</button>
-                                                    <button class="rb rb-wide" onclick="execCmd('copy')" title="Copy">⎘ Copy</button>
-                                                    <button class="rb rb-wide" onclick="execCmd('cut')" title="Cut">✂ Cut</button>
-                                                </div>
-                                                <span class="ribbon-label">Editing</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb" onclick="execCmd('undo')" title="Undo (Ctrl+Z)">↩ Undo</button>
-                                                    <button class="rb" onclick="execCmd('redo')" title="Redo (Ctrl+Y)">↪ Redo</button>
-                                                </div>
-                                                <span class="ribbon-label">History</span>
-                                            </div>
-                                            <div class="ribbon-sep"></div>
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb rb-wide" onclick="toggleSpellCheck()" title="Spell Check" id="btn-spell">✓ Spell</button>
-                                                    <button class="rb rb-wide" onclick="countWords()" title="Word Count">Σ Words</button>
-                                                </div>
-                                                <span class="ribbon-label">Review</span>
-                                            </div>
-                                        </div>
+                                        <!-- Italic -->
+                                        <button class="wp-btn" id="wpb-italic" title="Italic (Ctrl+I)" onclick="wpCmd('italic')">
+                                            <svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z"/></svg>
+                                        </button>
 
-                                        <!-- TABLE TAB -->
-                                        <div class="word-ribbon-row hidden" id="tab-table">
-                                            <div class="ribbon-group-wrap">
-                                                <div class="ribbon-group">
-                                                    <button class="rb" onclick="tableCmd('insertRowAbove')">↑ Row Above</button>
-                                                    <button class="rb" onclick="tableCmd('insertRowBelow')">↓ Row Below</button>
-                                                    <button class="rb" onclick="tableCmd('insertColumnLeft')">← Col Left</button>
-                                                    <button class="rb" onclick="tableCmd('insertColumnRight')">→ Col Right</button>
-                                                    <button class="rb" style="color:#e07b5a;" onclick="tableCmd('deleteRow')">✕ Del Row</button>
-                                                    <button class="rb" style="color:#e07b5a;" onclick="tableCmd('deleteColumn')">✕ Del Col</button>
-                                                </div>
-                                                <span class="ribbon-label">Table Tools</span>
-                                            </div>
-                                        </div>
-                                    </div><!-- /word-ribbon -->
+                                        <!-- Underline -->
+                                        <button class="wp-btn" id="wpb-underline" title="Underline (Ctrl+U)" onclick="wpCmd('underline')">
+                                            <svg viewBox="0 0 24 24"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
+                                        </button>
 
-                                    <!-- White page canvas -->
-                                    <div class="word-page-area">
-                                        <div class="word-page"
-                                             id="word-editor"
-                                             contenteditable="true"
-                                             spellcheck="true"
-                                             data-placeholder="Start writing your publication here..."
-                                             oninput="syncEditor()"
-                                             onkeyup="updateToolbarState()"
-                                             onmouseup="updateToolbarState()"
-                                             onfocus="updateToolbarState()">
-                                        </div>
+                                        <!-- Strikethrough -->
+                                        <button class="wp-btn" title="Strikethrough" onclick="wpCmd('strikeThrough')">
+                                            <svg viewBox="0 0 24 24"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg>
+                                        </button>
+
+                                        <div class="wp-sep"></div>
+
+                                        <!-- Align Left -->
+                                        <button class="wp-btn" title="Align Left" onclick="wpCmd('justifyLeft')">
+                                            <svg viewBox="0 0 24 24"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>
+                                        </button>
+
+                                        <!-- Align Center -->
+                                        <button class="wp-btn" title="Align Center" onclick="wpCmd('justifyCenter')">
+                                            <svg viewBox="0 0 24 24"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg>
+                                        </button>
+
+                                        <!-- Align Right -->
+                                        <button class="wp-btn" title="Align Right" onclick="wpCmd('justifyRight')">
+                                            <svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg>
+                                        </button>
+
+                                        <!-- Justify -->
+                                        <button class="wp-btn" title="Justify" onclick="wpCmd('justifyFull')">
+                                            <svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"/></svg>
+                                        </button>
+
+                                        <div class="wp-sep"></div>
+
+                                        <!-- Bullet List -->
+                                        <button class="wp-btn" title="Bullet List" onclick="wpCmd('insertUnorderedList')">
+                                            <svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+                                        </button>
+
+                                        <!-- Numbered List -->
+                                        <button class="wp-btn" title="Numbered List" onclick="wpCmd('insertOrderedList')">
+                                            <svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
+                                        </button>
+
+                                        <!-- Indent -->
+                                        <button class="wp-btn" title="Indent" onclick="wpCmd('indent')">
+                                            <svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>
+                                        </button>
+
+                                        <!-- Outdent -->
+                                        <button class="wp-btn" title="Outdent" onclick="wpCmd('outdent')">
+                                            <svg viewBox="0 0 24 24"><path d="M11 17h10v-2H11v2zM3 12l4 4V8l-4 4zm-1 9h19v-2H2v2zM2 3v2h19V3H2zm9 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>
+                                        </button>
+
+                                        <div class="wp-sep"></div>
+
+                                        <!-- Link -->
+                                        <button class="wp-btn" title="Insert Link" onclick="wpInsertLink()">
+                                            <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                                        </button>
+
+                                        <!-- Unlink -->
+                                        <button class="wp-btn" title="Remove Link" onclick="wpCmd('unlink')">
+                                            <svg viewBox="0 0 24 24"><path d="M17 7h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.43-.98 2.63-2.31 3l1.46 1.44C20.88 15.61 22 13.95 22 12c0-2.76-2.24-5-5-5zm-1 4h-2.19l2 2H16v-2zM2 4.27l3.11 3.11C3.29 8.12 2 9.91 2 12c0 2.76 2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1 0-1.59 1.21-2.9 2.76-3.07L8.73 11H8v2h2.73l2 2H11v1.9h1.27l2.09 2.09L15.73 19 4.27 3.73 2.84 5.16 2 4.27z"/></svg>
+                                        </button>
+
+                                        <!-- Image -->
+                                        <button class="wp-btn" title="Insert Image" onclick="wpInsertImage()">
+                                            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                        </button>
+
+                                        <!-- HR -->
+                                        <button class="wp-btn" title="Horizontal Line" onclick="wpCmd('insertHorizontalRule')">
+                                            <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+                                        </button>
+
+                                        <div class="wp-sep"></div>
+
+                                        <!-- Undo -->
+                                        <button class="wp-btn" title="Undo (Ctrl+Z)" onclick="wpCmd('undo')">
+                                            <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                                        </button>
+
+                                        <!-- Redo -->
+                                        <button class="wp-btn" title="Redo (Ctrl+Y)" onclick="wpCmd('redo')">
+                                            <svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+                                        </button>
+
+                                        <!-- Remove Formatting -->
+                                        <button class="wp-btn" title="Remove Formatting" onclick="wpCmd('removeFormat')">
+                                            <svg viewBox="0 0 24 24"><path d="M20 8V5H6.39l3 3h1.83l-.55 1.28 2.09 2.1L14.21 8H20zM3.27 5L2 6.27l6.97 6.97L6.5 19h3l1.57-3.66L16.73 21 18 19.73 3.27 5z"/></svg>
+                                        </button>
+
+                                        <div class="wp-sep"></div>
+
+                                        <!-- Word count -->
+                                        <span style="font-family:'Poppins',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.3);padding:0 6px;" id="wp-wc">Words: 0</span>
                                     </div>
 
-                                    <!-- Status bar -->
-                                    <div class="word-status">
-                                        <span id="word-status-info">Ready</span>
-                                        <span id="word-count-display">Words: 0</span>
+                                    <!-- Editable content area -->
+                                    <div id="wp-editor"
+                                         class="wp-editor-body"
+                                         contenteditable="true"
+                                         spellcheck="true"
+                                         oninput="wpSync()"
+                                         onkeyup="wpState()"
+                                         onmouseup="wpState()"
+                                         onfocus="wpState()">
                                     </div>
 
-                                </div><!-- /word-editor-wrap -->
+                                    <!-- Status -->
+                                    <div class="wp-footer">
+                                        <span>3Bi Publication Editor</span>
+                                        <span id="wp-status">Ready</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="dash-field">
                                 <label>External Link (PDF, DOI, report URL)</label>
@@ -2613,9 +2537,8 @@ function savePosts(posts) { localStorage.setItem('3bi_posts', JSON.stringify(pos
 function savePost() {
     const title = document.getElementById('post-title').value.trim();
     if (!title) { alert('Please enter a title.'); return; }
-    // Sync word editor → hidden textarea before saving
-    const wordEd = document.getElementById('word-editor');
-    if (wordEd) document.getElementById('editor-content').value = wordEd.innerHTML;
+    const wpEd = document.getElementById('wp-editor');
+    if (wpEd) document.getElementById('editor-content').value = wpEd.innerHTML;
     const editId = document.getElementById('edit-post-id').value;
     const posts = getPosts();
     const refEl = document.getElementById('post-ref');
@@ -2641,24 +2564,25 @@ function savePost() {
 function resetEditor() {
     ['post-title','post-excerpt','post-link','post-author','post-cover-url','post-ref'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     document.getElementById('editor-content').value = '';
-    const wordEd = document.getElementById('word-editor');
-    if (wordEd) wordEd.innerHTML = '';
+    const wpEd = document.getElementById('wp-editor');
+    if (wpEd) wpEd.innerHTML = '';
     document.getElementById('edit-post-id').value = '';
     document.getElementById('editor-title').textContent = 'New Publication';
     document.getElementById('post-type').value = 'report';
     document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
     const img = document.getElementById('cover-img-preview'); if(img) img.style.display='none';
     const hint = document.querySelector('.cover-preview .upload-hint'); if(hint) hint.style.display='';
-    const wc = document.getElementById('word-count-display'); if(wc) wc.textContent = 'Words: 0';
+    const wc = document.getElementById('wp-wc'); if(wc) wc.textContent = 'Words: 0';
 }
+
 function editPost(id) {
     const p = getPosts().find(x => x.id === id); if (!p) return;
     document.getElementById('edit-post-id').value = p.id;
     document.getElementById('post-title').value = p.title;
     document.getElementById('post-excerpt').value = p.excerpt||'';
     document.getElementById('editor-content').value = p.content||'';
-    const wordEd = document.getElementById('word-editor');
-    if (wordEd) wordEd.innerHTML = p.content || '';
+    const wpEd = document.getElementById('wp-editor');
+    if (wpEd) wpEd.innerHTML = p.content || '';
     document.getElementById('post-type').value = p.type;
     document.getElementById('post-theme').value = p.theme;
     document.getElementById('post-date').value = p.date;
@@ -2905,240 +2829,94 @@ function downloadPdf() {
         btn.textContent='⬇ Download PDF'; btn.disabled=false;
     }
 }
+// ── WORDPRESS-STYLE EDITOR ──────────────────────────────────────────────────
 
-// ── WORD EDITOR ──────────────────────────────────────────────────────────────
-
-function switchTab(name, btn) {
-    document.querySelectorAll('.word-ribbon-row').forEach(r => r.classList.add('hidden'));
-    document.querySelectorAll('.ribbon-tab').forEach(b => b.classList.remove('active'));
-    const row = document.getElementById('tab-' + name);
-    if (row) row.classList.remove('hidden');
-    if (btn) btn.classList.add('active');
+function wpCmd(cmd) {
+    document.getElementById('wp-editor').focus();
+    document.execCommand(cmd, false, null);
+    wpState();
+    wpSync();
 }
 
-function execCmd(cmd, val) {
-    document.getElementById('word-editor').focus();
-    document.execCommand(cmd, false, val || null);
-    updateToolbarState();
-    syncEditor();
-}
-
-function applyFont(font) {
-    document.getElementById('word-editor').focus();
-    document.execCommand('fontName', false, font);
-    syncEditor();
-}
-
-function applySize(size) {
-    // execCommand fontSize uses 1-7; we use style instead
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return;
-    const range = sel.getRangeAt(0);
-    const span = document.createElement('span');
-    span.style.fontSize = size;
-    try { range.surroundContents(span); } catch(e) {
-        span.appendChild(range.extractContents());
-        range.insertNode(span);
-    }
-    syncEditor();
-}
-
-function applyStyle(tag) {
-    document.getElementById('word-editor').focus();
+function wpFormat(tag) {
+    if (!tag) return;
+    document.getElementById('wp-editor').focus();
     document.execCommand('formatBlock', false, tag);
-    syncEditor();
+    wpSync();
 }
 
-function pickColor(type) {
-    document.getElementById(type === 'fore' ? 'foreColor' : 'backColor').click();
+function wpInsertLink() {
+    const sel = window.getSelection();
+    const selectedText = sel ? sel.toString() : '';
+    const url = prompt('Enter URL:', 'https://');
+    if (!url) return;
+    const text = selectedText || prompt('Link text:', url) || url;
+    document.getElementById('wp-editor').focus();
+    document.execCommand('insertHTML', false,
+        '<a href="' + url + '" target="_blank" rel="noopener">' + text + '</a>');
+    wpSync();
 }
 
-function applyColor(type, val) {
-    document.getElementById('word-editor').focus();
-    document.execCommand(type === 'fore' ? 'foreColor' : 'hiliteColor', false, val);
-    syncEditor();
+function wpInsertImage() {
+    const url = prompt('Image URL:', 'https://');
+    if (!url) return;
+    const alt = prompt('Alt text (optional):', '') || '';
+    document.getElementById('wp-editor').focus();
+    document.execCommand('insertHTML', false,
+        '<img src="' + url + '" alt="' + alt + '" style="max-width:100%;height:auto;display:block;margin:8px 0;border-radius:4px;">');
+    wpSync();
 }
 
-function updateToolbarState() {
-    const cmds = [
-        ['bold','btn-bold'], ['italic','btn-italic'],
-        ['underline','btn-underline'], ['strikeThrough','btn-strikethrough']
+function wpSync() {
+    const ed = document.getElementById('wp-editor');
+    if (!ed) return;
+    document.getElementById('editor-content').value = ed.innerHTML;
+    const txt = ed.innerText || '';
+    const wc = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+    const el = document.getElementById('wp-wc');
+    if (el) el.textContent = 'Words: ' + wc;
+}
+
+function wpState() {
+    const btns = [
+        ['bold','wpb-bold'], ['italic','wpb-italic'], ['underline','wpb-underline']
     ];
-    cmds.forEach(([cmd, id]) => {
+    btns.forEach(([cmd, id]) => {
         const btn = document.getElementById(id);
         if (btn) btn.classList.toggle('active', document.queryCommandState(cmd));
     });
-    // Update word count
-    const text = document.getElementById('word-editor').innerText || '';
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-    const el = document.getElementById('word-count-display');
-    if (el) el.textContent = `Words: ${words} | Chars: ${chars}`;
 }
 
-function syncEditor() {
-    // Sync contenteditable HTML → hidden textarea (for save)
-    const html = document.getElementById('word-editor').innerHTML;
-    document.getElementById('editor-content').value = html;
-    updateToolbarState();
-}
-
-function insertTable() {
-    const rows = parseInt(prompt('Number of rows:', '3')) || 3;
-    const cols = parseInt(prompt('Number of columns:', '3')) || 3;
-    let html = '<table style="border-collapse:collapse;width:100%;margin:8pt 0">';
-    for (let r = 0; r < rows; r++) {
-        html += '<tr>';
-        for (let c = 0; c < cols; c++) {
-            if (r === 0) {
-                html += '<th style="border:1px solid #ccc;padding:4pt 8pt;background:#0B1C2C;color:white;font-weight:700;">Header</th>';
-            } else {
-                html += '<td style="border:1px solid #ccc;padding:4pt 8pt;">Cell</td>';
-            }
-        }
-        html += '</tr>';
-    }
-    html += '</table><p></p>';
-    document.getElementById('word-editor').focus();
-    document.execCommand('insertHTML', false, html);
-    syncEditor();
-}
-
-function insertImage() {
-    const url = prompt('Image URL or paste a web address:');
-    if (!url) return;
-    document.getElementById('word-editor').focus();
-    document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;height:auto;margin:8pt 0;" alt="Image"><p></p>`);
-    syncEditor();
-}
-
-function insertLink() {
-    const url = prompt('Enter URL:');
-    if (!url) return;
-    const text = prompt('Link text (leave blank to use URL):', '') || url;
-    document.getElementById('word-editor').focus();
-    document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color:#14355F;">${text}</a>`);
-    syncEditor();
-}
-
-function insertHRule() {
-    document.getElementById('word-editor').focus();
-    document.execCommand('insertHTML', false, '<hr style="border:none;border-top:2px solid #B8893A;margin:12pt 0;"><p></p>');
-    syncEditor();
-}
-
-function insertBlockquote() {
-    document.getElementById('word-editor').focus();
-    document.execCommand('formatBlock', false, 'blockquote');
-    syncEditor();
-}
-
-function insertPageBreak() {
-    document.getElementById('word-editor').focus();
-    document.execCommand('insertHTML', false, '<p style="page-break-after:always;">&nbsp;</p><p></p>');
-    syncEditor();
-}
-
-function tableCmd(cmd) {
-    // Basic table row/col operations using selection
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return;
-    let node = sel.getRangeAt(0).startContainer;
-    let td = null;
-    while (node && node !== document.getElementById('word-editor')) {
-        if (node.nodeName === 'TD' || node.nodeName === 'TH') { td = node; break; }
-        node = node.parentNode;
-    }
-    if (!td) { alert('Place cursor inside a table cell first.'); return; }
-    const tr = td.parentNode;
-    const table = tr.parentNode.closest ? tr.parentNode.closest('table') : tr.closest('table');
-    const cellIndex = td.cellIndex;
-    const rowIndex = tr.rowIndex;
-
-    if (cmd === 'insertRowBelow') {
-        const newRow = table.insertRow(rowIndex + 1);
-        for (let i = 0; i < tr.cells.length; i++) {
-            const cell = newRow.insertCell(i);
-            cell.style.cssText = 'border:1px solid #ccc;padding:4pt 8pt;';
-            cell.innerHTML = '&nbsp;';
-        }
-    } else if (cmd === 'insertRowAbove') {
-        const newRow = table.insertRow(rowIndex);
-        for (let i = 0; i < tr.cells.length; i++) {
-            const cell = newRow.insertCell(i);
-            cell.style.cssText = 'border:1px solid #ccc;padding:4pt 8pt;';
-            cell.innerHTML = '&nbsp;';
-        }
-    } else if (cmd === 'deleteRow') {
-        if (table.rows.length > 1) table.deleteRow(rowIndex);
-    } else if (cmd === 'insertColumnRight' || cmd === 'insertColumnLeft') {
-        const offset = cmd === 'insertColumnRight' ? 1 : 0;
-        for (let i = 0; i < table.rows.length; i++) {
-            const cell = table.rows[i].insertCell(cellIndex + offset);
-            cell.style.cssText = i === 0 ? 'border:1px solid #ccc;padding:4pt 8pt;background:#0B1C2C;color:white;font-weight:700;' : 'border:1px solid #ccc;padding:4pt 8pt;';
-            cell.innerHTML = i === 0 ? 'Header' : '&nbsp;';
-        }
-    } else if (cmd === 'deleteColumn') {
-        for (let i = 0; i < table.rows.length; i++) {
-            if (table.rows[i].cells.length > 1) table.rows[i].deleteCell(cellIndex);
-        }
-    }
-    syncEditor();
-}
-
-function toggleSpellCheck() {
-    const ed = document.getElementById('word-editor');
-    const on = ed.spellcheck;
-    ed.spellcheck = !on;
-    const btn = document.getElementById('btn-spell');
-    if (btn) btn.classList.toggle('active', !on);
-    document.getElementById('word-status-info').textContent = `Spell check ${!on ? 'on' : 'off'}`;
-}
-
-function countWords() {
-    const text = document.getElementById('word-editor').innerText || '';
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-    const paras = (text.match(/\n\n/g) || []).length + 1;
-    alert(`Word Count\n\nWords: ${words}\nCharacters: ${chars}\nParagraphs: ${paras}`);
-}
-
-// Placeholder text behaviour
-document.addEventListener('DOMContentLoaded', () => {
-    const ed = document.getElementById('word-editor');
+// Wire keyboard shortcuts in the editor
+document.addEventListener('DOMContentLoaded', function() {
+    const ed = document.getElementById('wp-editor');
     if (!ed) return;
-    ed.addEventListener('focus', () => {
-        if (ed.innerHTML === '' || ed.innerHTML === '<br>') {
-            document.getElementById('word-status-info').textContent = 'Editing...';
-        }
-    });
-    ed.addEventListener('blur', () => {
-        document.getElementById('word-status-info').textContent = 'Ready';
-    });
-    // Keyboard shortcuts
-    ed.addEventListener('keydown', (e) => {
+    ed.addEventListener('keydown', function(e) {
         if (e.ctrlKey || e.metaKey) {
-            if (e.key === 'b') { e.preventDefault(); execCmd('bold'); }
-            if (e.key === 'i') { e.preventDefault(); execCmd('italic'); }
-            if (e.key === 'u') { e.preventDefault(); execCmd('underline'); }
-            if (e.key === 'z') { e.preventDefault(); execCmd('undo'); }
-            if (e.key === 'y') { e.preventDefault(); execCmd('redo'); }
+            if (e.key === 'b') { e.preventDefault(); wpCmd('bold'); }
+            if (e.key === 'i') { e.preventDefault(); wpCmd('italic'); }
+            if (e.key === 'u') { e.preventDefault(); wpCmd('underline'); }
+            if (e.key === 'z') { e.preventDefault(); wpCmd('undo'); }
+            if (e.key === 'y') { e.preventDefault(); wpCmd('redo'); }
+            if (e.key === 'k') { e.preventDefault(); wpInsertLink(); }
         }
-        setTimeout(updateToolbarState, 10);
     });
-    // Style embed insert into editor
-    window._insertEmbedToEditor = (html) => {
-        ed.focus();
-        document.execCommand('insertHTML', false, html + '<p></p>');
-        syncEditor();
-    };
+    ed.addEventListener('focus', function() {
+        const st = document.getElementById('wp-status');
+        if (st) st.textContent = 'Editing...';
+    });
+    ed.addEventListener('blur', function() {
+        const st = document.getElementById('wp-status');
+        if (st) st.textContent = 'Ready';
+    });
 });
 
-// Legacy compatibility stubs
-function fmtText(cmd) { execCmd({bold:'bold',italic:'italic',underline:'underline'}[cmd]||cmd); }
-function insertHeading() { applyStyle('h2'); }
-function insertBullet() { execCmd('insertUnorderedList'); }
-function insertHr() { insertHRule(); }
+// Legacy stubs — keep these for any existing calls
+function fmtText(cmd) { wpCmd({bold:'bold',italic:'italic',underline:'underline'}[cmd]||cmd); }
+function insertHeading() { wpFormat('h2'); }
+function insertBullet() { wpCmd('insertUnorderedList'); }
+function insertHr() { wpCmd('insertHorizontalRule'); }
+
 
 // ── PDF ENGINE — Full formatting-aware renderer ──────────────────────────────
 
