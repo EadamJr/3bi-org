@@ -1048,6 +1048,163 @@
             .article-content { font-size: 11pt !important; }
         }
 
+
+        /* ── AUTHOR MANAGEMENT ── */
+        .author-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem; margin-top: 0.5rem;
+        }
+        .author-admin-card {
+            background: #0B1C2C; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .author-admin-card:hover { border-color: rgba(184,137,58,0.35); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .author-card-header {
+            background: linear-gradient(135deg, #0f2240, #14355F);
+            padding: 1.25rem; display: flex; align-items: center; gap: 1rem;
+        }
+        .author-card-avatar {
+            width: 56px; height: 56px; border-radius: 50%;
+            object-fit: cover; border: 2.5px solid rgba(184,137,58,0.5);
+            background: #0B1C2C; flex-shrink: 0;
+        }
+        .author-card-avatar-placeholder {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #9C3D1E, #B8893A);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 700;
+            color: white; flex-shrink: 0; border: 2.5px solid rgba(184,137,58,0.4);
+        }
+        .author-card-identity { flex: 1; min-width: 0; }
+        .author-card-name {
+            font-family: 'Lora', serif; font-size: 1rem; font-weight: 700;
+            color: white; margin-bottom: 2px; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .author-card-title {
+            font-family: 'Poppins', sans-serif; font-size: 0.72rem;
+            color: #B8893A; margin-bottom: 1px;
+        }
+        .author-card-org {
+            font-family: 'Poppins', sans-serif; font-size: 0.68rem;
+            color: rgba(255,255,255,0.35);
+        }
+        .author-card-body { padding: 1rem 1.25rem; }
+        .author-card-bio {
+            font-family: 'Poppins', sans-serif; font-size: 0.8rem;
+            color: rgba(255,255,255,0.5); line-height: 1.6;
+            margin-bottom: 0.85rem;
+            display: -webkit-box; -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .author-card-socials { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .author-social-pill {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.2rem 0.6rem; border-radius: 50px;
+            font-family: 'Poppins', sans-serif; font-size: 0.65rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.04);
+        }
+        .author-card-actions { display: flex; gap: 0.5rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.85rem; }
+        .author-card-pubs {
+            font-family: 'Poppins', sans-serif; font-size: 0.68rem;
+            color: rgba(255,255,255,0.3); margin-left: auto; align-self: center;
+        }
+        /* Author form */
+        .author-form-wrap {
+            background: #0B1C2C; border-radius: 14px; padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.08); max-width: 680px;
+        }
+        .author-form-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+        }
+        .author-form-grid .full-col { grid-column: 1 / -1; }
+        .author-photo-preview {
+            width: 80px; height: 80px; border-radius: 50%;
+            object-fit: cover; border: 3px solid rgba(184,137,58,0.4);
+            background: #14355F; display: none; margin-bottom: 0.5rem;
+        }
+        .author-photo-placeholder {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: linear-gradient(135deg, #9C3D1E, #B8893A);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Lora', serif; font-size: 1.6rem; font-weight: 700;
+            color: white; margin-bottom: 0.5rem; border: 3px solid rgba(184,137,58,0.3);
+        }
+        /* Author select in publication form */
+        .author-select-row {
+            display: flex; gap: 0.5rem; align-items: flex-end;
+        }
+        .author-select-row select { flex: 1; }
+        .btn-new-author {
+            padding: 0.7rem 0.9rem; border-radius: 8px; border: none;
+            background: rgba(184,137,58,0.2); color: #B8893A;
+            font-family: 'Poppins', sans-serif; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s;
+            border: 1px solid rgba(184,137,58,0.3);
+        }
+        .btn-new-author:hover { background: #B8893A; color: white; }
+        /* Author public page */
+        #author-page-overlay {
+            display: none; position: fixed; inset: 0;
+            background: #F5EFE3; z-index: 8001; overflow-y: auto;
+        }
+        #author-page-overlay.open { display: block; }
+        .author-page-hero {
+            background: linear-gradient(135deg, #0B1C2C 0%, #14355F 100%);
+            padding: 4rem 2rem 3rem;
+        }
+        .author-page-inner { max-width: 820px; margin: 0 auto; }
+        .author-page-profile {
+            display: flex; gap: 2rem; align-items: flex-start;
+        }
+        .author-page-avatar {
+            width: 110px; height: 110px; border-radius: 50%;
+            object-fit: cover; border: 4px solid rgba(184,137,58,0.5);
+            flex-shrink: 0;
+        }
+        .author-page-avatar-ph {
+            width: 110px; height: 110px; border-radius: 50%;
+            background: linear-gradient(135deg, #9C3D1E, #B8893A);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Lora', serif; font-size: 2.5rem; font-weight: 700;
+            color: white; flex-shrink: 0; border: 4px solid rgba(184,137,58,0.4);
+        }
+        .author-page-name {
+            font-family: 'Lora', serif; font-size: 2rem; font-weight: 700;
+            color: white; margin-bottom: 0.3rem;
+        }
+        .author-page-role { font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #B8893A; margin-bottom: 0.2rem; }
+        .author-page-org  { font-family: 'Poppins', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 1rem; }
+        .author-page-socials { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .author-page-social {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.35rem 0.9rem; border-radius: 50px;
+            font-family: 'Poppins', sans-serif; font-size: 0.75rem; font-weight: 600;
+            text-decoration: none; border: 1.5px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.07);
+            transition: all 0.2s;
+        }
+        .author-page-social:hover { background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.4); }
+        .author-page-bio-section {
+            max-width: 820px; margin: 0 auto;
+            padding: 2.5rem 2rem 1.5rem;
+        }
+        .author-page-bio {
+            font-family: 'Lora', serif; font-size: 1.05rem;
+            color: #1A2E42; line-height: 1.85;
+            padding-bottom: 2rem; border-bottom: 2px solid #E8DCC8;
+        }
+        .author-pubs-section {
+            max-width: 820px; margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+        .author-pubs-title {
+            font-family: 'Lora', serif; font-size: 1.4rem; font-weight: 700;
+            color: #0B1C2C; margin-bottom: 1.5rem;
+        }
+
         /* ─── RESPONSIVE ─── */
         @media (max-width: 1024px) {
             .focus-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2246,6 +2403,17 @@
                     <li><a href="#" onclick="showDashSection('new-post')" id="nav-new-post">
                         <span class="nav-icon"><svg width="18" height="18"><use href="#icon-edit"/></svg></span> New Publication
                     </a></li>
+                    <li><a href="#" onclick="showDashSection('authors')" id="nav-authors">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8" cy="7" r="4" stroke="#B8893A" stroke-width="1.4"/>
+                                <path d="M2 18c0-3.314 2.686-6 6-6" stroke="#B8893A" stroke-width="1.4" stroke-linecap="round"/>
+                                <circle cx="15" cy="13" r="3" stroke="#B8893A" stroke-width="1.2"/>
+                                <line x1="15" y1="10" x2="15" y2="16" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/>
+                                <line x1="12" y1="13" x2="18" y2="13" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                        </span> Author Profiles
+                    </a></li>
                 </ul>
             </nav>
             <div class="dash-sidebar-divider"></div>
@@ -2549,39 +2717,36 @@
                                 </div>
                             </div>
                             <div class="sidebar-card">
-                                <h5>Author Profile</h5>
+                                <h5>Author</h5>
                                 <div class="dash-field">
-                                    <label>Author Name(s)</label>
-                                    <input type="text" id="post-author" placeholder="Full name">
+                                    <label>Select Author</label>
+                                    <div class="author-select-row">
+                                        <select id="post-author-select" onchange="applyAuthorFromSelect(this.value)">
+                                            <option value="">— Select an author —</option>
+                                        </select>
+                                        <button class="btn-new-author" onclick="showDashSection('authors')">+ New</button>
+                                    </div>
                                 </div>
-                                <div class="dash-field">
-                                    <label>Author Title / Position</label>
-                                    <input type="text" id="post-author-title" placeholder="e.g. Founder &amp; Lead Analyst">
+                                <!-- Preview of selected author -->
+                                <div id="selected-author-preview" style="display:none; margin-top:0.75rem; padding:0.75rem; background:rgba(255,255,255,0.04); border-radius:8px; border:1px solid rgba(255,255,255,0.07);">
+                                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                                        <div id="sel-author-avatar" style="flex-shrink:0;"></div>
+                                        <div>
+                                            <div id="sel-author-name" style="font-family:'Lora',serif;font-size:0.9rem;font-weight:700;color:white;"></div>
+                                            <div id="sel-author-role" style="font-family:'Poppins',sans-serif;font-size:0.72rem;color:#B8893A;"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="dash-field">
-                                    <label>Organisation</label>
-                                    <input type="text" id="post-author-org" placeholder="e.g. Build Back Better Initiative (3Bi)">
-                                </div>
-                                <div class="dash-field">
-                                    <label>Short Bio</label>
-                                    <textarea id="post-author-bio" placeholder="2-3 sentences about the author..." style="min-height:70px;"></textarea>
-                                </div>
-                                <div class="dash-field">
-                                    <label>Author Photo URL</label>
-                                    <input type="url" id="post-author-photo" placeholder="https://... (optional)">
-                                </div>
-                                <div class="dash-field">
-                                    <label>Twitter / X Profile URL</label>
-                                    <input type="url" id="post-author-twitter" placeholder="https://twitter.com/...">
-                                </div>
-                                <div class="dash-field">
-                                    <label>LinkedIn Profile URL</label>
-                                    <input type="url" id="post-author-linkedin" placeholder="https://linkedin.com/in/...">
-                                </div>
-                                <div class="dash-field">
-                                    <label>Website / Other Link</label>
-                                    <input type="url" id="post-author-web" placeholder="https://...">
-                                </div>
+                                <!-- Hidden inputs for saving -->
+                                <input type="hidden" id="post-author" value="">
+                                <input type="hidden" id="post-author-title" value="">
+                                <input type="hidden" id="post-author-org" value="">
+                                <input type="hidden" id="post-author-bio" value="">
+                                <input type="hidden" id="post-author-photo" value="">
+                                <input type="hidden" id="post-author-twitter" value="">
+                                <input type="hidden" id="post-author-linkedin" value="">
+                                <input type="hidden" id="post-author-web" value="">
+                                <input type="hidden" id="post-author-email" value="">
                             </div>
                             <div class="sidebar-card">
                                 <h5>Quick Embeds</h5>
@@ -2598,6 +2763,91 @@
                                 <button class="dash-btn dash-btn-ghost" onclick="resetEditor()">Clear Form</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ── AUTHOR PROFILES ── -->
+            <div class="dash-section" id="ds-authors">
+                <div class="dash-section-title" id="authors-panel-title">
+                    Author Profiles
+                    <button class="dash-btn dash-btn-primary" onclick="showAuthorForm()">+ New Author</button>
+                </div>
+
+                <!-- Author form (hidden by default) -->
+                <div id="author-form-wrap" style="display:none; margin-bottom:1.5rem;">
+                    <div class="author-form-wrap">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; padding-bottom:0.75rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+                            <h4 style="font-family:'Lora',serif; color:white; font-size:1.1rem;" id="author-form-title">New Author Profile</h4>
+                            <button class="dash-btn dash-btn-ghost" style="padding:0.35rem 0.75rem; font-size:0.75rem;" onclick="hideAuthorForm()">Cancel</button>
+                        </div>
+                        <input type="hidden" id="edit-author-id" value="">
+
+                        <!-- Photo preview -->
+                        <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.25rem;">
+                            <div id="author-form-avatar">
+                                <div class="author-photo-placeholder" id="author-form-ph">?</div>
+                            </div>
+                            <div style="flex:1;">
+                                <div class="dash-field" style="margin-bottom:0;">
+                                    <label>Photo URL</label>
+                                    <input type="url" id="af-photo" placeholder="https://... (paste direct image link)" oninput="previewAuthorPhoto(this.value)">
+                                </div>
+                                <p style="font-family:'Poppins',sans-serif; font-size:0.7rem; color:rgba(255,255,255,0.3); margin-top:0.3rem;">Use any direct image URL (LinkedIn photo, personal site, etc.)</p>
+                            </div>
+                        </div>
+
+                        <div class="author-form-grid">
+                            <div class="dash-field">
+                                <label>Full Name *</label>
+                                <input type="text" id="af-name" placeholder="e.g. Mohamed ElMujtaba Eadam">
+                            </div>
+                            <div class="dash-field">
+                                <label>Title / Position</label>
+                                <input type="text" id="af-title" placeholder="e.g. Founder & Lead Analyst">
+                            </div>
+                            <div class="dash-field">
+                                <label>Organisation</label>
+                                <input type="text" id="af-org" placeholder="e.g. Build Back Better Initiative (3Bi)">
+                            </div>
+                            <div class="dash-field">
+                                <label>Email Address</label>
+                                <input type="email" id="af-email" placeholder="author@example.com">
+                            </div>
+                            <div class="dash-field full-col">
+                                <label>Bio</label>
+                                <textarea id="af-bio" placeholder="Write a short bio for this author. Will appear at the end of every publication they write." style="min-height:100px;"></textarea>
+                            </div>
+                            <div class="dash-field">
+                                <label>Twitter / X URL</label>
+                                <input type="url" id="af-twitter" placeholder="https://twitter.com/username">
+                            </div>
+                            <div class="dash-field">
+                                <label>LinkedIn URL</label>
+                                <input type="url" id="af-linkedin" placeholder="https://linkedin.com/in/username">
+                            </div>
+                            <div class="dash-field">
+                                <label>ResearchGate / Academia.edu</label>
+                                <input type="url" id="af-research" placeholder="https://researchgate.net/...">
+                            </div>
+                            <div class="dash-field">
+                                <label>Personal Website</label>
+                                <input type="url" id="af-web" placeholder="https://...">
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:0.75rem; margin-top:1.25rem; padding-top:1rem; border-top:1px solid rgba(255,255,255,0.08);">
+                            <button class="dash-btn dash-btn-primary" onclick="saveAuthor()" style="padding:0.75rem 2rem;">💾 Save Author</button>
+                            <button class="dash-btn dash-btn-ghost" onclick="hideAuthorForm()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Author cards grid -->
+                <div class="author-grid" id="author-cards-grid">
+                    <div style="color:rgba(255,255,255,0.25); font-family:'Poppins',sans-serif; font-size:0.875rem; padding:2rem;">
+                        No authors yet. Click "+ New Author" to add your first profile.
                     </div>
                 </div>
             </div>
@@ -2811,7 +3061,7 @@ function showDashSection(id) {
     const sec = document.getElementById('ds-' + id);
     if (sec) sec.classList.add('active');
     document.querySelectorAll('.dash-sidebar nav a').forEach(a => a.classList.remove('active'));
-    const navMap = {'overview':'nav-overview','all-posts':'nav-all-posts','new-post':'nav-new-post','media':'nav-media','pdf-templates':'nav-pdftemplate','settings':'nav-settings'};
+    const navMap = {'overview':'nav-overview','all-posts':'nav-all-posts','new-post':'nav-new-post','authors':'nav-authors','media':'nav-media','pdf-templates':'nav-pdftemplate','settings':'nav-settings'};
     const navEl = document.getElementById(navMap[id] || '');
     if (navEl) navEl.classList.add('active');
     if (id === 'all-posts') renderPostsTable();
@@ -2840,6 +3090,7 @@ function savePost() {
         ref: refEl ? refEl.value.trim() : '',
         cover: document.getElementById('post-cover-url').value.trim(),
         link: document.getElementById('post-link').value.trim(),
+        authorId: (document.getElementById('post-author-select')||{}).value||'',
         authorName: document.getElementById('post-author').value.trim(),
         authorTitle: (document.getElementById('post-author-title')||{}).value||'',
         authorOrg: (document.getElementById('post-author-org')||{}).value||'',
@@ -2868,6 +3119,8 @@ function resetEditor() {
     const img = document.getElementById('cover-img-preview'); if(img) img.style.display='none';
     const hint = document.querySelector('.cover-preview .upload-hint'); if(hint) hint.style.display='';
     const wc = document.getElementById('wp-wc'); if(wc) wc.textContent = 'Words: 0';
+    const selA = document.getElementById('post-author-select'); if(selA) selA.value = '';
+    const prev = document.getElementById('selected-author-preview'); if(prev) prev.style.display = 'none';
 }
 
 function editPost(id) {
@@ -2886,6 +3139,17 @@ function editPost(id) {
     document.getElementById('post-cover-url').value = p.cover||'';
     document.getElementById('post-link').value = p.link||'';
     const setF = (id, v) => { const el = document.getElementById(id); if(el) el.value = v||''; };
+    // Restore author dropdown selection
+    const sel = document.getElementById('post-author-select');
+    if (sel && p.authorId) {
+        refreshAuthorDropdowns();
+        sel.value = p.authorId;
+        applyAuthorFromSelect(p.authorId);
+    } else if (sel && p.authorName) {
+        refreshAuthorDropdowns();
+        const match = getAuthors().find(a => a.name === p.authorName);
+        if (match) { sel.value = match.id; applyAuthorFromSelect(match.id); }
+    }
     setF('post-author-title', p.authorTitle);
     setF('post-author-org', p.authorOrg);
     setF('post-author-bio', p.authorBio);
@@ -2962,7 +3226,7 @@ function openPub(id) {
     document.getElementById('article-meta-el').innerHTML =
         (dateStr ? `<span>${dateStr}</span>` : '') +
         (p.theme ? `<span>·</span><span>${escHtml(p.theme)}</span>` : '') +
-        (p.author ? `<span>·</span><span>By <strong>${escHtml(p.author)}</strong></span>` : '') +
+        (p.author||p.authorName ? `<span>·</span><span>By <strong style="cursor:pointer;color:#9C3D1E;text-decoration:underline;" onclick="openAuthorPageByName('${escHtml(p.authorName||p.author||'')}')" title="View author profile">${escHtml(p.authorName||p.author||'')}</strong></span>` : '') +
         (p.ref ? `<span>·</span><span style="font-family:'Courier New',monospace;font-size:0.75rem;">${escHtml(p.ref)}</span>` : '');
 
     // Cover image
@@ -3084,7 +3348,316 @@ function updateDashboardStats() {
     rl.innerHTML=posts.slice(0,6).map(p=>`<div class="recent-pub-row"><div class="recent-pub-dot" style="background:${dc[p.type]||'#B8893A'}"></div><span class="recent-pub-title">${escHtml(p.title)}</span><span class="recent-pub-type">${p.type}</span></div>`).join('');
 }
 
-// ─── PDF GENERATION — 3Bi Branded Letterhead ───
+// ── AUTHOR PROFILE SYSTEM ────────────────────────────────────────────────────
+
+function getAuthors() {
+    try { return JSON.parse(localStorage.getItem('3bi_authors') || '[]'); } catch { return []; }
+}
+function saveAuthors(authors) { localStorage.setItem('3bi_authors', JSON.stringify(authors)); }
+
+// Seed Mohamed ElMujtaba Eadam as default author if no authors exist
+function seedDefaultAuthor() {
+    if (getAuthors().length === 0) {
+        saveAuthors([{
+            id: 'author_eadam',
+            name: 'Mohamed ElMujtaba Eadam',
+            title: 'Founder & Lead Analyst',
+            org: 'Build Back Better Initiative (3Bi)',
+            bio: 'Mohamed ElMujtaba Eadam is the Founder and Lead Analyst of the Build Back Better Initiative (3Bi), an independent policy research think-tank rooted in Sudan\'s grassroots crisis-response experience. He works at the intersection of climate-conflict analysis, governance, humanitarian-development integration, and political economy, with a geographic focus on Sudan and East Africa. He participates in COP proceedings through the ARCH Project and contributes to platforms including the Humanitarian Practice Network, the Pan-African Review, and The African Report.',
+            photo: '',
+            email: '',
+            twitter: '',
+            linkedin: '',
+            research: '',
+            web: 'https://www.3bisudan.org',
+        }]);
+    }
+}
+
+function showAuthorForm(id) {
+    document.getElementById('author-form-wrap').style.display = 'block';
+    document.getElementById('author-form-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (id) {
+        const a = getAuthors().find(x => x.id === id);
+        if (!a) return;
+        document.getElementById('edit-author-id').value = a.id;
+        document.getElementById('af-name').value = a.name || '';
+        document.getElementById('af-title').value = a.title || '';
+        document.getElementById('af-org').value = a.org || '';
+        document.getElementById('af-bio').value = a.bio || '';
+        document.getElementById('af-photo').value = a.photo || '';
+        document.getElementById('af-email').value = a.email || '';
+        document.getElementById('af-twitter').value = a.twitter || '';
+        document.getElementById('af-linkedin').value = a.linkedin || '';
+        document.getElementById('af-research').value = a.research || '';
+        document.getElementById('af-web').value = a.web || '';
+        document.getElementById('author-form-title').textContent = 'Edit Author Profile';
+        previewAuthorPhoto(a.photo || '');
+    } else {
+        document.getElementById('edit-author-id').value = '';
+        ['af-name','af-title','af-org','af-bio','af-photo','af-email','af-twitter','af-linkedin','af-research','af-web'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+        document.getElementById('author-form-title').textContent = 'New Author Profile';
+        document.getElementById('author-form-ph').textContent = '?';
+        document.getElementById('author-form-ph').style.display = 'flex';
+        const img = document.getElementById('author-form-img');
+        if (img) img.remove();
+    }
+}
+
+function hideAuthorForm() {
+    document.getElementById('author-form-wrap').style.display = 'none';
+}
+
+function previewAuthorPhoto(url) {
+    const container = document.getElementById('author-form-avatar');
+    const ph = document.getElementById('author-form-ph');
+    const name = document.getElementById('af-name').value.trim();
+    const initials = name ? name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase() : '?';
+    if (url && url.startsWith('http')) {
+        ph.style.display = 'none';
+        let img = document.getElementById('author-form-img');
+        if (!img) { img = document.createElement('img'); img.id = 'author-form-img'; img.className = 'author-card-avatar'; img.style.cssText = 'width:80px;height:80px;'; container.appendChild(img); }
+        img.src = url;
+        img.onerror = () => { img.style.display='none'; ph.textContent=initials; ph.style.display='flex'; };
+        img.style.display = 'block';
+    } else {
+        const img = document.getElementById('author-form-img');
+        if (img) { img.style.display = 'none'; }
+        ph.textContent = initials || '?';
+        ph.style.display = 'flex';
+    }
+}
+
+function saveAuthor() {
+    const name = document.getElementById('af-name').value.trim();
+    if (!name) { alert('Author name is required.'); return; }
+    const editId = document.getElementById('edit-author-id').value;
+    const authors = getAuthors();
+    const author = {
+        id: editId || ('author_' + Date.now()),
+        name,
+        title: document.getElementById('af-title').value.trim(),
+        org: document.getElementById('af-org').value.trim(),
+        bio: document.getElementById('af-bio').value.trim(),
+        photo: document.getElementById('af-photo').value.trim(),
+        email: document.getElementById('af-email').value.trim(),
+        twitter: document.getElementById('af-twitter').value.trim(),
+        linkedin: document.getElementById('af-linkedin').value.trim(),
+        research: document.getElementById('af-research').value.trim(),
+        web: document.getElementById('af-web').value.trim(),
+    };
+    if (editId) {
+        const idx = authors.findIndex(a => a.id === editId);
+        if (idx !== -1) authors[idx] = author; else authors.unshift(author);
+    } else { authors.unshift(author); }
+    saveAuthors(authors);
+    hideAuthorForm();
+    renderAuthorCards();
+    refreshAuthorDropdowns();
+    alert('Author profile saved!');
+}
+
+function deleteAuthor(id) {
+    if (!confirm('Delete this author profile? Publications by this author will keep their data.')) return;
+    saveAuthors(getAuthors().filter(a => a.id !== id));
+    renderAuthorCards();
+    refreshAuthorDropdowns();
+}
+
+function renderAuthorCards() {
+    const authors = getAuthors();
+    const grid = document.getElementById('author-cards-grid');
+    if (!grid) return;
+    if (!authors.length) {
+        grid.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-family:\'Poppins\',sans-serif;font-size:0.875rem;padding:2rem;">No authors yet. Click "+ New Author" to add your first profile.</div>';
+        return;
+    }
+    grid.innerHTML = authors.map(a => {
+        const initials = a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+        const avatarHTML = a.photo
+            ? `<img src="${escHtml(a.photo)}" class="author-card-avatar" alt="${escHtml(a.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="author-card-avatar-placeholder" style="display:none">${initials}</div>`
+            : `<div class="author-card-avatar-placeholder">${initials}</div>`;
+        const socials = [
+            a.twitter ? `<span class="author-social-pill">𝕏 Twitter</span>` : '',
+            a.linkedin ? `<span class="author-social-pill">in LinkedIn</span>` : '',
+            a.email ? `<span class="author-social-pill">✉ Email</span>` : '',
+            a.research ? `<span class="author-social-pill">🔬 Research</span>` : '',
+            a.web ? `<span class="author-social-pill">🌐 Web</span>` : '',
+        ].join('');
+        const pubCount = getPosts().filter(p => p.authorId === a.id || p.authorName === a.name || p.author === a.name).length;
+        return `<div class="author-admin-card">
+            <div class="author-card-header">
+                ${avatarHTML}
+                <div class="author-card-identity">
+                    <div class="author-card-name">${escHtml(a.name)}</div>
+                    <div class="author-card-title">${escHtml(a.title||'')}</div>
+                    <div class="author-card-org">${escHtml(a.org||'')}</div>
+                </div>
+            </div>
+            <div class="author-card-body">
+                <div class="author-card-bio">${escHtml(a.bio||'No bio yet.')}</div>
+                <div class="author-card-socials">${socials||'<span style="font-size:0.7rem;color:rgba(255,255,255,0.2);font-family:\'Poppins\',sans-serif;">No social links</span>'}</div>
+                <div class="author-card-actions">
+                    <button class="post-action-btn btn-edit" onclick="showAuthorForm('${a.id}')">Edit</button>
+                    <button class="post-action-btn btn-edit" onclick="openAuthorPage('${a.id}')">View Page</button>
+                    <button class="post-action-btn btn-del" onclick="deleteAuthor('${a.id}')">Delete</button>
+                    <span class="author-card-pubs">${pubCount} pub${pubCount!==1?'s':''}</span>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function refreshAuthorDropdowns() {
+    const authors = getAuthors();
+    const sel = document.getElementById('post-author-select');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">— Select an author —</option>' +
+        authors.map(a => `<option value="${escHtml(a.id)}">${escHtml(a.name)}${a.title?' — '+escHtml(a.title):''}</option>`).join('');
+    if (current) sel.value = current;
+}
+
+function applyAuthorFromSelect(authorId) {
+    const preview = document.getElementById('selected-author-preview');
+    if (!authorId) { preview.style.display = 'none'; clearHiddenAuthorFields(); return; }
+    const a = getAuthors().find(x => x.id === authorId);
+    if (!a) return;
+    // Fill hidden fields
+    document.getElementById('post-author').value = a.name;
+    document.getElementById('post-author-title').value = a.title || '';
+    document.getElementById('post-author-org').value = a.org || '';
+    document.getElementById('post-author-bio').value = a.bio || '';
+    document.getElementById('post-author-photo').value = a.photo || '';
+    document.getElementById('post-author-twitter').value = a.twitter || '';
+    document.getElementById('post-author-linkedin').value = a.linkedin || '';
+    document.getElementById('post-author-web').value = a.web || '';
+    document.getElementById('post-author-email').value = a.email || '';
+    // Show preview
+    const initials = a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const avatarEl = document.getElementById('sel-author-avatar');
+    avatarEl.innerHTML = a.photo
+        ? `<img src="${escHtml(a.photo)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(184,137,58,0.4);" onerror="this.outerHTML='<div style=\'width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:Lora,serif;font-size:0.9rem;font-weight:700;color:white;\'>${initials}</div>'">`
+        : `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:0.9rem;font-weight:700;color:white;">${initials}</div>`;
+    document.getElementById('sel-author-name').textContent = a.name;
+    document.getElementById('sel-author-role').textContent = (a.title || '') + (a.org ? ' · ' + a.org : '');
+    preview.style.display = 'block';
+}
+
+function clearHiddenAuthorFields() {
+    ['post-author','post-author-title','post-author-org','post-author-bio','post-author-photo','post-author-twitter','post-author-linkedin','post-author-web','post-author-email'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+}
+
+// ── PUBLIC AUTHOR PAGE ────────────────────────────────────────────────────────
+function openAuthorPage(authorId) {
+    const a = getAuthors().find(x => x.id === authorId);
+    if (!a) return;
+    const initials = a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+
+    // Build overlay HTML
+    const avatarHTML = a.photo
+        ? `<img src="${escHtml(a.photo)}" class="author-page-avatar" alt="${escHtml(a.name)}" onerror="this.outerHTML='<div class=\'author-page-avatar-ph\'>${initials}</div>'">`
+        : `<div class="author-page-avatar-ph">${initials}</div>`;
+
+    const socialLinks = [
+        a.twitter  ? `<a href="${escHtml(a.twitter)}" class="author-page-social" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Twitter / X</a>` : '',
+        a.linkedin ? `<a href="${escHtml(a.linkedin)}" class="author-page-social" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</a>` : '',
+        a.email    ? `<a href="mailto:${escHtml(a.email)}" class="author-page-social"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> Email</a>` : '',
+        a.research ? `<a href="${escHtml(a.research)}" class="author-page-social" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg> ResearchGate</a>` : '',
+        a.web      ? `<a href="${escHtml(a.web)}" class="author-page-social" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg> Website</a>` : '',
+    ].filter(Boolean).join('');
+
+    // Get publications by this author
+    const authorPubs = getPosts().filter(p =>
+        p.authorId === a.id || p.authorName === a.name || p.author === a.name
+    );
+    const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
+
+    const pubsHTML = authorPubs.length === 0
+        ? '<p style="font-family:\'Poppins\',sans-serif;color:#7A8A98;font-size:0.9rem;">No publications yet.</p>'
+        : `<div class="pub-grid">${authorPubs.map(p => {
+            const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '';
+            const coverHTML = p.cover
+                ? `<img src="${escHtml(p.cover)}" alt="${escHtml(p.title)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`
+                : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"><svg width="36" height="36"><use href="#icon-doc"/></svg></div>`;
+            return `<div class="pub-card" style="cursor:pointer;" onclick="closeAuthorPage();openPub('${p.id}')">
+                <div class="pub-cover"><div class="pub-type-badge ${escHtml(p.type)}">${typeLabels[p.type]||p.type}</div>${coverHTML}</div>
+                <div class="pub-body">
+                    <div class="pub-meta">${dateStr}${p.theme?' · '+escHtml(p.theme):''}</div>
+                    <h3 class="pub-title">${escHtml(p.title)}</h3>
+                    <p class="pub-excerpt">${escHtml(p.excerpt||'')}</p>
+                    <div class="pub-footer"><span class="pub-read-link">Read ${typeLabels[p.type]||'More'} →</span></div>
+                </div></div>`;
+        }).join('')}</div>`;
+
+    // Build or reuse overlay
+    let overlay = document.getElementById('author-page-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'author-page-overlay';
+        document.body.appendChild(overlay);
+    }
+    overlay.innerHTML = `
+        <div class="article-topbar">
+            <div class="article-topbar-left">
+                <button class="article-back-btn" onclick="closeAuthorPage()">← Back</button>
+                <span class="article-topbar-brand">3Bi — Author Profile</span>
+            </div>
+        </div>
+        <div class="author-page-hero">
+            <div class="author-page-inner">
+                <div class="author-page-profile">
+                    ${avatarHTML}
+                    <div>
+                        <div class="author-page-name">${escHtml(a.name)}</div>
+                        <div class="author-page-role">${escHtml(a.title||'')}</div>
+                        <div class="author-page-org">${escHtml(a.org||'')}</div>
+                        <div class="author-page-socials">${socialLinks}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="author-page-bio-section">
+            <div class="author-page-bio">${escHtml(a.bio||'').replace(/\n/g,'<br>')}</div>
+        </div>
+        <div class="author-pubs-section">
+            <div class="author-pubs-title">Publications by ${escHtml(a.name)}</div>
+            ${pubsHTML}
+        </div>`;
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAuthorPage() {
+    const overlay = document.getElementById('author-page-overlay');
+    if (overlay) { overlay.classList.remove('open'); }
+    document.body.style.overflow = '';
+}
+
+// Hook into showDashSection to render authors when that tab opens
+const _origShowDash = showDashSection;
+window.showDashSection = function(id) {
+    _origShowDash(id);
+    if (id === 'authors') { renderAuthorCards(); }
+    if (id === 'new-post') { refreshAuthorDropdowns(); }
+};
+
+// On dashboard open, seed default author + refresh dropdowns
+const _origOpenDash = openDashboard;
+window.openDashboard = function() {
+    seedDefaultAuthor();
+    _origOpenDash();
+    refreshAuthorDropdowns();
+};
+
+// Make author name clickable in article reader — links to author page
+function openAuthorPageByName(name) {
+    const a = getAuthors().find(x => x.name === name);
+    if (a) openAuthorPage(a.id);
+}
+
+
 const BRAND={nileInk:[11,28,44],cobalt:[20,53,95],cobaltLt:[30,74,128],sienna:[156,61,30],gold:[184,137,58],sand:[232,220,200],sandLt:[245,239,227],grey:[122,138,152],white:[255,255,255]};
 let _pdfFilename='';
 
