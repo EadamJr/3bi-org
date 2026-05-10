@@ -3027,12 +3027,7 @@ function openAdmin() {
     document.getElementById('admin-user').value = '';
     document.getElementById('admin-pass').value = '';
 }
-// ── ROUTING: uses sessionStorage so state survives page refresh ──
-
-const VALID_SECTIONS = ['home','resources','consultations','membership','about','focus','services','contact-page'];
-
 function showSection(id) {
-    if (!VALID_SECTIONS.includes(id)) id = 'home';
     document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
     const el = document.getElementById(id);
     if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -3040,22 +3035,14 @@ function showSection(id) {
     if (footer) footer.style.display = (id === 'home') ? 'block' : 'none';
     document.getElementById('nav-links').classList.remove('mobile-open');
     renderPublications();
-    // Persist current section so refresh restores it
-    sessionStorage.setItem('3bi_section', id);
-    sessionStorage.removeItem('3bi_admin_open');
-    sessionStorage.removeItem('3bi_pub_open');
-    // Update URL hash for bookmarking/sharing (but don't rely on it for refresh)
-    if (id === 'home') {
-        history.replaceState(null, '', window.location.pathname);
-    } else {
-        history.replaceState(null, '', window.location.pathname + '#' + id);
-    }
+    // Save current section so page refresh restores it (Fix #2)
+    try { sessionStorage.setItem('3bi_section', id); } catch(e) {}
 }
 
-// Admin: secret hash still works, but we also persist via sessionStorage
 function checkAdminHash() {
     if (window.location.hash === '#3bi-admin-panel') {
-        sessionStorage.setItem('3bi_admin_open', '1');
+        // Save that admin was opened so refresh restores it (Fix #3)
+        try { sessionStorage.setItem('3bi_admin_open', '1'); } catch(e) {}
         history.replaceState(null, '', window.location.pathname);
         openAdmin();
     }
@@ -3076,51 +3063,26 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const hash = window.location.hash;
 
-    // Priority 1: secret admin hash
+    // Restore admin panel if it was open before refresh (Fix #3)
     if (hash === '#3bi-admin-panel') {
-        sessionStorage.setItem('3bi_admin_open', '1');
+        try { sessionStorage.setItem('3bi_admin_open', '1'); } catch(e) {}
         history.replaceState(null, '', window.location.pathname);
         openAdmin();
-        return;
-    }
-
-    // Priority 2: admin was open before refresh
-    if (sessionStorage.getItem('3bi_admin_open') === '1') {
+    } else if (sessionStorage.getItem('3bi_admin_open') === '1') {
         openAdmin();
-        return;
+    } else {
+        // Restore last section from sessionStorage (Fix #2)
+        const saved = sessionStorage.getItem('3bi_section');
+        const validSections = ['home','resources','consultations','membership','about','focus','services','contact-page'];
+        if (saved && validSections.includes(saved)) {
+            showSection(saved);
+        } else {
+            showSection('home');
+        }
     }
 
-    // Priority 3: direct publication link
-    if (hash && hash.startsWith('#pub-')) {
-        const pubId = hash.replace('#pub-', '');
-        showSection('resources');
-        setTimeout(() => openPub(pubId), 120);
-        return;
-    }
-
-    // Priority 4: section from hash (e.g. shared link)
-    if (hash && hash.startsWith('#') && VALID_SECTIONS.includes(hash.slice(1))) {
-        showSection(hash.slice(1));
-        return;
-    }
-
-    // Priority 5: restore from sessionStorage (survives refresh)
-    const saved = sessionStorage.getItem('3bi_section');
-    if (saved && VALID_SECTIONS.includes(saved)) {
-        showSection(saved);
-        return;
-    }
-
-    // Priority 6: restore open publication from session
-    const savedPub = sessionStorage.getItem('3bi_pub_open');
-    if (savedPub) {
-        showSection('resources');
-        setTimeout(() => openPub(savedPub), 120);
-        return;
-    }
-
-    // Default: home
-    showSection('home');
+    document.getElementById('site-footer').style.display =
+        (document.querySelector('.page-view.active')?.id === 'home') ? 'block' : 'none';
 });
 
 function closeAdmin() {
