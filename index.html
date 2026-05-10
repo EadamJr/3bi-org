@@ -2810,7 +2810,7 @@
                                 </div>
                                 <div class="dash-field" style="margin-bottom:0;">
                                     <label>Or Paste Photo URL</label>
-                                    <input type="url" id="af-photo" placeholder="https://... (paste direct image link)" oninput="previewAuthorPhoto(this.value)">
+                                    <input type="text" id="af-photo" placeholder="https://... (paste direct image link)" oninput="previewAuthorPhoto(this.value)">
                                 </div>
                                 <p style="font-family:'Poppins',sans-serif; font-size:0.7rem; color:rgba(255,255,255,0.3); margin-top:0.3rem;">Upload from your device <em>or</em> paste a URL — LinkedIn photo, personal site, etc.</p>
                             </div>
@@ -3027,14 +3027,40 @@ function openAdmin() {
     document.getElementById('admin-user').value = '';
     document.getElementById('admin-pass').value = '';
 }
+// ── ROUTING: uses sessionStorage so state survives page refresh ──
+
+const VALID_SECTIONS = ['home','resources','consultations','membership','about','focus','services','contact-page'];
+
+function showSection(id) {
+    if (!VALID_SECTIONS.includes(id)) id = 'home';
+    document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    const footer = document.getElementById('site-footer');
+    if (footer) footer.style.display = (id === 'home') ? 'block' : 'none';
+    document.getElementById('nav-links').classList.remove('mobile-open');
+    renderPublications();
+    // Persist current section so refresh restores it
+    sessionStorage.setItem('3bi_section', id);
+    sessionStorage.removeItem('3bi_admin_open');
+    sessionStorage.removeItem('3bi_pub_open');
+    // Update URL hash for bookmarking/sharing (but don't rely on it for refresh)
+    if (id === 'home') {
+        history.replaceState(null, '', window.location.pathname);
+    } else {
+        history.replaceState(null, '', window.location.pathname + '#' + id);
+    }
+}
+
+// Admin: secret hash still works, but we also persist via sessionStorage
 function checkAdminHash() {
     if (window.location.hash === '#3bi-admin-panel') {
-        openAdmin();
+        sessionStorage.setItem('3bi_admin_open', '1');
         history.replaceState(null, '', window.location.pathname);
+        openAdmin();
     }
 }
 window.addEventListener('hashchange', checkAdminHash);
-window.addEventListener('load', checkAdminHash);
 
 window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
@@ -3043,37 +3069,87 @@ document.getElementById('mobileToggle').addEventListener('click', function() {
     document.getElementById('nav-links').classList.toggle('mobile-open');
 });
 
-function showSection(id) {
-    document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
-    const el = document.getElementById(id);
-    if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    const footer = document.getElementById('site-footer');
-    if (footer) footer.style.display = (id === 'home') ? 'block' : 'none';
-    document.getElementById('nav-links').classList.remove('mobile-open');
-    renderPublications();
-}
 window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('site-footer').style.display = 'block';
     renderPublications(); updateDashboardStats();
     const d = document.getElementById('post-date');
     if (d) d.value = new Date().toISOString().split('T')[0];
+
+    const hash = window.location.hash;
+
+    // Priority 1: secret admin hash
+    if (hash === '#3bi-admin-panel') {
+        sessionStorage.setItem('3bi_admin_open', '1');
+        history.replaceState(null, '', window.location.pathname);
+        openAdmin();
+        return;
+    }
+
+    // Priority 2: admin was open before refresh
+    if (sessionStorage.getItem('3bi_admin_open') === '1') {
+        openAdmin();
+        return;
+    }
+
+    // Priority 3: direct publication link
+    if (hash && hash.startsWith('#pub-')) {
+        const pubId = hash.replace('#pub-', '');
+        showSection('resources');
+        setTimeout(() => openPub(pubId), 120);
+        return;
+    }
+
+    // Priority 4: section from hash (e.g. shared link)
+    if (hash && hash.startsWith('#') && VALID_SECTIONS.includes(hash.slice(1))) {
+        showSection(hash.slice(1));
+        return;
+    }
+
+    // Priority 5: restore from sessionStorage (survives refresh)
+    const saved = sessionStorage.getItem('3bi_section');
+    if (saved && VALID_SECTIONS.includes(saved)) {
+        showSection(saved);
+        return;
+    }
+
+    // Priority 6: restore open publication from session
+    const savedPub = sessionStorage.getItem('3bi_pub_open');
+    if (savedPub) {
+        showSection('resources');
+        setTimeout(() => openPub(savedPub), 120);
+        return;
+    }
+
+    // Default: home
+    showSection('home');
 });
 
-function closeAdmin() { document.getElementById('admin-overlay').classList.remove('open'); }
+function closeAdmin() {
+    document.getElementById('admin-overlay').classList.remove('open');
+    // Only clear admin session if the dashboard was never opened (user cancelled login)
+    if (!document.getElementById('dashboard-overlay').classList.contains('open')) {
+        sessionStorage.removeItem('3bi_admin_open');
+    }
+}
 function doLogin() {
     const u = document.getElementById('admin-user').value.trim();
     const p = document.getElementById('admin-pass').value;
     const sp = localStorage.getItem('3bi_admin_pass') || CREDS.pass;
-    if (u === CREDS.user && p === sp) { closeAdmin(); openDashboard(); }
-    else { document.getElementById('admin-err').style.display = 'block'; }
+    if (u === CREDS.user && p === sp) {
+        sessionStorage.setItem('3bi_admin_open', '1');
+        closeAdmin();
+        openDashboard();
+    } else {
+        document.getElementById('admin-err').style.display = 'block';
+    }
 }
 document.getElementById('admin-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 function openDashboard() {
+    sessionStorage.setItem('3bi_admin_open', '1');
     document.getElementById('dashboard-overlay').classList.add('open');
     showDashSection('overview'); updateDashboardStats(); renderPostsTable();
 }
-function closeDashboard() { document.getElementById('dashboard-overlay').classList.remove('open'); }
+function closeDashboard() { document.getElementById('dashboard-overlay').classList.remove('open'); sessionStorage.removeItem('3bi_admin_open'); }
 function showDashSection(id) {
     document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
     const sec = document.getElementById('ds-' + id);
@@ -3265,13 +3341,26 @@ function openPub(id) {
         document.getElementById('author-org-el').textContent = p.authorOrg || 'Build Back Better Initiative (3Bi)';
         document.getElementById('author-bio-el').textContent = p.authorBio || '';
 
-        // Avatar
+        // Avatar — use DOM to avoid base64 corruption
         const avatarEl = document.getElementById('author-avatar-el');
+        avatarEl.innerHTML = '';
         if (p.authorPhoto) {
-            avatarEl.innerHTML = `<img src="${escHtml(p.authorPhoto)}" class="author-avatar" alt="${escHtml(name)}" onerror="this.parentNode.innerHTML='<div class=\'author-avatar-placeholder\'>${escHtml(name.charAt(0))}</div>'">`;
+            const _img = document.createElement('img');
+            _img.src = p.authorPhoto;
+            _img.className = 'author-avatar';
+            _img.alt = name;
+            const _ph = document.createElement('div');
+            _ph.className = 'author-avatar-placeholder';
+            _ph.textContent = name.charAt(0).toUpperCase();
+            _ph.style.display = 'none';
+            _img.onerror = function() { this.style.display='none'; _ph.style.display='flex'; };
+            avatarEl.appendChild(_img);
+            avatarEl.appendChild(_ph);
         } else {
-            const initials = name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-            avatarEl.innerHTML = `<div class="author-avatar-placeholder">${initials}</div>`;
+            const _ph = document.createElement('div');
+            _ph.className = 'author-avatar-placeholder';
+            _ph.textContent = initials;
+            avatarEl.appendChild(_ph);
         }
 
         // Social links
@@ -3301,6 +3390,8 @@ function openPub(id) {
     // Store current pub ID for PDF
     window._currentReaderPubId = id;
 
+    // Persist open pub for refresh survival
+    sessionStorage.setItem('3bi_pub_open', id);
     // Open overlay
     document.getElementById('article-overlay').classList.add('open');
     document.getElementById('article-overlay').scrollTop = 0;
@@ -3310,6 +3401,7 @@ function openPub(id) {
 function closeArticle() {
     document.getElementById('article-overlay').classList.remove('open');
     document.body.style.overflow = '';
+    sessionStorage.removeItem('3bi_pub_open');
 }
 
 function printArticle() {
@@ -3445,16 +3537,23 @@ function previewAuthorPhoto(url) {
     const ph = document.getElementById('author-form-ph');
     const name = document.getElementById('af-name').value.trim();
     const initials = name ? name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase() : '?';
-    if (url && url.startsWith('http')) {
+    // Accept both http(s) URLs and base64 data URIs
+    if (url && (url.startsWith('http') || url.startsWith('data:'))) {
         ph.style.display = 'none';
         let img = document.getElementById('author-form-img');
-        if (!img) { img = document.createElement('img'); img.id = 'author-form-img'; img.className = 'author-card-avatar'; img.style.cssText = 'width:80px;height:80px;'; container.appendChild(img); }
-        img.src = url;
-        img.onerror = () => { img.style.display='none'; ph.textContent=initials; ph.style.display='flex'; };
+        if (!img) {
+            img = document.createElement('img');
+            img.id = 'author-form-img';
+            img.className = 'author-card-avatar';
+            img.style.cssText = 'width:80px;height:80px;border-radius:50%;object-fit:cover;';
+            container.appendChild(img);
+        }
+        img.src = url; // raw — do NOT escHtml on base64
         img.style.display = 'block';
+        img.onerror = () => { img.style.display='none'; ph.textContent=initials; ph.style.display='flex'; };
     } else {
         const img = document.getElementById('author-form-img');
-        if (img) { img.style.display = 'none'; }
+        if (img) img.style.display = 'none';
         ph.textContent = initials || '?';
         ph.style.display = 'flex';
     }
@@ -3471,7 +3570,7 @@ function saveAuthor() {
         title: document.getElementById('af-title').value.trim(),
         org: document.getElementById('af-org').value.trim(),
         bio: document.getElementById('af-bio').value.trim(),
-        photo: document.getElementById('af-photo').value.trim(),
+        photo: document.getElementById('af-photo').value,
         email: document.getElementById('af-email').value.trim(),
         twitter: document.getElementById('af-twitter').value.trim(),
         linkedin: document.getElementById('af-linkedin').value.trim(),
@@ -3504,40 +3603,67 @@ function renderAuthorCards() {
         grid.innerHTML = '<div style="color:rgba(255,255,255,0.25);font-family:\'Poppins\',sans-serif;font-size:0.875rem;padding:2rem;">No authors yet. Click "+ New Author" to add your first profile.</div>';
         return;
     }
-    grid.innerHTML = authors.map(a => {
+    // Build cards using DOM (not innerHTML) to avoid base64/escaping issues for photos
+    grid.innerHTML = '';
+    authors.forEach(a => {
         const initials = a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-        const avatarHTML = a.photo
-            ? `<img src="${escHtml(a.photo)}" class="author-card-avatar" alt="${escHtml(a.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="author-card-avatar-placeholder" style="display:none">${initials}</div>`
-            : `<div class="author-card-avatar-placeholder">${initials}</div>`;
         const socials = [
-            a.twitter ? `<span class="author-social-pill">𝕏 Twitter</span>` : '',
+            a.twitter  ? `<span class="author-social-pill">𝕏 Twitter</span>` : '',
             a.linkedin ? `<span class="author-social-pill">in LinkedIn</span>` : '',
-            a.email ? `<span class="author-social-pill">✉ Email</span>` : '',
+            a.email    ? `<span class="author-social-pill">✉ Email</span>` : '',
             a.research ? `<span class="author-social-pill">🔬 Research</span>` : '',
-            a.web ? `<span class="author-social-pill">🌐 Web</span>` : '',
-        ].join('');
+            a.web      ? `<span class="author-social-pill">🌐 Web</span>` : '',
+        ].filter(Boolean).join('');
         const pubCount = getPosts().filter(p => p.authorId === a.id || p.authorName === a.name || p.author === a.name).length;
-        return `<div class="author-admin-card">
-            <div class="author-card-header">
-                ${avatarHTML}
-                <div class="author-card-identity">
-                    <div class="author-card-name">${escHtml(a.name)}</div>
-                    <div class="author-card-title">${escHtml(a.title||'')}</div>
-                    <div class="author-card-org">${escHtml(a.org||'')}</div>
-                </div>
-            </div>
-            <div class="author-card-body">
-                <div class="author-card-bio">${escHtml(a.bio||'No bio yet.')}</div>
-                <div class="author-card-socials">${socials||'<span style="font-size:0.7rem;color:rgba(255,255,255,0.2);font-family:\'Poppins\',sans-serif;">No social links</span>'}</div>
-                <div class="author-card-actions">
-                    <button class="post-action-btn btn-edit" onclick="showAuthorForm('${a.id}')">Edit</button>
-                    <button class="post-action-btn btn-edit" onclick="openAuthorPage('${a.id}')">View Page</button>
-                    <button class="post-action-btn btn-del" onclick="deleteAuthor('${a.id}')">Delete</button>
-                    <span class="author-card-pubs">${pubCount} pub${pubCount!==1?'s':''}</span>
-                </div>
-            </div>
-        </div>`;
-    }).join('');
+
+        const card = document.createElement('div');
+        card.className = 'author-admin-card';
+
+        // Header
+        const hdr = document.createElement('div');
+        hdr.className = 'author-card-header';
+
+        // Avatar — use DOM img to avoid escaping issues with base64
+        if (a.photo) {
+            const img = document.createElement('img');
+            img.className = 'author-card-avatar';
+            img.alt = a.name;
+            img.src = a.photo; // raw — no escaping
+            const ph = document.createElement('div');
+            ph.className = 'author-card-avatar-placeholder';
+            ph.style.display = 'none';
+            ph.textContent = initials;
+            img.onerror = function() { this.style.display='none'; ph.style.display='flex'; };
+            hdr.appendChild(img);
+            hdr.appendChild(ph);
+        } else {
+            const ph = document.createElement('div');
+            ph.className = 'author-card-avatar-placeholder';
+            ph.textContent = initials;
+            hdr.appendChild(ph);
+        }
+
+        const identity = document.createElement('div');
+        identity.className = 'author-card-identity';
+        identity.innerHTML = `<div class="author-card-name">${escHtml(a.name)}</div>
+            <div class="author-card-title">${escHtml(a.title||'')}</div>
+            <div class="author-card-org">${escHtml(a.org||'')}</div>`;
+        hdr.appendChild(identity);
+        card.appendChild(hdr);
+
+        const body = document.createElement('div');
+        body.className = 'author-card-body';
+        body.innerHTML = `<div class="author-card-bio">${escHtml(a.bio||'No bio yet.')}</div>
+            <div class="author-card-socials">${socials||'<span style="font-size:0.7rem;color:rgba(255,255,255,0.2);font-family:\'Poppins\',sans-serif;">No social links</span>'}</div>
+            <div class="author-card-actions">
+                <button class="post-action-btn btn-edit" onclick="showAuthorForm('${escHtml(a.id)}')">Edit</button>
+                <button class="post-action-btn btn-edit" onclick="openAuthorPage('${escHtml(a.id)}')">View Page</button>
+                <button class="post-action-btn btn-del" onclick="deleteAuthor('${escHtml(a.id)}')">Delete</button>
+                <span class="author-card-pubs">${pubCount} pub${pubCount!==1?'s':''}</span>
+            </div>`;
+        card.appendChild(body);
+        grid.appendChild(card);
+    });
 }
 
 function refreshAuthorDropdowns() {
@@ -3565,12 +3691,26 @@ function applyAuthorFromSelect(authorId) {
     document.getElementById('post-author-linkedin').value = a.linkedin || '';
     document.getElementById('post-author-web').value = a.web || '';
     document.getElementById('post-author-email').value = a.email || '';
-    // Show preview
+    // Show preview — use DOM img to avoid base64 escaping corruption
     const initials = a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
     const avatarEl = document.getElementById('sel-author-avatar');
-    avatarEl.innerHTML = a.photo
-        ? `<img src="${escHtml(a.photo)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(184,137,58,0.4);" onerror="this.outerHTML='<div style=\'width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:Lora,serif;font-size:0.9rem;font-weight:700;color:white;\'>${initials}</div>'">`
-        : `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:0.9rem;font-weight:700;color:white;">${initials}</div>`;
+    avatarEl.innerHTML = '';
+    if (a.photo) {
+        const img = document.createElement('img');
+        img.src = a.photo; // raw, no escaping
+        img.style.cssText = 'width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(184,137,58,0.4);';
+        const ph = document.createElement('div');
+        ph.style.cssText = 'width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:none;align-items:center;justify-content:center;font-family:Lora,serif;font-size:0.9rem;font-weight:700;color:white;';
+        ph.textContent = initials;
+        img.onerror = function() { this.style.display='none'; ph.style.display='flex'; };
+        avatarEl.appendChild(img);
+        avatarEl.appendChild(ph);
+    } else {
+        const ph = document.createElement('div');
+        ph.style.cssText = 'width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:Lora,serif;font-size:0.9rem;font-weight:700;color:white;';
+        ph.textContent = initials;
+        avatarEl.appendChild(ph);
+    }
     document.getElementById('sel-author-name').textContent = a.name;
     document.getElementById('sel-author-role').textContent = (a.title || '') + (a.org ? ' · ' + a.org : '');
     preview.style.display = 'block';
@@ -3587,8 +3727,9 @@ function openAuthorPage(authorId) {
     const initials = a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
 
     // Build overlay HTML
+    // Build avatar element safely — don't use escHtml on base64 src
     const avatarHTML = a.photo
-        ? `<img src="${escHtml(a.photo)}" class="author-page-avatar" alt="${escHtml(a.name)}" onerror="this.outerHTML='<div class=\'author-page-avatar-ph\'>${initials}</div>'">`
+        ? `<img id="author-page-photo-img" class="author-page-avatar" alt="${escHtml(a.name)}">`
         : `<div class="author-page-avatar-ph">${initials}</div>`;
 
     const socialLinks = [
@@ -3659,7 +3800,16 @@ function openAuthorPage(authorId) {
     overlay.classList.add('open');
     overlay.scrollTop = 0;
     document.body.style.overflow = 'hidden';
-}
+    // Set photo src AFTER DOM injection to avoid base64 truncation
+    if (a.photo) {
+        const photoImg = overlay.querySelector('#author-page-photo-img');
+        if (photoImg) {
+            photoImg.src = a.photo;
+            photoImg.onerror = function() {
+                this.outerHTML = `<div class="author-page-avatar-ph">${initials}</div>`;
+            };
+        }
+    }
 
 function closeAuthorPage() {
     const overlay = document.getElementById('author-page-overlay');
