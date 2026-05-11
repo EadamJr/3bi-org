@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3Bi Admin — Publications & Authors</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230B1C2C'/%3E%3Cpolygon points='8,56 22,18 36,56' fill='%239C3D1E'/%3E%3Cpolygon points='22,56 38,10 54,56' fill='%23B8893A'/%3E%3C/svg%3E">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --nile-ink:    #0B1C2C;
+            --cobalt:      #14355F;
+            --cobalt-lt:   #1E4A80;
+            --sienna:      #9C3D1E;
+            --sienna-lt:   #C44E28;
+            --gold:        #B8893A;
+            --gold-lt:     #D4A554;
+            --sand:        #E8DCC8;
+            --sand-lt:     #F5EFE3;
+            --grey:        #7A8A98;
+            --white:       #ffffff;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Poppins',sans-serif; background:#070E16; color:rgba(255,255,255,0.85); min-height:100vh; }
+
+        /* ── LOGIN SCREEN ── */
+        #login-screen {
+            display:flex; align-items:center; justify-content:center;
+            min-height:100vh;
+            background: linear-gradient(145deg,#060E17,#0B1C2C);
+        }
+        .login-card {
+            width:min(440px,95vw);
+            background:linear-gradient(145deg,#0f1f30,#0B1C2C);
+            border-radius:20px; overflow:hidden;
+            border:1px solid rgba(184,137,58,0.25);
+            box-shadow:0 32px 80px rgba(0,0,0,0.6);
+        }
+        .login-header {
+            background:linear-gradient(135deg,#0B1C2C 0%,#14355F 100%);
+            padding:2.5rem 2.5rem 2rem;
+            border-bottom:1px solid rgba(184,137,58,0.2);
+            position:relative;
+        }
+        .login-header::after {
+            content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg,#14355F,#9C3D1E,#B8893A);
+        }
+        .login-logo { display:flex; align-items:center; gap:0.9rem; margin-bottom:1.25rem; }
+        .login-logo span { font-family:'Lora',serif; font-size:1.2rem; font-weight:700; color:white; }
+        .login-header h1 { font-family:'Lora',serif; color:white; font-size:1.6rem; font-weight:700; margin-bottom:0.35rem; }
+        .login-header p  { color:rgba(255,255,255,0.45); font-size:0.82rem; }
+        .login-body { padding:2rem 2.5rem 2.5rem; }
+        .login-field { margin-bottom:1.1rem; }
+        .login-field label { display:block; font-size:0.72rem; font-weight:700; color:rgba(255,255,255,0.45); margin-bottom:0.45rem; text-transform:uppercase; letter-spacing:0.1em; }
+        .login-input-wrap { position:relative; }
+        .login-input-wrap svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:0.35; pointer-events:none; }
+        .login-field input {
+            width:100%; padding:0.8rem 1rem 0.8rem 2.6rem; border-radius:10px;
+            border:1.5px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05);
+            color:white; font-family:'Poppins',sans-serif; font-size:0.9rem; transition:border-color 0.2s;
+        }
+        .login-field input:focus { outline:none; border-color:#B8893A; background:rgba(184,137,58,0.07); }
+        .login-err {
+            color:#ff7b6b; font-size:0.8rem; margin-bottom:0.75rem; display:none;
+            background:rgba(255,123,107,0.1); padding:0.6rem 0.9rem; border-radius:7px;
+            border:1px solid rgba(255,123,107,0.2);
+        }
+        .login-btn {
+            width:100%; padding:0.9rem; border:none; border-radius:10px;
+            background:linear-gradient(135deg,#9C3D1E,#B8893A);
+            color:white; font-family:'Lora',serif; font-size:1rem; font-weight:700;
+            cursor:pointer; transition:all 0.25s;
+            box-shadow:0 4px 16px rgba(156,61,30,0.4);
+        }
+        .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(156,61,30,0.5); }
+        .login-back { text-align:center; margin-top:1rem; }
+        .login-back a { font-size:0.8rem; color:rgba(255,255,255,0.3); text-decoration:none; transition:color 0.2s; }
+        .login-back a:hover { color:rgba(255,255,255,0.6); }
+
+        /* ── ADMIN LAYOUT ── */
+        #admin-app { display:none; flex-direction:column; min-height:100vh; }
+        #admin-app.visible { display:flex; }
+
+        /* Header */
+        .adm-header {
+            background:#0B1C2C; height:62px;
+            display:flex; justify-content:space-between; align-items:center;
+            padding:0 1.5rem; position:sticky; top:0; z-index:100;
+            border-bottom:1px solid rgba(184,137,58,0.2);
+        }
+        .adm-header::after {
+            content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+            background:linear-gradient(90deg,#14355F 33%,#9C3D1E 66%,#B8893A 100%);
+        }
+        .adm-title {
+            font-family:'Lora',serif; color:white; font-size:1.05rem; font-weight:600;
+            display:flex; align-items:center; gap:0.6rem;
+        }
+        .adm-actions { display:flex; gap:0.6rem; align-items:center; }
+        .adm-btn {
+            padding:0.5rem 1rem; border-radius:8px; font-size:0.825rem;
+            font-weight:600; cursor:pointer; border:none; font-family:'Poppins',sans-serif;
+            transition:all 0.2s; display:inline-flex; align-items:center; gap:0.4rem;
+        }
+        .adm-btn-primary { background:linear-gradient(135deg,#9C3D1E,#B8893A); color:white; box-shadow:0 2px 10px rgba(156,61,30,0.35); }
+        .adm-btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(156,61,30,0.5); }
+        .adm-btn-ghost  { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.65); border:1px solid rgba(255,255,255,0.08); }
+        .adm-btn-ghost:hover { background:rgba(255,255,255,0.12); color:white; }
+        .adm-btn-cobalt { background:#14355F; color:rgba(255,255,255,0.85); border:1px solid rgba(255,255,255,0.1); }
+        .adm-btn-cobalt:hover { background:#1E4A80; color:white; }
+        .adm-btn-pdf { background:linear-gradient(135deg,#14355F,#1E4A80); color:white; }
+        .adm-btn-pdf:hover { transform:translateY(-1px); }
+        .adm-btn-sm { padding:0.35rem 0.75rem; font-size:0.75rem; border-radius:6px; }
+
+        /* Body */
+        .adm-body { display:flex; flex:1; overflow:hidden; }
+
+        /* Sidebar */
+        .adm-sidebar {
+            width:220px; background:#0a1520; border-right:1px solid rgba(255,255,255,0.05);
+            padding:1.25rem 0; overflow-y:auto; flex-shrink:0;
+        }
+        .adm-sidebar-label {
+            font-size:0.62rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+            color:rgba(255,255,255,0.22); padding:0.6rem 1.5rem 0.3rem;
+        }
+        .adm-sidebar nav ul { list-style:none; padding:0 0.75rem; }
+        .adm-sidebar nav ul li a {
+            display:flex; align-items:center; gap:0.7rem; padding:0.6rem 0.75rem;
+            color:rgba(255,255,255,0.5); font-size:0.825rem; font-weight:500;
+            text-decoration:none; transition:all 0.2s; border-radius:8px;
+        }
+        .adm-sidebar nav ul li a:hover { color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.05); }
+        .adm-sidebar nav ul li a.active {
+            color:white; background:rgba(156,61,30,0.18);
+            border-left:3px solid #9C3D1E; padding-left:calc(0.75rem - 3px);
+        }
+        .adm-divider { height:1px; background:rgba(255,255,255,0.05); margin:0.75rem 1.5rem; }
+        .nav-icon { width:20px; height:20px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+
+        /* Content */
+        .adm-content { flex:1; padding:1.75rem 2rem; overflow-y:auto; background:#0d1a26; }
+        .adm-section { display:none; }
+        .adm-section.active { display:block; }
+        .adm-section-title {
+            font-family:'Lora',serif; color:white; font-size:1.2rem; font-weight:600;
+            margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;
+            padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.06);
+        }
+
+        /* Stats */
+        .stats-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+        .stat-card {
+            background:#0B1C2C; border:1px solid rgba(255,255,255,0.07);
+            border-radius:12px; padding:1.25rem 1.5rem; border-top:3px solid transparent;
+        }
+        .stat-card:nth-child(1){border-top-color:#B8893A;}
+        .stat-card:nth-child(2){border-top-color:#9C3D1E;}
+        .stat-card:nth-child(3){border-top-color:#14355F;}
+        .stat-card:nth-child(4){border-top-color:#1E4A80;}
+        .stat-card .s-num { font-family:'Lora',serif; font-size:2.2rem; font-weight:700; color:white; line-height:1; }
+        .stat-card .s-lbl { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:0.35rem; text-transform:uppercase; letter-spacing:0.08em; }
+
+        /* Table */
+        .table-wrap { background:#0B1C2C; border-radius:12px; border:1px solid rgba(255,255,255,0.07); overflow:hidden; }
+        .posts-table { width:100%; border-collapse:collapse; }
+        .posts-table th {
+            text-align:left; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em;
+            color:rgba(255,255,255,0.3); padding:0.9rem 1.25rem;
+            border-bottom:1px solid rgba(255,255,255,0.07); background:#0a1520;
+        }
+        .posts-table td { padding:0.9rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.04); color:rgba(255,255,255,0.8); font-size:0.85rem; vertical-align:middle; }
+        .posts-table tr:last-child td { border-bottom:none; }
+        .posts-table tbody tr:hover td { background:rgba(255,255,255,0.02); }
+        .pill { display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.22rem 0.65rem; border-radius:50px; color:white; }
+        .pill-report{background:#9C3D1E;} .pill-analysis{background:#14355F;} .pill-paper{background:#1E4A80;} .pill-announcement{background:#B8893A;}
+        .post-actions { display:flex; gap:0.4rem; flex-wrap:wrap; }
+        .act-btn { padding:0.28rem 0.65rem; border-radius:6px; font-size:0.72rem; font-weight:600; cursor:pointer; border:none; font-family:'Poppins',sans-serif; transition:all 0.15s; }
+        .act-edit { background:rgba(30,74,128,0.3); color:#7ab0e8; border:1px solid rgba(30,74,128,0.4); }
+        .act-edit:hover { background:#1E4A80; color:white; }
+        .act-pdf  { background:rgba(184,137,58,0.2); color:#D4A554; border:1px solid rgba(184,137,58,0.3); }
+        .act-pdf:hover  { background:#B8893A; color:white; }
+        .act-del  { background:rgba(156,61,30,0.2); color:#e07b5a; border:1px solid rgba(156,61,30,0.3); }
+        .act-del:hover  { background:#9C3D1E; color:white; }
+
+        /* Recent pub row */
+        .recent-pub-row { display:flex; align-items:center; gap:0.75rem; padding:0.8rem 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+        .recent-pub-row:last-child { border-bottom:none; }
+        .recent-pub-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+        .recent-pub-title { font-size:0.85rem; color:rgba(255,255,255,0.75); flex:1; }
+        .recent-pub-type  { font-size:0.65rem; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:0.08em; }
+
+        /* Editor */
+        .post-editor { background:#0B1C2C; border-radius:14px; padding:1.75rem; border:1px solid rgba(255,255,255,0.07); }
+        .post-editor-grid { display:grid; grid-template-columns:1fr 290px; gap:1.5rem; }
+        .dash-field { margin-bottom:1.1rem; }
+        .dash-field label { display:block; font-size:0.68rem; font-weight:700; color:rgba(255,255,255,0.4); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.1em; }
+        .dash-field input,.dash-field select,.dash-field textarea {
+            width:100%; padding:0.7rem 0.9rem; border-radius:8px;
+            border:1.5px solid rgba(255,255,255,0.09); background:rgba(255,255,255,0.04);
+            color:white; font-family:'Poppins',sans-serif; font-size:0.875rem; transition:border-color 0.2s;
+        }
+        .dash-field input:focus,.dash-field select:focus,.dash-field textarea:focus { outline:none; border-color:#B8893A; background:rgba(184,137,58,0.05); }
+        .dash-field select option { background:#0B1C2C; }
+        .dash-field textarea { resize:vertical; min-height:200px; line-height:1.65; }
+
+        /* WordPress-style editor */
+        #editor-content { display:none; }
+        .wp-editor-wrap { border:1.5px solid rgba(255,255,255,0.12); border-radius:8px; overflow:hidden; }
+        .wp-toolbar {
+            display:flex; flex-wrap:wrap; align-items:center; gap:2px; padding:6px 8px;
+            background:#1a2d42; border-bottom:1px solid rgba(255,255,255,0.1);
+        }
+        .wp-btn {
+            width:32px; height:30px; display:inline-flex; align-items:center; justify-content:center;
+            border-radius:4px; border:none; background:transparent; color:rgba(255,255,255,0.7);
+            cursor:pointer; font-size:0.85rem; font-weight:700; font-family:'Poppins',sans-serif;
+            transition:all 0.15s; flex-shrink:0; position:relative;
+        }
+        .wp-btn:hover { background:rgba(255,255,255,0.1); color:white; }
+        .wp-btn.active { background:rgba(156,61,30,0.4); color:#ff9a70; }
+        .wp-btn svg { width:16px; height:16px; fill:currentColor; pointer-events:none; }
+        .wp-btn[title]:hover::after {
+            content:attr(title); position:absolute; bottom:-28px; left:50%; transform:translateX(-50%);
+            background:#0B1C2C; color:#E8DCC8; font-size:10px; font-weight:400;
+            padding:3px 7px; border-radius:4px; white-space:nowrap; z-index:99;
+            pointer-events:none; border:1px solid rgba(255,255,255,0.1);
+        }
+        .wp-sep { width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 3px; flex-shrink:0; }
+        .wp-select {
+            height:30px; padding:0 6px; border-radius:4px;
+            border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06);
+            color:rgba(255,255,255,0.8); font-family:'Poppins',sans-serif; font-size:0.75rem; cursor:pointer; outline:none;
+        }
+        .wp-select option { background:#0B1C2C; }
+        .wp-editor-body {
+            min-height:420px; padding:1.5rem; background:white; color:#111;
+            font-family:Georgia,'Times New Roman',serif; font-size:1rem; line-height:1.8;
+            outline:none; caret-color:#111;
+        }
+        .wp-editor-body:empty:before { content:"Start writing your publication here..."; color:#aaa; pointer-events:none; }
+        .wp-editor-body h1 { font-size:1.9rem; font-weight:700; color:#0B1C2C; margin:1.25rem 0 0.5rem; }
+        .wp-editor-body h2 { font-size:1.5rem; font-weight:700; color:#14355F; margin:1rem 0 0.4rem; }
+        .wp-editor-body h3 { font-size:1.2rem; font-weight:700; color:#9C3D1E; margin:0.8rem 0 0.3rem; }
+        .wp-editor-body p  { margin:0 0 0.9rem; }
+        .wp-editor-body ul,.wp-editor-body ol { margin:0 0 0.9rem 1.5rem; }
+        .wp-editor-body li { margin:0.2rem 0; }
+        .wp-editor-body blockquote { margin:1rem 0 1rem 1rem; padding:0.5rem 1rem; border-left:4px solid #B8893A; background:#fdf8f0; color:#555; font-style:italic; }
+        .wp-editor-body hr { border:none; border-top:2px solid #B8893A; margin:1.25rem 0; }
+        .wp-editor-body a { color:#14355F; }
+        .wp-editor-body img { max-width:100%; border-radius:4px; margin:0.5rem 0; display:block; }
+        .wp-editor-body table { border-collapse:collapse; width:100%; margin:1rem 0; }
+        .wp-editor-body td,.wp-editor-body th { border:1px solid #ddd; padding:6px 10px; font-size:0.9rem; }
+        .wp-editor-body th { background:#0B1C2C; color:white; font-weight:700; }
+        .wp-footer { background:#13243a; padding:4px 12px; display:flex; justify-content:space-between; font-family:'Poppins',sans-serif; font-size:0.65rem; color:rgba(255,255,255,0.35); border-top:1px solid rgba(255,255,255,0.06); }
+
+        /* Sidebar cards */
+        .sidebar-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:10px; padding:1.1rem; margin-bottom:0.9rem; }
+        .sidebar-card h5 { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:rgba(255,255,255,0.3); margin-bottom:0.9rem; }
+        .cover-preview {
+            width:100%; aspect-ratio:16/9; background:rgba(255,255,255,0.03);
+            border:2px dashed rgba(255,255,255,0.1); border-radius:8px;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            cursor:pointer; transition:border-color 0.2s; overflow:hidden;
+        }
+        .cover-preview:hover { border-color:#B8893A; }
+        .cover-preview img { width:100%; height:100%; object-fit:cover; display:none; }
+        .cover-preview .upload-hint { color:rgba(255,255,255,0.3); font-size:0.75rem; text-align:center; padding:1rem; }
+        .embed-btns { display:flex; flex-wrap:wrap; gap:0.4rem; }
+        .embed-btn { padding:0.3rem 0.7rem; border-radius:6px; font-size:0.72rem; font-weight:600; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.6); cursor:pointer; transition:all 0.15s; font-family:'Poppins',sans-serif; }
+        .embed-btn:hover { background:rgba(255,255,255,0.1); color:white; border-color:rgba(255,255,255,0.2); }
+        .editor-save-row { display:flex; flex-direction:column; gap:0.6rem; }
+        .editor-save-row button { width:100%; padding:0.75rem; text-align:center; justify-content:center; }
+        .author-select-row { display:flex; gap:0.5rem; align-items:flex-end; }
+        .author-select-row select { flex:1; }
+        .btn-new-author { padding:0.7rem 0.9rem; border-radius:8px; border:1px solid rgba(184,137,58,0.3); background:rgba(184,137,58,0.2); color:#B8893A; font-family:'Poppins',sans-serif; font-size:0.75rem; font-weight:600; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
+        .btn-new-author:hover { background:#B8893A; color:white; }
+
+        /* Author management */
+        .author-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem; margin-top:0.5rem; }
+        .author-admin-card { background:#0B1C2C; border:1px solid rgba(255,255,255,0.08); border-radius:12px; overflow:hidden; transition:border-color 0.2s,box-shadow 0.2s; }
+        .author-admin-card:hover { border-color:rgba(184,137,58,0.35); box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+        .author-card-header { background:linear-gradient(135deg,#0f2240,#14355F); padding:1.25rem; display:flex; align-items:center; gap:1rem; }
+        .author-card-avatar { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2.5px solid rgba(184,137,58,0.5); background:#0B1C2C; flex-shrink:0; }
+        .author-card-avatar-placeholder { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,#9C3D1E,#B8893A); display:flex; align-items:center; justify-content:center; font-family:'Lora',serif; font-size:1.3rem; font-weight:700; color:white; flex-shrink:0; border:2.5px solid rgba(184,137,58,0.4); }
+        .author-card-identity { flex:1; min-width:0; }
+        .author-card-name  { font-family:'Lora',serif; font-size:1rem; font-weight:700; color:white; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .author-card-title { font-family:'Poppins',sans-serif; font-size:0.72rem; color:#B8893A; margin-bottom:1px; }
+        .author-card-org   { font-family:'Poppins',sans-serif; font-size:0.68rem; color:rgba(255,255,255,0.35); }
+        .author-card-body  { padding:1rem 1.25rem; }
+        .author-card-bio   { font-family:'Poppins',sans-serif; font-size:0.8rem; color:rgba(255,255,255,0.5); line-height:1.6; margin-bottom:0.85rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+        .author-card-socials { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+        .author-social-pill { display:inline-flex; align-items:center; gap:0.3rem; padding:0.2rem 0.6rem; border-radius:50px; font-family:'Poppins',sans-serif; font-size:0.65rem; font-weight:600; border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.55); background:rgba(255,255,255,0.04); }
+        .author-card-actions { display:flex; gap:0.5rem; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.85rem; }
+        .author-card-pubs  { font-family:'Poppins',sans-serif; font-size:0.68rem; color:rgba(255,255,255,0.3); margin-left:auto; align-self:center; }
+        .author-form-wrap  { background:#0B1C2C; border-radius:14px; padding:2rem; border:1px solid rgba(255,255,255,0.08); max-width:680px; }
+        .author-form-grid  { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .author-form-grid .full-col { grid-column:1/-1; }
+        .author-photo-placeholder { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#9C3D1E,#B8893A); display:flex; align-items:center; justify-content:center; font-family:'Lora',serif; font-size:1.6rem; font-weight:700; color:white; margin-bottom:0.5rem; border:3px solid rgba(184,137,58,0.3); }
+
+        /* PDF Preview */
+        #pdf-preview-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:10001; align-items:center; justify-content:center; }
+        #pdf-preview-modal.open { display:flex; }
+        .pdf-modal-box { background:#0B1C2C; width:min(680px,96vw); max-height:90vh; border-radius:16px; border:1px solid rgba(184,137,58,0.3); overflow:hidden; display:flex; flex-direction:column; box-shadow:0 32px 80px rgba(0,0,0,0.7); }
+        .pdf-modal-header { padding:1.25rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; background:#0a1520; }
+        .pdf-modal-header h3 { font-family:'Lora',serif; color:white; font-size:1.05rem; }
+        .pdf-modal-body { padding:1.5rem; overflow-y:auto; flex:1; }
+        .lh-preview { background:white; border-radius:8px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.4); font-family:'Poppins',sans-serif; }
+        .lh-header { background:#0B1C2C; padding:1.5rem 2rem 1.25rem; display:flex; justify-content:space-between; align-items:flex-start; }
+        .lh-header-left h1 { font-family:'Lora',serif; font-size:1.5rem; font-weight:700; color:white; }
+        .lh-header-left p  { font-size:0.7rem; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; margin-top:2px; }
+        .lh-tribar { display:flex; gap:3px; margin-top:0.75rem; }
+        .lh-tribar span { height:3px; flex:1; border-radius:2px; display:inline-block; }
+        .lh-meta { background:#E8DCC8; padding:0.75rem 2rem; display:flex; gap:2rem; align-items:center; flex-wrap:wrap; }
+        .lh-meta-item { font-size:0.72rem; color:#0B1C2C; }
+        .lh-meta-item strong { display:block; font-size:0.62rem; text-transform:uppercase; letter-spacing:0.08em; color:#9C3D1E; }
+        .lh-body { padding:1.75rem 2rem; }
+        .lh-body h2 { font-family:'Lora',serif; font-size:1.3rem; color:#0B1C2C; margin-bottom:0.5rem; }
+        .lh-body p  { font-size:0.82rem; color:#3d5068; line-height:1.7; }
+        .lh-footer-bar { height:4px; background:linear-gradient(90deg,#14355F 33%,#9C3D1E 66%,#B8893A 100%); }
+        .lh-footer { background:#0B1C2C; padding:0.75rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+        .lh-footer span { font-size:0.65rem; color:rgba(255,255,255,0.4); }
+        .pdf-modal-footer { padding:1.25rem 1.5rem; border-top:1px solid rgba(255,255,255,0.08); display:flex; gap:0.75rem; justify-content:flex-end; background:#0a1520; }
+        .close-x { background:rgba(255,255,255,0.08); border:none; color:rgba(255,255,255,0.5); cursor:pointer; width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem; transition:all 0.2s; }
+        .close-x:hover { background:rgba(255,255,255,0.15); color:white; }
+
+        /* Embed modal */
+        #embed-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:10000; align-items:center; justify-content:center; }
+        #embed-modal.open { display:flex; }
+        .embed-modal-box { background:#0B1C2C; width:min(540px,95vw); border-radius:14px; padding:2rem; border:1px solid rgba(184,137,58,0.2); box-shadow:0 24px 60px rgba(0,0,0,0.6); }
+        .embed-modal-box h3 { font-family:'Lora',serif; color:white; font-size:1.1rem; margin-bottom:0.4rem; }
+        .embed-modal-box p  { color:rgba(255,255,255,0.45); font-size:0.82rem; margin-bottom:1.25rem; font-family:'Poppins',sans-serif; }
+        .embed-textarea { width:100%; padding:0.8rem; border-radius:8px; min-height:100px; border:1.5px solid rgba(255,255,255,0.09); background:rgba(255,255,255,0.04); color:white; font-family:monospace; font-size:0.82rem; resize:vertical; }
+        .embed-textarea:focus { outline:none; border-color:#B8893A; }
+        .embed-modal-actions { display:flex; gap:0.75rem; margin-top:1rem; justify-content:flex-end; }
+
+        /* PDF settings panel */
+        .pdf-letterhead-preview { background:#0B1C2C; border-radius:12px; padding:1.5rem; border:1px solid rgba(255,255,255,0.08); }
+
+        @media(max-width:768px) {
+            .adm-sidebar { display:none; }
+            .post-editor-grid { grid-template-columns:1fr; }
+            .stats-cards { grid-template-columns:repeat(2,1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login-screen">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-logo">
+                <svg width="36" height="33" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="52" height="48" rx="8" fill="rgba(255,255,255,0.08)"/>
+                    <polygon points="5,41 11,18 17,41" fill="#9C3D1E"/>
+                    <polygon points="17,41 26,10 35,41" fill="#B8893A"/>
+                    <polygon points="35,41 41,22 47,41" fill="#14355F"/>
+                </svg>
+                <span>3Bi</span>
+            </div>
+            <h1>Admin Portal</h1>
+            <p>Build Back Better Initiative · Publications & Authors</p>
+        </div>
+        <div class="login-body">
+            <div class="login-field">
+                <label>Username</label>
+                <div class="login-input-wrap">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="4" stroke="white" stroke-width="1.5"/><path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <input type="text" id="login-user" placeholder="Enter username" autocomplete="off">
+                </div>
+            </div>
+            <div class="login-field">
+                <label>Password</label>
+                <div class="login-input-wrap">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="white" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.5" fill="white"/></svg>
+                    <input type="password" id="login-pass" placeholder="Enter password">
+                </div>
+            </div>
+            <div class="login-err" id="login-err">Incorrect username or password.</div>
+            <button class="login-btn" onclick="doLogin()">Sign In to Dashboard</button>
+            <div class="login-back"><a href="https://www.3bisudan.org">← Back to 3bisudan.org</a></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ ADMIN APP ═══ -->
+<div id="admin-app">
+
+    <!-- Header -->
+    <div class="adm-header">
+        <div class="adm-title">
+            <svg width="30" height="28" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg">
+                <rect width="52" height="48" rx="8" fill="#14355F"/>
+                <polygon points="5,41 11,18 17,41" fill="#9C3D1E"/>
+                <polygon points="17,41 26,10 35,41" fill="#B8893A"/>
+                <polygon points="35,41 41,22 47,41" fill="#1E4A80"/>
+            </svg>
+            3Bi Admin
+            <span style="font-family:'Poppins',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.35);margin-left:0.5rem;font-weight:400;">Publications & Authors</span>
+        </div>
+        <div class="adm-actions">
+            <button class="adm-btn adm-btn-primary" onclick="showSection('new-post')">+ New Publication</button>
+            <a href="https://www.3bisudan.org" class="adm-btn adm-btn-ghost">← Main Website</a>
+            <button class="adm-btn adm-btn-ghost adm-btn-sm" onclick="doLogout()">Log Out</button>
+        </div>
+    </div>
+
+    <div class="adm-body">
+        <!-- Sidebar -->
+        <div class="adm-sidebar">
+            <div class="adm-sidebar-label">Main</div>
+            <nav><ul>
+                <li><a href="#" onclick="showSection('overview')" class="active" id="nav-overview">
+                    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="2" y="12" width="4" height="6" rx="1" fill="#9C3D1E" opacity="0.8"/><rect x="8" y="7" width="4" height="11" rx="1" fill="#B8893A" opacity="0.8"/><rect x="14" y="3" width="4" height="15" rx="1" fill="#14355F" opacity="0.8"/></svg></span>
+                    Overview
+                </a></li>
+                <li><a href="#" onclick="showSection('all-posts')" id="nav-all-posts">
+                    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="11" height="14" rx="1.5" fill="#14355F" opacity="0.8"/><rect x="6" y="4" width="11" height="14" rx="1.5" fill="#1E4A80" opacity="0.9" stroke="#0B1C2C" stroke-width="0.5"/><line x1="9" y1="8" x2="15" y2="8" stroke="#E8DCC8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/><line x1="9" y1="11" x2="15" y2="11" stroke="#E8DCC8" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/><line x1="9" y1="14" x2="13" y2="14" stroke="#E8DCC8" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/></svg></span>
+                    All Publications
+                </a></li>
+                <li><a href="#" onclick="showSection('new-post')" id="nav-new-post">
+                    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M13 3L17 7L7 17L3 17L3 13Z" fill="#14355F" stroke="#0B1C2C" stroke-width="0.5"/><line x1="11" y1="5" x2="15" y2="9" stroke="#B8893A" stroke-width="1.2"/></svg></span>
+                    New Publication
+                </a></li>
+                <li><a href="#" onclick="showSection('authors')" id="nav-authors">
+                    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="8" cy="7" r="4" stroke="#B8893A" stroke-width="1.4"/><path d="M2 18c0-3.314 2.686-6 6-6" stroke="#B8893A" stroke-width="1.4" stroke-linecap="round"/><circle cx="15" cy="13" r="3" stroke="#B8893A" stroke-width="1.2"/><line x1="15" y1="10" x2="15" y2="16" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/><line x1="12" y1="13" x2="18" y2="13" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                    Author Profiles
+                </a></li>
+            </ul></nav>
+            <div class="adm-divider"></div>
+            <div class="adm-sidebar-label">Assets</div>
+            <nav><ul>
+                <li><a href="#" onclick="showSection('pdf-templates')" id="nav-pdf">
+                    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="#B8893A" stroke-width="1.4"/><line x1="6" y1="7" x2="14" y2="7" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/><line x1="6" y1="10" x2="14" y2="10" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/><line x1="6" y1="13" x2="11" y2="13" stroke="#B8893A" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                    PDF Letterhead
+                </a></li>
+            </ul></nav>
+            <div class="adm-divider"></div>
+            <div class="adm-sidebar-label">System</div>
+            <nav><ul>
+                <li><a href="#" onclick="showSection('settings')" id="nav-settings">
+                    <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" stroke="#14355F" stroke-width="2"/><path d="M10 2L10 4M10 16L10 18M2 10L4 10M16 10L18 10M4.3 4.3L5.7 5.7M14.3 14.3L15.7 15.7M15.7 4.3L14.3 5.7M5.7 14.3L4.3 15.7" stroke="#9C3D1E" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                    Settings
+                </a></li>
+            </ul></nav>
+        </div>
+
+        <!-- Content -->
+        <div class="adm-content">
+
+            <!-- OVERVIEW -->
+            <div class="adm-section active" id="ds-overview">
+                <div class="adm-section-title">Dashboard Overview</div>
+                <div class="stats-cards">
+                    <div class="stat-card"><div class="s-num" id="stat-total">0</div><div class="s-lbl">Total Publications</div></div>
+                    <div class="stat-card"><div class="s-num" id="stat-reports">0</div><div class="s-lbl">Reports</div></div>
+                    <div class="stat-card"><div class="s-num" id="stat-analysis">0</div><div class="s-lbl">Analysis</div></div>
+                    <div class="stat-card"><div class="s-num" id="stat-papers">0</div><div class="s-lbl">Policy Papers</div></div>
+                </div>
+                <div class="table-wrap" style="padding:1.5rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+                        <h4 style="color:rgba(255,255,255,0.6);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;font-family:'Poppins',sans-serif;font-weight:700;">Recent Publications</h4>
+                        <button class="adm-btn adm-btn-cobalt adm-btn-sm" onclick="showSection('all-posts')">View All</button>
+                    </div>
+                    <div id="dash-recent-list"><span style="color:rgba(255,255,255,0.25);font-size:0.85rem;">No publications yet.</span></div>
+                </div>
+            </div>
+
+            <!-- ALL PUBLICATIONS -->
+            <div class="adm-section" id="ds-all-posts">
+                <div class="adm-section-title">All Publications
+                    <button class="adm-btn adm-btn-primary" onclick="showSection('new-post')">+ New Publication</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="posts-table">
+                        <thead><tr><th>Title</th><th>Type</th><th>Theme</th><th>Date</th><th>Actions</th></tr></thead>
+                        <tbody id="posts-tbody"><tr><td colspan="5" style="color:rgba(255,255,255,0.25);text-align:center;padding:2.5rem;">No publications yet.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- NEW / EDIT PUBLICATION -->
+            <div class="adm-section" id="ds-new-post">
+                <div class="adm-section-title" id="editor-title">New Publication</div>
+                <div class="post-editor">
+                    <input type="hidden" id="edit-post-id" value="">
+                    <div class="post-editor-grid">
+                        <div class="editor-main">
+                            <div class="dash-field">
+                                <label>Publication Title *</label>
+                                <input type="text" id="post-title" placeholder="Enter a clear, descriptive title...">
+                            </div>
+                            <div class="dash-field">
+                                <label>Excerpt / Summary</label>
+                                <textarea id="post-excerpt" placeholder="A brief 2-3 sentence summary..." style="min-height:80px;"></textarea>
+                            </div>
+                            <div class="dash-field">
+                                <label>Full Content</label>
+                                <textarea id="editor-content" style="display:none"></textarea>
+                                <div class="wp-editor-wrap">
+                                    <div class="wp-toolbar">
+                                        <select class="wp-select" onchange="wpFormat(this.value);this.value=''">
+                                            <option value="">Paragraph</option>
+                                            <option value="h1">Heading 1</option>
+                                            <option value="h2">Heading 2</option>
+                                            <option value="h3">Heading 3</option>
+                                            <option value="p">Normal</option>
+                                            <option value="blockquote">Quote</option>
+                                        </select>
+                                        <div class="wp-sep"></div>
+                                        <button class="wp-btn" id="wpb-bold" title="Bold (Ctrl+B)" onclick="wpCmd('bold')"><svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg></button>
+                                        <button class="wp-btn" id="wpb-italic" title="Italic (Ctrl+I)" onclick="wpCmd('italic')"><svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z"/></svg></button>
+                                        <button class="wp-btn" id="wpb-underline" title="Underline (Ctrl+U)" onclick="wpCmd('underline')"><svg viewBox="0 0 24 24"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg></button>
+                                        <button class="wp-btn" title="Strikethrough" onclick="wpCmd('strikeThrough')"><svg viewBox="0 0 24 24"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg></button>
+                                        <div class="wp-sep"></div>
+                                        <button class="wp-btn" title="Align Left" onclick="wpCmd('justifyLeft')"><svg viewBox="0 0 24 24"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg></button>
+                                        <button class="wp-btn" title="Center" onclick="wpCmd('justifyCenter')"><svg viewBox="0 0 24 24"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg></button>
+                                        <button class="wp-btn" title="Align Right" onclick="wpCmd('justifyRight')"><svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg></button>
+                                        <div class="wp-sep"></div>
+                                        <button class="wp-btn" title="Bullet List" onclick="wpCmd('insertUnorderedList')"><svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg></button>
+                                        <button class="wp-btn" title="Numbered List" onclick="wpCmd('insertOrderedList')"><svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg></button>
+                                        <button class="wp-btn" title="Indent" onclick="wpCmd('indent')"><svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg></button>
+                                        <div class="wp-sep"></div>
+                                        <button class="wp-btn" title="Insert Link" onclick="wpInsertLink()"><svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg></button>
+                                        <button class="wp-btn" title="Remove Link" onclick="wpCmd('unlink')"><svg viewBox="0 0 24 24"><path d="M17 7h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1 0 1.43-.98 2.63-2.31 3l1.46 1.44C20.88 15.61 22 13.95 22 12c0-2.76-2.24-5-5-5zm-1 4h-2.19l2 2H16v-2zM2 4.27l3.11 3.11C3.29 8.12 2 9.91 2 12c0 2.76 2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1 0-1.59 1.21-2.9 2.76-3.07L8.73 11H8v2h2.73l2 2H11v1.9h1.27l2.09 2.09L15.73 19 4.27 3.73 2.84 5.16 2 4.27z"/></svg></button>
+                                        <button class="wp-btn" title="Insert Image" onclick="wpInsertImage()"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
+                                        <button class="wp-btn" title="Horizontal Line" onclick="wpCmd('insertHorizontalRule')"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg></button>
+                                        <div class="wp-sep"></div>
+                                        <button class="wp-btn" title="Undo" onclick="wpCmd('undo')"><svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg></button>
+                                        <button class="wp-btn" title="Redo" onclick="wpCmd('redo')"><svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg></button>
+                                        <button class="wp-btn" title="Remove Formatting" onclick="wpCmd('removeFormat')"><svg viewBox="0 0 24 24"><path d="M20 8V5H6.39l3 3h1.83l-.55 1.28 2.09 2.1L14.21 8H20zM3.27 5L2 6.27l6.97 6.97L6.5 19h3l1.57-3.66L16.73 21 18 19.73 3.27 5z"/></svg></button>
+                                        <div class="wp-sep"></div>
+                                        <span style="font-family:'Poppins',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.3);padding:0 6px;" id="wp-wc">Words: 0</span>
+                                    </div>
+                                    <div id="wp-editor" class="wp-editor-body" contenteditable="true" spellcheck="true" oninput="wpSync()" onkeyup="wpState()" onmouseup="wpState()" onfocus="wpState()"></div>
+                                    <div class="wp-footer"><span>3Bi Publication Editor</span><span id="wp-status">Ready</span></div>
+                                </div>
+                            </div>
+                            <div class="dash-field">
+                                <label>External Link (PDF, DOI, URL)</label>
+                                <input type="url" id="post-link" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="editor-sidebar">
+                            <div class="sidebar-card">
+                                <h5>Cover Image</h5>
+                                <div class="cover-preview" onclick="triggerCoverUpload()" id="cover-preview-box">
+                                    <img id="cover-img-preview" src="" alt="">
+                                    <div class="upload-hint">Click to upload</div>
+                                </div>
+                                <input type="file" id="cover-file-input" accept="image/*" style="display:none" onchange="handleCoverUpload(this)">
+                                <input type="text" id="post-cover-url" placeholder="Or paste image URL..." style="margin-top:0.5rem;padding:0.55rem 0.8rem;width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:6px;color:white;font-size:0.78rem;font-family:'Poppins',sans-serif;" oninput="updateCoverFromUrl(this.value)">
+                            </div>
+                            <div class="sidebar-card">
+                                <h5>Publication Details</h5>
+                                <div class="dash-field">
+                                    <label>Type</label>
+                                    <select id="post-type">
+                                        <option value="report">Report</option>
+                                        <option value="paper">Policy Paper</option>
+                                        <option value="analysis">Analysis</option>
+                                        <option value="announcement">Announcement</option>
+                                    </select>
+                                </div>
+                                <div class="dash-field">
+                                    <label>Theme</label>
+                                    <select id="post-theme">
+                                        <option>Climate-Conflict Nexus</option>
+                                        <option>Governance &amp; Democratization</option>
+                                        <option>Humanitarian-Dev Nexus</option>
+                                        <option>Public Health Systems</option>
+                                        <option>Grassroots Empowerment</option>
+                                        <option>General</option>
+                                    </select>
+                                </div>
+                                <div class="dash-field">
+                                    <label>Date</label>
+                                    <input type="date" id="post-date">
+                                </div>
+                                <div class="dash-field">
+                                    <label>Reference Code</label>
+                                    <input type="text" id="post-ref" placeholder="e.g. 3BI/2025/PB/001">
+                                </div>
+                            </div>
+                            <div class="sidebar-card">
+                                <h5>Author</h5>
+                                <div class="dash-field">
+                                    <label>Select Author</label>
+                                    <div class="author-select-row">
+                                        <select id="post-author-select" onchange="applyAuthorFromSelect(this.value)">
+                                            <option value="">— Select an author —</option>
+                                        </select>
+                                        <button class="btn-new-author" onclick="showSection('authors')">+ New</button>
+                                    </div>
+                                </div>
+                                <div id="selected-author-preview" style="display:none;margin-top:0.75rem;padding:0.75rem;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid rgba(255,255,255,0.07);">
+                                    <div style="display:flex;gap:0.75rem;align-items:center;">
+                                        <div id="sel-author-avatar" style="flex-shrink:0;"></div>
+                                        <div>
+                                            <div id="sel-author-name" style="font-family:'Lora',serif;font-size:0.9rem;font-weight:700;color:white;"></div>
+                                            <div id="sel-author-role" style="font-family:'Poppins',sans-serif;font-size:0.72rem;color:#B8893A;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="post-author" value="">
+                                <input type="hidden" id="post-author-title" value="">
+                                <input type="hidden" id="post-author-org" value="">
+                                <input type="hidden" id="post-author-bio" value="">
+                                <input type="hidden" id="post-author-photo" value="">
+                                <input type="hidden" id="post-author-twitter" value="">
+                                <input type="hidden" id="post-author-linkedin" value="">
+                                <input type="hidden" id="post-author-web" value="">
+                                <input type="hidden" id="post-author-email" value="">
+                            </div>
+                            <div class="sidebar-card">
+                                <h5>Quick Embeds</h5>
+                                <div class="embed-btns">
+                                    <button class="embed-btn" onclick="openEmbedModal('tweet')">🐦 Tweet</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('embed')">📺 Embed</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('audio')">🎙 Audio</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('video')">▶ Video</button>
+                                    <button class="embed-btn" onclick="openEmbedModal('link')">🔗 Link</button>
+                                </div>
+                            </div>
+                            <div class="editor-save-row">
+                                <button class="adm-btn adm-btn-primary" onclick="savePost()">💾 Save Publication</button>
+                                <button class="adm-btn adm-btn-ghost" onclick="resetEditor()">Clear Form</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUTHOR PROFILES -->
+            <div class="adm-section" id="ds-authors">
+                <div class="adm-section-title">Author Profiles
+                    <button class="adm-btn adm-btn-primary" onclick="showAuthorForm()">+ New Author</button>
+                </div>
+                <div id="author-form-wrap" style="display:none;margin-bottom:1.5rem;">
+                    <div class="author-form-wrap">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+                            <h4 style="font-family:'Lora',serif;color:white;font-size:1.1rem;" id="author-form-title">New Author Profile</h4>
+                            <button class="adm-btn adm-btn-ghost adm-btn-sm" onclick="hideAuthorForm()">Cancel</button>
+                        </div>
+                        <input type="hidden" id="edit-author-id" value="">
+                        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+                            <div id="author-form-avatar"><div class="author-photo-placeholder" id="author-form-ph">?</div></div>
+                            <div style="flex:1;">
+                                <div class="dash-field" style="margin-bottom:0.6rem;">
+                                    <label>Upload Photo from Device</label>
+                                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                                        <label for="af-photo-file" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1rem;border-radius:7px;cursor:pointer;background:rgba(184,137,58,0.15);border:1px solid rgba(184,137,58,0.3);color:#B8893A;font-family:'Poppins',sans-serif;font-size:0.78rem;font-weight:600;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.background='rgba(184,137,58,0.28)'" onmouseout="this.style.background='rgba(184,137,58,0.15)'">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#B8893A"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                                            Choose Photo
+                                        </label>
+                                        <span id="af-photo-filename" style="font-family:'Poppins',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.3);">No file chosen</span>
+                                        <input type="file" id="af-photo-file" accept="image/*" style="display:none" onchange="handleAuthorPhotoUpload(this)">
+                                    </div>
+                                </div>
+                                <div class="dash-field" style="margin-bottom:0;">
+                                    <label>Or Paste Photo URL</label>
+                                    <input type="text" id="af-photo" placeholder="https://... or data URI" oninput="previewAuthorPhoto(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="author-form-grid">
+                            <div class="dash-field"><label>Full Name *</label><input type="text" id="af-name" placeholder="e.g. Mohamed ElMujtaba Eadam"></div>
+                            <div class="dash-field"><label>Title / Position</label><input type="text" id="af-title" placeholder="e.g. Founder & Lead Analyst"></div>
+                            <div class="dash-field"><label>Organisation</label><input type="text" id="af-org" placeholder="e.g. Build Back Better Initiative (3Bi)"></div>
+                            <div class="dash-field"><label>Email Address</label><input type="email" id="af-email" placeholder="author@example.com"></div>
+                            <div class="dash-field full-col"><label>Bio</label><textarea id="af-bio" placeholder="Short bio — appears at the end of every publication." style="min-height:100px;"></textarea></div>
+                            <div class="dash-field"><label>Twitter / X URL</label><input type="url" id="af-twitter" placeholder="https://twitter.com/username"></div>
+                            <div class="dash-field"><label>LinkedIn URL</label><input type="url" id="af-linkedin" placeholder="https://linkedin.com/in/username"></div>
+                            <div class="dash-field"><label>ResearchGate / Academia</label><input type="url" id="af-research" placeholder="https://researchgate.net/..."></div>
+                            <div class="dash-field"><label>Personal Website</label><input type="url" id="af-web" placeholder="https://..."></div>
+                        </div>
+                        <div style="display:flex;gap:0.75rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.08);">
+                            <button class="adm-btn adm-btn-primary" onclick="saveAuthor()" style="padding:0.75rem 2rem;">💾 Save Author</button>
+                            <button class="adm-btn adm-btn-ghost" onclick="hideAuthorForm()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="author-grid" id="author-cards-grid">
+                    <div style="color:rgba(255,255,255,0.25);font-family:'Poppins',sans-serif;font-size:0.875rem;padding:2rem;">No authors yet. Click "+ New Author" to add your first profile.</div>
+                </div>
+            </div>
+
+            <!-- PDF LETTERHEAD -->
+            <div class="adm-section" id="ds-pdf-templates">
+                <div class="adm-section-title">PDF Letterhead</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+                    <div class="table-wrap" style="padding:1.5rem;">
+                        <h5 style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.3);margin-bottom:1.25rem;font-family:'Poppins',sans-serif;">Letterhead Preview</h5>
+                        <div class="lh-preview">
+                            <div class="lh-header">
+                                <div class="lh-header-left"><h1>3Bi</h1><p>Build Back Better Initiative</p><div class="lh-tribar"><span style="background:#14355F;"></span><span style="background:#9C3D1E;"></span><span style="background:#B8893A;"></span></div></div>
+                                <svg width="44" height="40" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg"><polygon points="5,41 11,18 17,41" fill="#9C3D1E"/><polygon points="17,41 26,10 35,41" fill="#B8893A"/><polygon points="35,41 41,22 47,41" fill="#14355F"/></svg>
+                            </div>
+                            <div class="lh-meta"><div class="lh-meta-item"><strong>Type</strong>Policy Report</div><div class="lh-meta-item"><strong>Theme</strong>Climate-Conflict</div><div class="lh-meta-item"><strong>Date</strong>2025</div></div>
+                            <div class="lh-body"><h2>Publication Title</h2><p>Full content appears here, formatted with the 3Bi brand letterhead.</p></div>
+                            <div class="lh-footer-bar"></div>
+                            <div class="lh-footer"><span>Build Back Better Initiative (3Bi) · Sudan & East Africa</span><span>www.3bisudan.org</span></div>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="padding:1.5rem;">
+                        <h5 style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.3);margin-bottom:1.25rem;font-family:'Poppins',sans-serif;">How PDF Export Works</h5>
+                        <div style="display:flex;flex-direction:column;gap:1rem;">
+                            <div style="display:flex;gap:0.75rem;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:#9C3D1E;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;font-family:'Poppins',sans-serif;">1</div><p style="font-size:0.825rem;color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;margin:0;line-height:1.6;">Go to <strong style="color:rgba(255,255,255,0.8);">All Publications</strong> and click the <strong style="color:#D4A554;">PDF</strong> button next to any report, analysis or paper.</p></div>
+                            <div style="display:flex;gap:0.75rem;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:#B8893A;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;font-family:'Poppins',sans-serif;">2</div><p style="font-size:0.825rem;color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;margin:0;line-height:1.6;">A preview of the branded letterhead appears with the Meroe Mark, Nile Palette, and tricolour stripe.</p></div>
+                            <div style="display:flex;gap:0.75rem;align-items:flex-start;"><div style="width:24px;height:24px;border-radius:50%;background:#14355F;color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;font-family:'Poppins',sans-serif;">3</div><p style="font-size:0.825rem;color:rgba(255,255,255,0.55);font-family:'Poppins',sans-serif;margin:0;line-height:1.6;">Click <strong style="color:rgba(255,255,255,0.8);">Download PDF</strong> to save the branded publication.</p></div>
+                        </div>
+                        <div style="margin-top:1.5rem;padding:1rem;background:rgba(184,137,58,0.1);border:1px solid rgba(184,137,58,0.2);border-radius:8px;"><p style="font-size:0.78rem;color:#D4A554;font-family:'Poppins',sans-serif;margin:0;line-height:1.6;"><strong>Brand compliant:</strong> All PDFs use the official Nile Palette, Meroe pyramid mark, and tricolour footer stripe per the 3Bi Brand Guidelines v1.0.</p></div>
+                    </div>
+                </div>
+                <div class="table-wrap" style="padding:1.5rem;display:flex;justify-content:space-between;align-items:center;">
+                    <div><p style="color:rgba(255,255,255,0.7);font-family:'Poppins',sans-serif;font-size:0.875rem;font-weight:600;margin-bottom:0.25rem;">Generate a Test PDF</p><p style="color:rgba(255,255,255,0.35);font-family:'Poppins',sans-serif;font-size:0.78rem;margin:0;">Preview the full branded letterhead with sample content.</p></div>
+                    <button class="adm-btn adm-btn-pdf" onclick="previewPdf('__test__')">Preview Letterhead PDF</button>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="adm-section" id="ds-settings">
+                <div class="adm-section-title">Settings</div>
+                <div class="post-editor" style="max-width:560px;">
+                    <div class="dash-field"><label>Site Title</label><input type="text" value="3Bi — Build Back Better Initiative"></div>
+                    <div class="dash-field"><label>Contact Email</label><input type="email" value="contact@3bisudan.org"></div>
+                    <div class="dash-field"><label>Twitter Handle</label><input type="text" value="@3BiSudan"></div>
+                    <div style="height:1px;background:rgba(255,255,255,0.07);margin:1.25rem 0;"></div>
+                    <div class="dash-field"><label>Change Admin Password</label><input type="password" id="new-pass" placeholder="New password (leave blank to keep current)"></div>
+                    <button class="adm-btn adm-btn-primary" style="padding:0.75rem 2rem;" onclick="saveSettings()">Save Settings</button>
+                </div>
+            </div>
+
+        </div><!-- /adm-content -->
+    </div><!-- /adm-body -->
+</div><!-- /admin-app -->
+
+<!-- PDF Preview Modal -->
+<div id="pdf-preview-modal">
+    <div class="pdf-modal-box">
+        <div class="pdf-modal-header">
+            <h3>PDF Letterhead Preview</h3>
+            <button class="close-x" onclick="closePdfModal()">✕</button>
+        </div>
+        <div class="pdf-modal-body"><div class="lh-preview" id="pdf-lh-preview"></div></div>
+        <div class="pdf-modal-footer">
+            <button class="adm-btn adm-btn-ghost" onclick="closePdfModal()">Cancel</button>
+            <button class="adm-btn adm-btn-pdf" id="pdf-download-btn" onclick="downloadPdf()">⬇ Download PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- Embed Modal -->
+<div id="embed-modal">
+    <div class="embed-modal-box">
+        <h3 id="embed-modal-title">Insert Embed</h3>
+        <p id="embed-modal-desc">Paste the embed code or URL below.</p>
+        <textarea class="embed-textarea" id="embed-input" placeholder="Paste here..."></textarea>
+        <div class="embed-modal-actions">
+            <button class="adm-btn adm-btn-ghost" onclick="closeEmbedModal()">Cancel</button>
+            <button class="adm-btn adm-btn-primary" onclick="insertEmbed()">Insert</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── CREDENTIALS ──
+const CREDS = { user:'admin3bi', pass:'3BiSudan2026!' };
+let currentEmbedType = '';
+let currentPdfPostId = null;
+let _pdfFilename = '';
+
+// ── LOGIN ──
+function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value;
+    const sp = localStorage.getItem('3bi_admin_pass') || CREDS.pass;
+    if (u === CREDS.user && p === sp) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-app').classList.add('visible');
+        sessionStorage.setItem('3bi_admin_authed', '1');
+        init();
+    } else {
+        document.getElementById('login-err').style.display = 'block';
+    }
+}
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+
+function doLogout() {
+    sessionStorage.removeItem('3bi_admin_authed');
+    document.getElementById('admin-app').classList.remove('visible');
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-err').style.display = 'none';
+}
+
+// ── INIT ──
+function init() {
+    seedDefaultAuthor();
+    showSection('overview');
+    updateStats();
+    renderPostsTable();
+    refreshAuthorDropdowns();
+    const d = document.getElementById('post-date');
+    if (d) d.value = new Date().toISOString().split('T')[0];
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('3bi_admin_authed') === '1') {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-app').classList.add('visible');
+        init();
+    }
+});
+
+// ── NAVIGATION ──
+function showSection(id) {
+    document.querySelectorAll('.adm-section').forEach(s => s.classList.remove('active'));
+    const sec = document.getElementById('ds-' + id);
+    if (sec) sec.classList.add('active');
+    document.querySelectorAll('.adm-sidebar nav a').forEach(a => a.classList.remove('active'));
+    const navMap = { 'overview':'nav-overview','all-posts':'nav-all-posts','new-post':'nav-new-post','authors':'nav-authors','pdf-templates':'nav-pdf','settings':'nav-settings' };
+    const nav = document.getElementById(navMap[id] || '');
+    if (nav) nav.classList.add('active');
+    if (id === 'all-posts') renderPostsTable();
+    if (id === 'overview') updateStats();
+    if (id === 'authors') { renderAuthorCards(); }
+    if (id === 'new-post') refreshAuthorDropdowns();
+}
+
+// ── DATA ──
+function getPosts()   { try { return JSON.parse(localStorage.getItem('3bi_posts')||'[]'); } catch { return []; } }
+function savePosts(p) { localStorage.setItem('3bi_posts', JSON.stringify(p)); }
+function getAuthors() { try { return JSON.parse(localStorage.getItem('3bi_authors')||'[]'); } catch { return []; } }
+function saveAuthors(a) { localStorage.setItem('3bi_authors', JSON.stringify(a)); }
+
+function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── PUBLICATIONS ──
+function savePost() {
+    const title = document.getElementById('post-title').value.trim();
+    if (!title) { alert('Please enter a title.'); return; }
+    const wpEd = document.getElementById('wp-editor');
+    if (wpEd) document.getElementById('editor-content').value = wpEd.innerHTML;
+    const editId = document.getElementById('edit-post-id').value;
+    const posts = getPosts();
+    const post = {
+        id: editId || Date.now().toString(), title,
+        excerpt: document.getElementById('post-excerpt').value.trim(),
+        content: document.getElementById('editor-content').value.trim(),
+        type: document.getElementById('post-type').value,
+        theme: document.getElementById('post-theme').value,
+        date: document.getElementById('post-date').value,
+        ref: document.getElementById('post-ref').value.trim(),
+        cover: document.getElementById('post-cover-url').value.trim(),
+        link: document.getElementById('post-link').value.trim(),
+        authorId:       (document.getElementById('post-author-select')||{}).value||'',
+        author:         document.getElementById('post-author').value,
+        authorName:     document.getElementById('post-author').value,
+        authorTitle:    document.getElementById('post-author-title').value,
+        authorOrg:      document.getElementById('post-author-org').value,
+        authorBio:      document.getElementById('post-author-bio').value,
+        authorPhoto:    document.getElementById('post-author-photo').value,
+        authorTwitter:  document.getElementById('post-author-twitter').value,
+        authorLinkedin: document.getElementById('post-author-linkedin').value,
+        authorWeb:      document.getElementById('post-author-web').value,
+        authorEmail:    document.getElementById('post-author-email').value,
+    };
+    if (editId) { const i=posts.findIndex(p=>p.id===editId); if(i!==-1) posts[i]=post; else posts.unshift(post); }
+    else posts.unshift(post);
+    savePosts(posts);
+    alert('Publication saved!');
+    resetEditor(); showSection('all-posts'); updateStats();
+}
+
+function resetEditor() {
+    ['post-title','post-excerpt','post-link','post-cover-url','post-ref'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('editor-content').value='';
+    const wpEd=document.getElementById('wp-editor'); if(wpEd) wpEd.innerHTML='';
+    document.getElementById('edit-post-id').value='';
+    document.getElementById('editor-title').textContent='New Publication';
+    document.getElementById('post-type').value='report';
+    document.getElementById('post-date').value=new Date().toISOString().split('T')[0];
+    const img=document.getElementById('cover-img-preview'); if(img) img.style.display='none';
+    const hint=document.querySelector('.cover-preview .upload-hint'); if(hint) hint.style.display='';
+    const wc=document.getElementById('wp-wc'); if(wc) wc.textContent='Words: 0';
+    const sel=document.getElementById('post-author-select'); if(sel) sel.value='';
+    const prev=document.getElementById('selected-author-preview'); if(prev) prev.style.display='none';
+    ['post-author','post-author-title','post-author-org','post-author-bio','post-author-photo','post-author-twitter','post-author-linkedin','post-author-web','post-author-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+function editPost(id) {
+    const p=getPosts().find(x=>x.id===id); if(!p) return;
+    document.getElementById('edit-post-id').value=p.id;
+    document.getElementById('post-title').value=p.title;
+    document.getElementById('post-excerpt').value=p.excerpt||'';
+    document.getElementById('editor-content').value=p.content||'';
+    const wpEd=document.getElementById('wp-editor'); if(wpEd) wpEd.innerHTML=p.content||'';
+    document.getElementById('post-type').value=p.type;
+    document.getElementById('post-theme').value=p.theme;
+    document.getElementById('post-date').value=p.date;
+    document.getElementById('post-ref').value=p.ref||'';
+    document.getElementById('post-cover-url').value=p.cover||'';
+    document.getElementById('post-link').value=p.link||'';
+    document.getElementById('editor-title').textContent='Edit Publication';
+    if(p.cover) updateCoverFromUrl(p.cover);
+    refreshAuthorDropdowns();
+    if(p.authorId){ document.getElementById('post-author-select').value=p.authorId; applyAuthorFromSelect(p.authorId); }
+    else if(p.authorName){ const m=getAuthors().find(a=>a.name===p.authorName); if(m){document.getElementById('post-author-select').value=m.id;applyAuthorFromSelect(m.id);} }
+    showSection('new-post');
+}
+
+function deletePost(id) {
+    if(!confirm('Delete this publication?')) return;
+    savePosts(getPosts().filter(p=>p.id!==id));
+    renderPostsTable(); updateStats();
+}
+
+function renderPostsTable() {
+    const posts=getPosts(); const tbody=document.getElementById('posts-tbody'); if(!tbody) return;
+    if(!posts.length){tbody.innerHTML='<tr><td colspan="5" style="color:rgba(255,255,255,0.25);text-align:center;padding:2.5rem;">No publications yet.</td></tr>';return;}
+    const tl={report:'Report',paper:'Policy Paper',analysis:'Analysis',announcement:'Announcement'};
+    tbody.innerHTML=posts.map(p=>{
+        const canPdf=['report','paper','analysis'].includes(p.type);
+        return `<tr>
+            <td style="max-width:260px;word-break:break-word">${escHtml(p.title)}</td>
+            <td><span class="pill pill-${p.type}">${tl[p.type]||p.type}</span></td>
+            <td style="color:rgba(255,255,255,0.5)">${escHtml(p.theme||'')}</td>
+            <td style="color:rgba(255,255,255,0.4)">${p.date||''}</td>
+            <td><div class="post-actions">
+                <button class="act-btn act-edit" onclick="editPost('${p.id}')">Edit</button>
+                ${canPdf?`<button class="act-btn act-pdf" onclick="previewPdf('${p.id}')">PDF</button>`:''}
+                <button class="act-btn act-del" onclick="deletePost('${p.id}')">Delete</button>
+            </div></td></tr>`;
+    }).join('');
+}
+
+function updateStats() {
+    const posts=getPosts(); const g=id=>document.getElementById(id);
+    if(g('stat-total')) g('stat-total').textContent=posts.length;
+    if(g('stat-reports')) g('stat-reports').textContent=posts.filter(p=>p.type==='report').length;
+    if(g('stat-analysis')) g('stat-analysis').textContent=posts.filter(p=>p.type==='analysis').length;
+    if(g('stat-papers')) g('stat-papers').textContent=posts.filter(p=>p.type==='paper').length;
+    const rl=g('dash-recent-list'); if(!rl) return;
+    if(!posts.length){rl.innerHTML='<span style="color:rgba(255,255,255,0.25);font-size:0.85rem;">No publications yet.</span>';return;}
+    const dc={report:'#9C3D1E',paper:'#1E4A80',analysis:'#14355F',announcement:'#B8893A'};
+    rl.innerHTML=posts.slice(0,6).map(p=>`<div class="recent-pub-row"><div class="recent-pub-dot" style="background:${dc[p.type]||'#B8893A'}"></div><span class="recent-pub-title">${escHtml(p.title)}</span><span class="recent-pub-type">${p.type}</span></div>`).join('');
+}
+
+// ── WP EDITOR ──
+function wpCmd(cmd) { document.getElementById('wp-editor').focus(); document.execCommand(cmd,false,null); wpState(); wpSync(); }
+function wpFormat(tag) { if(!tag)return; document.getElementById('wp-editor').focus(); document.execCommand('formatBlock',false,tag); wpSync(); }
+function wpInsertLink() {
+    const sel=window.getSelection(); const selectedText=sel?sel.toString():'';
+    const url=prompt('Enter URL:','https://'); if(!url)return;
+    const text=selectedText||prompt('Link text:',url)||url;
+    document.getElementById('wp-editor').focus();
+    document.execCommand('insertHTML',false,`<a href="${url}" target="_blank" rel="noopener">${text}</a>`);
+    wpSync();
+}
+function wpInsertImage() {
+    const url=prompt('Image URL:','https://'); if(!url)return;
+    document.getElementById('wp-editor').focus();
+    document.execCommand('insertHTML',false,`<img src="${url}" style="max-width:100%;display:block;margin:8px 0;border-radius:4px;">`);
+    wpSync();
+}
+function wpSync() {
+    const ed=document.getElementById('wp-editor'); if(!ed)return;
+    document.getElementById('editor-content').value=ed.innerHTML;
+    const txt=ed.innerText||''; const wc=txt.trim()?txt.trim().split(/\s+/).length:0;
+    const el=document.getElementById('wp-wc'); if(el) el.textContent='Words: '+wc;
+}
+function wpState() {
+    [['bold','wpb-bold'],['italic','wpb-italic'],['underline','wpb-underline']].forEach(([cmd,id])=>{
+        const btn=document.getElementById(id); if(btn) btn.classList.toggle('active',document.queryCommandState(cmd));
+    });
+}
+document.addEventListener('DOMContentLoaded',function(){
+    const ed=document.getElementById('wp-editor'); if(!ed)return;
+    ed.addEventListener('keydown',function(e){
+        if(e.ctrlKey||e.metaKey){
+            if(e.key==='b'){e.preventDefault();wpCmd('bold');}
+            if(e.key==='i'){e.preventDefault();wpCmd('italic');}
+            if(e.key==='u'){e.preventDefault();wpCmd('underline');}
+            if(e.key==='z'){e.preventDefault();wpCmd('undo');}
+            if(e.key==='y'){e.preventDefault();wpCmd('redo');}
+        }
+    });
+    ed.addEventListener('focus',()=>{const s=document.getElementById('wp-status');if(s)s.textContent='Editing...';});
+    ed.addEventListener('blur', ()=>{const s=document.getElementById('wp-status');if(s)s.textContent='Ready';});
+});
+
+// ── COVER ──
+function triggerCoverUpload(){document.getElementById('cover-file-input').click();}
+function handleCoverUpload(input){if(!input.files?.[0])return;const r=new FileReader();r.onload=e=>updateCoverFromUrl(e.target.result);r.readAsDataURL(input.files[0]);}
+function updateCoverFromUrl(url){if(!url)return;document.getElementById('post-cover-url').value=url;const img=document.getElementById('cover-img-preview');img.src=url;img.style.display='block';document.querySelector('.cover-preview .upload-hint').style.display='none';}
+
+// ── AUTHORS ──
+function seedDefaultAuthor() {
+    if(getAuthors().length===0) {
+        saveAuthors([{
+            id:'author_eadam', name:'Mohamed ElMujtaba Eadam',
+            title:'Founder & Lead Analyst', org:'Build Back Better Initiative (3Bi)',
+            bio:"Mohamed ElMujtaba Eadam is the Founder and Lead Analyst of the Build Back Better Initiative (3Bi), an independent policy research think-tank rooted in Sudan's grassroots crisis-response experience. He works at the intersection of climate-conflict analysis, governance, humanitarian-development integration, and political economy, with a geographic focus on Sudan and East Africa.",
+            photo:'', email:'', twitter:'', linkedin:'', research:'', web:'https://www.3bisudan.org',
+        }]);
+    }
+}
+
+function showAuthorForm(id) {
+    document.getElementById('author-form-wrap').style.display='block';
+    document.getElementById('author-form-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+    if(id) {
+        const a=getAuthors().find(x=>x.id===id); if(!a)return;
+        document.getElementById('edit-author-id').value=a.id;
+        document.getElementById('af-name').value=a.name||'';
+        document.getElementById('af-title').value=a.title||'';
+        document.getElementById('af-org').value=a.org||'';
+        document.getElementById('af-bio').value=a.bio||'';
+        document.getElementById('af-photo').value=a.photo||'';
+        document.getElementById('af-email').value=a.email||'';
+        document.getElementById('af-twitter').value=a.twitter||'';
+        document.getElementById('af-linkedin').value=a.linkedin||'';
+        document.getElementById('af-research').value=a.research||'';
+        document.getElementById('af-web').value=a.web||'';
+        document.getElementById('author-form-title').textContent='Edit Author Profile';
+        previewAuthorPhoto(a.photo||'');
+    } else {
+        document.getElementById('edit-author-id').value='';
+        ['af-name','af-title','af-org','af-bio','af-photo','af-email','af-twitter','af-linkedin','af-research','af-web'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+        document.getElementById('author-form-title').textContent='New Author Profile';
+        document.getElementById('author-form-ph').textContent='?';
+        document.getElementById('author-form-ph').style.display='flex';
+        const img=document.getElementById('author-form-img'); if(img)img.remove();
+    }
+}
+function hideAuthorForm(){document.getElementById('author-form-wrap').style.display='none';}
+
+function handleAuthorPhotoUpload(input) {
+    if(!input.files||!input.files[0])return;
+    const file=input.files[0];
+    const label=document.getElementById('af-photo-filename');
+    if(label)label.textContent=file.name;
+    const reader=new FileReader();
+    reader.onload=function(e){
+        document.getElementById('af-photo').value=e.target.result;
+        previewAuthorPhoto(e.target.result);
+    };
+    reader.readAsDataURL(file);
+}
+
+function previewAuthorPhoto(url) {
+    const container=document.getElementById('author-form-avatar');
+    const ph=document.getElementById('author-form-ph');
+    const name=document.getElementById('af-name').value.trim();
+    const initials=name?name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase():'?';
+    if(url&&(url.startsWith('http')||url.startsWith('data:'))) {
+        ph.style.display='none';
+        let img=document.getElementById('author-form-img');
+        if(!img){img=document.createElement('img');img.id='author-form-img';img.className='author-card-avatar';img.style.cssText='width:80px;height:80px;border-radius:50%;object-fit:cover;';container.appendChild(img);}
+        img.src=url; img.style.display='block';
+        img.onerror=()=>{img.style.display='none';ph.textContent=initials;ph.style.display='flex';};
+    } else {
+        const img=document.getElementById('author-form-img'); if(img)img.style.display='none';
+        ph.textContent=initials||'?'; ph.style.display='flex';
+    }
+}
+
+function saveAuthor() {
+    const name=document.getElementById('af-name').value.trim();
+    if(!name){alert('Author name is required.');return;}
+    const editId=document.getElementById('edit-author-id').value;
+    const authors=getAuthors();
+    const author={
+        id:editId||('author_'+Date.now()), name,
+        title:document.getElementById('af-title').value.trim(),
+        org:document.getElementById('af-org').value.trim(),
+        bio:document.getElementById('af-bio').value.trim(),
+        photo:document.getElementById('af-photo').value,
+        email:document.getElementById('af-email').value.trim(),
+        twitter:document.getElementById('af-twitter').value.trim(),
+        linkedin:document.getElementById('af-linkedin').value.trim(),
+        research:document.getElementById('af-research').value.trim(),
+        web:document.getElementById('af-web').value.trim(),
+    };
+    if(editId){const i=authors.findIndex(a=>a.id===editId);if(i!==-1)authors[i]=author;else authors.unshift(author);}
+    else authors.unshift(author);
+    saveAuthors(authors);
+    hideAuthorForm(); renderAuthorCards(); refreshAuthorDropdowns();
+    alert('Author profile saved!');
+}
+
+function deleteAuthor(id) {
+    if(!confirm('Delete this author profile?'))return;
+    saveAuthors(getAuthors().filter(a=>a.id!==id));
+    renderAuthorCards(); refreshAuthorDropdowns();
+}
+
+function renderAuthorCards() {
+    const authors=getAuthors(); const grid=document.getElementById('author-cards-grid'); if(!grid)return;
+    if(!authors.length){grid.innerHTML='<div style="color:rgba(255,255,255,0.25);font-family:\'Poppins\',sans-serif;font-size:0.875rem;padding:2rem;">No authors yet. Click "+ New Author".</div>';return;}
+    grid.innerHTML='';
+    authors.forEach(a=>{
+        const initials=a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+        const socials=[a.twitter?'<span class="author-social-pill">𝕏 Twitter</span>':'',a.linkedin?'<span class="author-social-pill">in LinkedIn</span>':'',a.email?'<span class="author-social-pill">✉ Email</span>':'',a.research?'<span class="author-social-pill">🔬 Research</span>':'',a.web?'<span class="author-social-pill">🌐 Web</span>':''].filter(Boolean).join('');
+        const pubCount=getPosts().filter(p=>p.authorId===a.id||p.authorName===a.name||p.author===a.name).length;
+        const card=document.createElement('div'); card.className='author-admin-card';
+        const hdr=document.createElement('div'); hdr.className='author-card-header';
+        if(a.photo){
+            const img=document.createElement('img');img.className='author-card-avatar';img.alt=a.name;img.src=a.photo;
+            const ph=document.createElement('div');ph.className='author-card-avatar-placeholder';ph.style.display='none';ph.textContent=initials;
+            img.onerror=function(){this.style.display='none';ph.style.display='flex';};
+            hdr.appendChild(img);hdr.appendChild(ph);
+        } else {
+            const ph=document.createElement('div');ph.className='author-card-avatar-placeholder';ph.textContent=initials;hdr.appendChild(ph);
+        }
+        const id=document.createElement('div');id.className='author-card-identity';
+        id.innerHTML=`<div class="author-card-name">${escHtml(a.name)}</div><div class="author-card-title">${escHtml(a.title||'')}</div><div class="author-card-org">${escHtml(a.org||'')}</div>`;
+        hdr.appendChild(id); card.appendChild(hdr);
+        const body=document.createElement('div');body.className='author-card-body';
+        body.innerHTML=`<div class="author-card-bio">${escHtml(a.bio||'No bio yet.')}</div><div class="author-card-socials">${socials||'<span style="font-size:0.7rem;color:rgba(255,255,255,0.2);">No social links</span>'}</div><div class="author-card-actions"><button class="act-btn act-edit" onclick="showAuthorForm('${escHtml(a.id)}')">Edit</button><button class="act-btn act-del" onclick="deleteAuthor('${escHtml(a.id)}')">Delete</button><span class="author-card-pubs">${pubCount} pub${pubCount!==1?'s':''}</span></div>`;
+        card.appendChild(body); grid.appendChild(card);
+    });
+}
+
+function refreshAuthorDropdowns() {
+    const authors=getAuthors(); const sel=document.getElementById('post-author-select'); if(!sel)return;
+    const current=sel.value;
+    sel.innerHTML='<option value="">— Select an author —</option>'+authors.map(a=>`<option value="${escHtml(a.id)}">${escHtml(a.name)}${a.title?' — '+escHtml(a.title):''}</option>`).join('');
+    if(current)sel.value=current;
+}
+
+function applyAuthorFromSelect(authorId) {
+    const preview=document.getElementById('selected-author-preview');
+    if(!authorId){preview.style.display='none';['post-author','post-author-title','post-author-org','post-author-bio','post-author-photo','post-author-twitter','post-author-linkedin','post-author-web','post-author-email'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});return;}
+    const a=getAuthors().find(x=>x.id===authorId); if(!a)return;
+    document.getElementById('post-author').value=a.name;
+    document.getElementById('post-author-title').value=a.title||'';
+    document.getElementById('post-author-org').value=a.org||'';
+    document.getElementById('post-author-bio').value=a.bio||'';
+    document.getElementById('post-author-photo').value=a.photo||'';
+    document.getElementById('post-author-twitter').value=a.twitter||'';
+    document.getElementById('post-author-linkedin').value=a.linkedin||'';
+    document.getElementById('post-author-web').value=a.web||'';
+    document.getElementById('post-author-email').value=a.email||'';
+    const initials=a.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    const avatarEl=document.getElementById('sel-author-avatar');
+    avatarEl.innerHTML=a.photo?`<img src="${escHtml(a.photo)}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(184,137,58,0.4);" onerror="this.outerHTML='<div style=\'width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:Lora,serif;font-size:0.9rem;font-weight:700;color:white;\'>${initials}</div>'">`:`<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C3D1E,#B8893A);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:0.9rem;font-weight:700;color:white;">${initials}</div>`;
+    document.getElementById('sel-author-name').textContent=a.name;
+    document.getElementById('sel-author-role').textContent=(a.title||'')+(a.org?' · '+a.org:'');
+    preview.style.display='block';
+}
+
+// ── PDF ──
+const BRAND={nileInk:[11,28,44],cobalt:[20,53,95],cobaltLt:[30,74,128],sienna:[156,61,30],gold:[184,137,58],sand:[232,220,200],white:[255,255,255]};
+
+function previewPdf(postId) {
+    currentPdfPostId=postId;
+    let p=null;
+    if(postId==='__test__'){p={id:'__test__',title:'Sample Policy Report — 3Bi Letterhead',type:'report',theme:'Climate-Conflict Nexus',date:new Date().toISOString().split('T')[0],author:'3Bi Research Team',ref:'3BI/2025/PB/001',excerpt:'This demonstrates the 3Bi branded letterhead. The Nile Palette, Meroe pyramid mark, and tricolour stripe are applied per Brand Guidelines v1.0.',content:'Sample content for the PDF letterhead preview.'};}
+    else{p=getPosts().find(x=>x.id===postId);}
+    if(!p)return;
+    const tl={report:'Policy Report',paper:'Policy Paper',analysis:'Policy Analysis',announcement:'Announcement'};
+    const ds=p.date?new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    const rc=p.ref||`3BI/${new Date().getFullYear()}/${(p.type||'PB').toUpperCase().slice(0,2)}/001`;
+    document.getElementById('pdf-lh-preview').innerHTML=`
+        <div class="lh-header">
+            <div class="lh-header-left"><h1>3Bi</h1><p>Build Back Better Initiative · Sudan & East Africa · Est. 2019</p>
+            <div class="lh-tribar"><span style="background:#14355F;"></span><span style="background:#9C3D1E;"></span><span style="background:#B8893A;"></span></div></div>
+            <svg width="52" height="48" viewBox="0 0 52 48" xmlns="http://www.w3.org/2000/svg"><polygon points="5,41 11,18 17,41" fill="#9C3D1E"/><polygon points="17,41 26,10 35,41" fill="#B8893A"/><polygon points="35,41 41,22 47,41" fill="#14355F"/></svg>
+        </div>
+        <div class="lh-meta">
+            <div class="lh-meta-item"><strong>Type</strong>${tl[p.type]||p.type}</div>
+            <div class="lh-meta-item"><strong>Theme</strong>${escHtml(p.theme||'General')}</div>
+            <div class="lh-meta-item"><strong>Date</strong>${ds}</div>
+            <div class="lh-meta-item"><strong>Ref</strong>${escHtml(rc)}</div>
+        </div>
+        <div class="lh-body"><h2>${escHtml(p.title)}</h2>
+            <p style="font-weight:600;color:#14355F;font-size:0.8rem;margin-bottom:0.75rem;">${escHtml(p.authorName||p.author||'3Bi Research Team')}</p>
+            <p>${escHtml(p.excerpt||p.content?.substring(0,300)||'')}</p>
+        </div>
+        <div class="lh-footer-bar"></div>
+        <div class="lh-footer"><span>Build Back Better Initiative (3Bi) · Sudan & East Africa</span><span>www.3bisudan.org · info@3bi.org</span></div>`;
+    _pdfFilename=(p.title||'3bi').replace(/[^a-z0-9]/gi,'_').toLowerCase()+'.pdf';
+    document.getElementById('pdf-preview-modal').classList.add('open');
+}
+function closePdfModal(){document.getElementById('pdf-preview-modal').classList.remove('open');currentPdfPostId=null;}
+
+function downloadPdf() {
+    const id=currentPdfPostId; let p=null;
+    if(id==='__test__'){p={title:'Sample Policy Report — 3Bi Letterhead',type:'report',theme:'Climate-Conflict Nexus',date:new Date().toISOString().split('T')[0],author:'3Bi Research Team',ref:'3BI/2025/PB/001',content:'This is a sample publication demonstrating the 3Bi branded PDF letterhead.\n\nThe Nile Palette\nFive purposeful colours: Nile Ink (#0B1C2C), Cobalt Deep (#14355F), Desert Sienna (#9C3D1E), Nubian Gold (#B8893A), and Savanna Sand (#E8DCC8).\n\nThe Meroe Mark\nThree ascending pyramid silhouettes representing Research, Policy, and Community.\n\nAll design decisions follow the 3Bi Brand Guidelines v1.0.'};}
+    else{p=getPosts().find(x=>x.id===id);}
+    if(!p)return;
+    const btn=document.getElementById('pdf-download-btn'); btn.textContent='Generating...'; btn.disabled=true;
+    try {
+        const {jsPDF}=window.jspdf;
+        const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+        const W=210,H=297,mL=20,mR=20,bW=W-mL-mR;
+        const tl={report:'POLICY REPORT',paper:'POLICY PAPER',analysis:'POLICY ANALYSIS',announcement:'ANNOUNCEMENT'};
+        const ds=p.date?new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+        const rc=p.ref||`3BI/${new Date().getFullYear()}/${(p.type||'PB').toUpperCase().slice(0,2)}/001`;
+        doc.setFillColor(...BRAND.nileInk);doc.rect(0,0,W,44,'F');
+        doc.setFillColor(...BRAND.sienna);doc.triangle(W-50,40,W-44,14,W-38,40,'F');
+        doc.setFillColor(...BRAND.gold);doc.triangle(W-38,40,W-29,7,W-20,40,'F');
+        doc.setFillColor(...BRAND.cobalt);doc.triangle(W-20,40,W-14,20,W-8,40,'F');
+        doc.setFillColor(...BRAND.cobalt);doc.rect(W-50,41,12,2,'F');
+        doc.setFillColor(...BRAND.sienna);doc.rect(W-38,41,12,2,'F');
+        doc.setFillColor(...BRAND.gold);doc.rect(W-26,41,18,2,'F');
+        doc.setFont('helvetica','bold');doc.setFontSize(30);doc.setTextColor(...BRAND.white);doc.text('3Bi',mL,22);
+        doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(200,215,225);doc.text('BUILD BACK BETTER INITIATIVE',mL,29);
+        doc.setFillColor(...BRAND.cobalt);doc.rect(mL,33,bW*0.33,2,'F');
+        doc.setFillColor(...BRAND.sienna);doc.rect(mL+bW*0.33,33,bW*0.33,2,'F');
+        doc.setFillColor(...BRAND.gold);doc.rect(mL+bW*0.66,33,bW*0.34,2,'F');
+        doc.setFontSize(7);doc.setTextColor(150,165,180);doc.text('Sudan · East Africa · Est. 2019',mL,40);
+        doc.setFillColor(...BRAND.sand);doc.rect(0,44,W,22,'F');
+        const mi=[{l:'DOCUMENT TYPE',v:tl[p.type]||p.type?.toUpperCase()},{l:'THEME',v:p.theme||'General'},{l:'DATE',v:ds},{l:'REF',v:rc}];
+        const cW=bW/4;
+        mi.forEach((item,i)=>{const x=mL+i*cW;doc.setFont('helvetica','bold');doc.setFontSize(5.5);doc.setTextColor(...BRAND.sienna);doc.text(item.l,x,52);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...BRAND.nileInk);doc.text(String(item.v),x,58,{maxWidth:cW-2});});
+        let y=76;
+        doc.setFillColor(...BRAND.cobalt);doc.roundedRect(mL,y-5,40,7,1.5,1.5,'F');
+        doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(...BRAND.white);doc.text(tl[p.type]||'PUBLICATION',mL+3,y);y+=9;
+        doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(...BRAND.nileInk);
+        const tlines=doc.splitTextToSize(p.title,bW);doc.text(tlines,mL,y);y+=tlines.length*8+4;
+        doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(...BRAND.cobalt);
+        doc.text(p.authorName||p.author||'3Bi Research Team',mL,y);y+=6;
+        doc.setDrawColor(...BRAND.gold);doc.setLineWidth(0.8);doc.line(mL,y,W-mR,y);y+=10;
+        doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...BRAND.nileInk);
+        const raw=(p.content||p.excerpt||'').replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\n\n+/g,'\n\n').trim();
+        const paras=raw.split('\n\n').filter(Boolean);
+        const fY=H-22;
+        for(const para of paras){
+            if(y>fY-10){doc.addPage();doc.setFillColor(...BRAND.nileInk);doc.rect(0,0,W,13,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(...BRAND.white);doc.text('3Bi',mL,9);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(200,215,225);doc.text('Build Back Better Initiative',mL+10,9);doc.setTextColor(150,165,180);doc.text(String(doc.internal.getCurrentPageInfo().pageNumber),W-mR,9,{align:'right'});doc.setFillColor(...BRAND.cobalt);doc.rect(0,13,W*0.33,1.2,'F');doc.setFillColor(...BRAND.sienna);doc.rect(W*0.33,13,W*0.33,1.2,'F');doc.setFillColor(...BRAND.gold);doc.rect(W*0.66,13,W*0.34,1.2,'F');y=23;}
+            doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(...BRAND.nileInk);
+            const ls=doc.splitTextToSize(para.trim(),bW);doc.text(ls,mL,y);y+=ls.length*5.5+4;
+        }
+        const tp=doc.internal.getNumberOfPages();
+        for(let pg=1;pg<=tp;pg++){
+            doc.setPage(pg);
+            doc.setFillColor(...BRAND.cobalt);doc.rect(0,H-20,W*0.33,2.5,'F');
+            doc.setFillColor(...BRAND.sienna);doc.rect(W*0.33,H-20,W*0.33,2.5,'F');
+            doc.setFillColor(...BRAND.gold);doc.rect(W*0.66,H-20,W*0.34,2.5,'F');
+            doc.setFillColor(...BRAND.nileInk);doc.rect(0,H-17.5,W,17.5,'F');
+            doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(160,175,190);
+            doc.text('Build Back Better Initiative (3Bi)  ·  Sudan & East Africa  ·  Est. 2019',mL,H-10);
+            doc.text(`www.3bisudan.org  ·  info@3bi.org  ·  REF: ${rc}`,mL,H-5.5);
+            doc.setTextColor(BRAND.gold[0],BRAND.gold[1],BRAND.gold[2]);
+            doc.text(`${pg} / ${tp}`,W-mR,H-7.5,{align:'right'});
+        }
+        doc.save(_pdfFilename);
+        btn.textContent='✓ Downloaded!';
+        setTimeout(()=>{btn.textContent='⬇ Download PDF';btn.disabled=false;},2500);
+    } catch(e){
+        console.error('PDF error:',e);
+        alert('PDF generation failed. Check your internet connection (jsPDF CDN required).');
+        btn.textContent='⬇ Download PDF';btn.disabled=false;
+    }
+}
+
+// ── EMBEDS ──
+const embedConfig={
+    link:{title:'Insert Link',desc:'Paste the URL.',placeholder:'https://...'},
+    embed:{title:'Insert Embed Code',desc:'Paste any iframe or embed code.',placeholder:'<iframe ...></iframe>'},
+    tweet:{title:'Embed Tweet',desc:'Paste the tweet URL.',placeholder:'https://twitter.com/...'},
+    audio:{title:'Embed Audio',desc:'Paste audio URL or embed code.',placeholder:'https://soundcloud.com/...'},
+    video:{title:'Embed Video',desc:'Paste YouTube/Vimeo URL.',placeholder:'https://www.youtube.com/watch?v=...'},
+};
+function openEmbedModal(type){
+    currentEmbedType=type;const cfg=embedConfig[type]||embedConfig.embed;
+    document.getElementById('embed-modal-title').textContent=cfg.title;
+    document.getElementById('embed-modal-desc').textContent=cfg.desc;
+    document.getElementById('embed-input').placeholder=cfg.placeholder;
+    document.getElementById('embed-input').value='';
+    document.getElementById('embed-modal').classList.add('open');
+}
+function closeEmbedModal(){document.getElementById('embed-modal').classList.remove('open');}
+function insertEmbed(){
+    const val=document.getElementById('embed-input').value.trim();if(!val){closeEmbedModal();return;}
+    const ed=document.getElementById('wp-editor');ed.focus();
+    let s=val;
+    if(currentEmbedType==='link')s=`<a href="${val}" target="_blank" rel="noopener">${val}</a>`;
+    else if(currentEmbedType==='tweet'&&val.startsWith('http'))s=`<blockquote class="twitter-tweet"><a href="${val}"></a></blockquote><script async src="https://platform.twitter.com/widgets.js"><\/script>`;
+    else if(currentEmbedType==='video'&&val.includes('youtube.com/watch')){const vid=val.split('v=')[1]?.split('&')[0];s=vid?`<iframe width="100%" height="360" src="https://www.youtube.com/embed/${vid}" frameborder="0" allowfullscreen></iframe>`:val;}
+    else if(currentEmbedType==='audio'&&val.startsWith('http')&&!val.includes('<'))s=`<audio controls style="width:100%"><source src="${val}"></audio>`;
+    document.execCommand('insertHTML',false,'\n'+s+'\n');
+    wpSync();closeEmbedModal();
+}
+
+// ── SETTINGS ──
+function saveSettings(){const np=document.getElementById('new-pass').value;if(np)localStorage.setItem('3bi_admin_pass',np);alert('Settings saved.');document.getElementById('new-pass').value='';}
+
+// ── CLOSE ON OVERLAY CLICK ──
+document.getElementById('pdf-preview-modal').addEventListener('click',function(e){if(e.target===this)closePdfModal();});
+document.getElementById('embed-modal').addEventListener('click',function(e){if(e.target===this)closeEmbedModal();});
+</script>
+</body>
+</html>
