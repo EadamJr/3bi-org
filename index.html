@@ -525,46 +525,66 @@
         }
         .dash-field select option { background: #1c2a3a; }
         .dash-field textarea { resize: vertical; min-height: 200px; line-height: 1.6; }
+        /* ─── WORD-STYLE EDITOR ─── */
+        .editor-wrap { border: 1.5px solid rgba(255,255,255,0.15); border-radius: 8px; overflow: hidden; background: white; }
         .rich-toolbar {
-            display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0.75rem;
-            background: #1a2d42; border: 1.5px solid rgba(255,255,255,0.12);
-            border-radius: 8px 8px 0 0; border-bottom: 1px solid rgba(255,255,255,0.08);
-            align-items: center;
+            display: flex; flex-wrap: wrap; align-items: center; gap: 1px;
+            padding: 4px 6px; background: #2b4668; border-bottom: 1px solid rgba(255,255,255,0.1);
+            user-select: none; min-height: 34px;
         }
         .rich-toolbar button {
-            width: 32px; height: 28px; border-radius: 4px; border: none;
-            background: transparent; color: rgba(255,255,255,0.65);
-            cursor: pointer; font-size: 0.85rem; font-weight: 700;
-            transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 24px; display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid transparent; border-radius: 3px; background: transparent;
+            color: rgba(255,255,255,0.85); cursor: pointer; font-size: 12px; font-weight: 700;
+            font-family: 'Calibri', 'Segoe UI', sans-serif;
+            transition: background 0.1s, border-color 0.1s; flex-shrink: 0; padding: 0;
         }
-        .rich-toolbar button:hover  { background: rgba(255,255,255,0.12); color: white; }
-        .rich-toolbar button.active { background: rgba(200,90,42,0.35); color: var(--terracotta-light); }
-        .rich-toolbar .tb-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); margin: 0 2px; }
+        .rich-toolbar button:hover  { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); }
+        .rich-toolbar button.active { background: rgba(200,90,42,0.4); border-color: #e07b39; color: #ffe0c8; }
+        .rich-toolbar button svg    { width: 13px; height: 13px; fill: currentColor; pointer-events: none; }
+        .tb-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 4px; flex-shrink: 0; }
         .rich-toolbar select {
-            height: 28px; padding: 0 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.75);
-            font-size: 0.78rem; cursor: pointer; outline: none;
+            height: 24px; padding: 0 4px; border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+            color: white; font-size: 11px; cursor: pointer; outline: none;
+            font-family: 'Segoe UI', sans-serif;
         }
-        .rich-toolbar select option { background: #1a2d42; }
+        .rich-toolbar select option { background: #2b4668; color: white; }
+        .tb-font-size {
+            height: 24px; width: 38px; padding: 0 3px; border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);
+            color: white; font-size: 11px; cursor: pointer; outline: none; text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .tb-font-size option { background: #2b4668; }
         #editor-content {
-            min-height: 320px; padding: 1.25rem; width: 100%;
-            border: 1.5px solid rgba(255,255,255,0.1); border-top: none;
-            border-radius: 0 0 8px 8px;
-            background: white; color: #1e2d3d;
-            font-family: 'Source Sans 3', sans-serif; font-size: 0.95rem; line-height: 1.75;
+            min-height: 380px; padding: 28px 40px; width: 100%;
+            background: white; color: #000;
+            font-family: 'Calibri', 'Segoe UI', sans-serif;
+            font-size: 12pt; line-height: 1.5;
             outline: none; overflow-y: auto;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
         }
         #editor-content:empty:before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
-        #editor-content h1 { font-size: 1.8rem; font-family: 'Libre Baskerville', serif; color: #0f2240; margin: 1rem 0 0.4rem; }
-        #editor-content h2 { font-size: 1.4rem; font-family: 'Libre Baskerville', serif; color: #1a365d; margin: 0.9rem 0 0.35rem; }
-        #editor-content h3 { font-size: 1.1rem; font-family: 'Libre Baskerville', serif; color: #c85a2a; margin: 0.7rem 0 0.3rem; }
-        #editor-content p  { margin: 0 0 0.75rem; }
-        #editor-content ul, #editor-content ol { margin: 0 0 0.75rem 1.5rem; }
-        #editor-content li { margin: 0.2rem 0; }
-        #editor-content blockquote { border-left: 4px solid #c85a2a; margin: 0.75rem 0; padding: 0.5rem 1rem; background: #fdf5f0; color: #555; font-style: italic; }
-        #editor-content a  { color: #1a365d; text-decoration: underline; }
-        #editor-content hr { border: none; border-top: 2px solid #c85a2a; margin: 1rem 0; }
-        #editor-content img { max-width: 100%; border-radius: 6px; margin: 0.5rem 0; display: block; }
+        #editor-content p  { margin: 0 0 8pt; }
+        #editor-content h1 { font-size: 20pt; color: #1f3864; margin: 14pt 0 6pt; font-weight: 700; border-bottom: 1px solid #ddd; padding-bottom: 4pt; }
+        #editor-content h2 { font-size: 16pt; color: #2e3d56; margin: 12pt 0 5pt; font-weight: 700; }
+        #editor-content h3 { font-size: 13pt; color: #2e3d56; margin: 10pt 0 4pt; font-weight: 700; }
+        #editor-content ul { margin: 0 0 8pt 20pt; list-style-type: disc; }
+        #editor-content ol { margin: 0 0 8pt 20pt; list-style-type: decimal; }
+        #editor-content li { margin: 2pt 0; }
+        #editor-content blockquote { border-left: 3px solid #c85a2a; margin: 8pt 0; padding: 4pt 12pt; background: #fdf5f0; color: #555; font-style: italic; }
+        #editor-content a   { color: #0563c1; text-decoration: underline; }
+        #editor-content hr  { border: none; border-top: 1px solid #ccc; margin: 10pt 0; }
+        #editor-content img { max-width: 100%; margin: 4pt 0; display: block; }
+        #editor-content table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 11pt; }
+        #editor-content td, #editor-content th { border: 1px solid #bbb; padding: 4pt 8pt; }
+        #editor-content th { background: #1f3864; color: white; font-weight: 700; }
+        .editor-statusbar {
+            background: #2b4668; padding: 2px 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .editor-statusbar span { font-size: 10px; color: rgba(255,255,255,0.4); font-family: 'Segoe UI', sans-serif; }
         .embed-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
         .embed-btn {
             padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
@@ -1546,43 +1566,120 @@
                             </div>
                             <div class="dash-field">
                                 <label>Content</label>
+                                <div class="editor-wrap">
                                 <div class="rich-toolbar" id="rich-toolbar">
-                                    <select onchange="execFormatBlock(this.value); this.selectedIndex=0;" title="Text style">
-                                        <option value="">Paragraph</option>
+
+                                    <!-- Font style & size -->
+                                    <select onchange="execFormatBlock(this.value);this.selectedIndex=0;" title="Text Style" style="width:108px;">
+                                        <option value="">Normal Text</option>
                                         <option value="h1">Heading 1</option>
                                         <option value="h2">Heading 2</option>
                                         <option value="h3">Heading 3</option>
-                                        <option value="blockquote">Quote</option>
+                                        <option value="blockquote">Block Quote</option>
+                                        <option value="pre">Monospace</option>
                                     </select>
+                                    <select class="tb-font-size" onchange="execCmd('fontSize', this.value); this.value='';" title="Font Size">
+                                        <option value="">Pt</option>
+                                        <option value="1">8</option>
+                                        <option value="2">10</option>
+                                        <option value="3">12</option>
+                                        <option value="4">14</option>
+                                        <option value="5">18</option>
+                                        <option value="6">24</option>
+                                        <option value="7">36</option>
+                                    </select>
+
                                     <div class="tb-sep"></div>
+
+                                    <!-- Bold / Italic / Underline / Strikethrough -->
                                     <button id="tb-bold"      title="Bold (Ctrl+B)"      onclick="execCmd('bold')"><b>B</b></button>
-                                    <button id="tb-italic"    title="Italic (Ctrl+I)"    onclick="execCmd('italic')"><i style="font-family:serif">I</i></button>
+                                    <button id="tb-italic"    title="Italic (Ctrl+I)"    onclick="execCmd('italic')"><i>I</i></button>
                                     <button id="tb-underline" title="Underline (Ctrl+U)" onclick="execCmd('underline')"><u>U</u></button>
-                                    <button title="Strikethrough" onclick="execCmd('strikeThrough')" style="font-size:0.75rem;text-decoration:line-through;width:auto;padding:0 6px;">S̶</button>
+                                    <button id="tb-strike"    title="Strikethrough"      onclick="execCmd('strikeThrough')" style="text-decoration:line-through;">S</button>
+
                                     <div class="tb-sep"></div>
-                                    <button title="Align Left"   onclick="execCmd('justifyLeft')"   style="font-size:0.9rem;">⬛</button>
-                                    <button title="Center"       onclick="execCmd('justifyCenter')" style="font-size:0.9rem;">☰</button>
-                                    <button title="Align Right"  onclick="execCmd('justifyRight')"  style="font-size:0.9rem;">▤</button>
+
+                                    <!-- Text colour / Highlight -->
+                                    <button title="Text Color" onclick="document.getElementById('tb-color-input').click()" style="position:relative;">
+                                        <svg viewBox="0 0 24 24"><path d="M11 3L5.5 17h2.25l1.12-3h6.25l1.12 3H18.5L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z"/><rect x="3" y="20" width="18" height="2" id="tb-color-bar" fill="#000"/></svg>
+                                        <input type="color" id="tb-color-input" value="#000000" style="position:absolute;opacity:0;width:100%;height:100%;top:0;left:0;cursor:pointer;" onchange="execCmd('foreColor',this.value); document.getElementById('tb-color-bar').setAttribute('fill',this.value);">
+                                    </button>
+                                    <button title="Highlight" onclick="document.getElementById('tb-bg-input').click()" style="position:relative;">
+                                        <svg viewBox="0 0 24 24"><path d="M6 14l3 3 8-8-3-3-8 8zm-2 6h3l8-8-3-3-8 8v3zm12.7-11.3l1.3-1.3c.4-.4.4-1 0-1.4l-1.3-1.3c-.4-.4-1-.4-1.4 0l-1.3 1.3 2.7 2.7z"/><rect x="3" y="20" width="18" height="2" id="tb-bg-bar" fill="#FFFF00"/></svg>
+                                        <input type="color" id="tb-bg-input" value="#FFFF00" style="position:absolute;opacity:0;width:100%;height:100%;top:0;left:0;cursor:pointer;" onchange="execCmd('hiliteColor',this.value); document.getElementById('tb-bg-bar').setAttribute('fill',this.value);">
+                                    </button>
+
                                     <div class="tb-sep"></div>
-                                    <button title="Bullet List"    onclick="execCmd('insertUnorderedList')" style="font-size:0.9rem;">• ≡</button>
-                                    <button title="Numbered List"  onclick="execCmd('insertOrderedList')"   style="font-size:0.9rem;">1 ≡</button>
-                                    <button title="Indent"         onclick="execCmd('indent')"              style="font-size:0.9rem;">→|</button>
-                                    <button title="Outdent"        onclick="execCmd('outdent')"             style="font-size:0.9rem;">|←</button>
+
+                                    <!-- Alignment -->
+                                    <button id="tb-alignl" title="Align Left"   onclick="execCmd('justifyLeft')">
+                                        <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h12v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+                                    </button>
+                                    <button id="tb-alignc" title="Center"       onclick="execCmd('justifyCenter')">
+                                        <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm3 4h12v2H6V7zm-3 4h18v2H3v-2zm3 4h12v2H6v-2zm-3 4h18v2H3v-2z"/></svg>
+                                    </button>
+                                    <button id="tb-alignr" title="Align Right"  onclick="execCmd('justifyRight')">
+                                        <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm6 4h12v2H9V7zm-6 4h18v2H3v-2zm6 4h12v2H9v-2zm-6 4h18v2H3v-2z"/></svg>
+                                    </button>
+                                    <button id="tb-alignj" title="Justify"      onclick="execCmd('justifyFull')">
+                                        <svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h12v2H3v-2z"/></svg>
+                                    </button>
+
                                     <div class="tb-sep"></div>
-                                    <button title="Insert Link"     onclick="editorInsertLink()"           style="font-size:0.9rem;">🔗</button>
-                                    <button title="Insert Image URL" onclick="editorInsertImage()"         style="font-size:0.9rem;">🖼</button>
-                                    <button title="Horizontal Rule" onclick="execCmd('insertHorizontalRule')" style="font-size:0.9rem;">─</button>
+
+                                    <!-- Lists & indent -->
+                                    <button id="tb-ul" title="Bullet List"   onclick="execCmd('insertUnorderedList')">
+                                        <svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+                                    </button>
+                                    <button id="tb-ol" title="Numbered List" onclick="execCmd('insertOrderedList')">
+                                        <svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
+                                    </button>
+                                    <button title="Decrease Indent" onclick="execCmd('outdent')">
+                                        <svg viewBox="0 0 24 24"><path d="M11 17h10v-2H11v2zm-8-5l4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>
+                                    </button>
+                                    <button title="Increase Indent" onclick="execCmd('indent')">
+                                        <svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>
+                                    </button>
+
                                     <div class="tb-sep"></div>
-                                    <button title="Undo (Ctrl+Z)"  onclick="execCmd('undo')"        style="font-size:0.9rem;">↩</button>
-                                    <button title="Redo (Ctrl+Y)"  onclick="execCmd('redo')"        style="font-size:0.9rem;">↪</button>
-                                    <button title="Clear formatting" onclick="execCmd('removeFormat')" style="font-size:0.68rem;width:auto;padding:0 5px;">✕fmt</button>
+
+                                    <!-- Insert -->
+                                    <button title="Insert Link"    onclick="editorInsertLink()">
+                                        <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                                    </button>
+                                    <button title="Insert Image"   onclick="editorInsertImage()">
+                                        <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                    </button>
+                                    <button title="Insert Table"   onclick="editorInsertTable()">
+                                        <svg viewBox="0 0 24 24"><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h15v14zM7 7h2v2H7V7zm4 0h2v2h-2V7zm4 0h2v2h-2V7zM7 11h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2zM7 15h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"/></svg>
+                                    </button>
+                                    <button title="Horizontal Line" onclick="execCmd('insertHorizontalRule')">
+                                        <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+                                    </button>
+
+                                    <div class="tb-sep"></div>
+
+                                    <!-- Undo / Redo / Clear -->
+                                    <button title="Undo (Ctrl+Z)" onclick="execCmd('undo')">
+                                        <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                                    </button>
+                                    <button title="Redo (Ctrl+Y)" onclick="execCmd('redo')">
+                                        <svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+                                    </button>
+                                    <button title="Clear Formatting" onclick="execCmd('removeFormat')" style="font-size:10px;width:auto;padding:0 5px;letter-spacing:-0.5px;">A&#x0336;</button>
+
                                 </div>
                                 <div id="editor-content"
                                      contenteditable="true"
-                                     data-placeholder="Write your full publication content here…"
+                                     data-placeholder="Start typing your publication content here…"
                                      onkeydown="editorKeydown(event)"
                                      onmouseup="updateToolbarState()"
                                      onkeyup="updateToolbarState()"></div>
+                                <div class="editor-statusbar">
+                                    <span id="editor-wordcount">Words: 0</span>
+                                    <span>3Bi Publication Editor</span>
+                                </div>
+                                </div>
                             </div>
                             <div class="dash-field">
                                 <label>External Link (PDF, DOI, external report URL)</label>
@@ -2246,10 +2343,12 @@ ${p.link ? `<div style="max-width:720px;margin:0 auto;padding:0 2rem 3rem;"><a h
     document.write(html);
     document.close();
 })();
+// ─── WYSIWYG EDITOR ───
 function execCmd(cmd, val) {
     document.getElementById('editor-content').focus();
-    document.execCommand(cmd, false, val || null);
+    document.execCommand(cmd, false, val !== undefined ? val : null);
     updateToolbarState();
+    updateWordCount();
 }
 
 function execFormatBlock(tag) {
@@ -2260,10 +2359,24 @@ function execFormatBlock(tag) {
 }
 
 function updateToolbarState() {
-    [['bold','tb-bold'],['italic','tb-italic'],['underline','tb-underline']].forEach(([cmd,id]) => {
+    [
+        ['bold','tb-bold'], ['italic','tb-italic'], ['underline','tb-underline'],
+        ['strikeThrough','tb-strike'],
+        ['insertUnorderedList','tb-ul'], ['insertOrderedList','tb-ol'],
+        ['justifyLeft','tb-alignl'], ['justifyCenter','tb-alignc'],
+        ['justifyRight','tb-alignr'], ['justifyFull','tb-alignj'],
+    ].forEach(([cmd, id]) => {
         const btn = document.getElementById(id);
         if (btn) btn.classList.toggle('active', document.queryCommandState(cmd));
     });
+}
+
+function updateWordCount() {
+    const el = document.getElementById('editor-content');
+    const wc = document.getElementById('editor-wordcount');
+    if (!el || !wc) return;
+    const text = el.innerText || el.textContent || '';
+    wc.textContent = 'Words: ' + (text.trim() ? text.trim().split(/\s+/).length : 0);
 }
 
 function editorKeydown(e) {
@@ -2277,27 +2390,47 @@ function editorKeydown(e) {
 }
 
 function editorInsertLink() {
+    const sel = window.getSelection();
+    const selected = sel ? sel.toString() : '';
     const url = prompt('Enter URL:', 'https://');
     if (!url) return;
-    const sel = window.getSelection();
-    const text = sel && sel.toString() ? sel.toString() : url;
+    const text = selected || prompt('Link text:', url) || url;
     document.getElementById('editor-content').focus();
-    document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" rel="noopener">${text}</a>`);
+    document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank" rel="noopener">' + text + '</a>');
+    updateWordCount();
 }
 
 function editorInsertImage() {
     const url = prompt('Enter image URL:', 'https://');
     if (!url) return;
     document.getElementById('editor-content').focus();
-    document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;border-radius:6px;margin:0.5rem 0;display:block;">`);
+    document.execCommand('insertHTML', false, '<img src="' + url + '" alt="" style="max-width:100%;display:block;margin:4pt 0;">');
+}
+
+function editorInsertTable() {
+    const rows = parseInt(prompt('Number of rows (including header):', '3'), 10) || 3;
+    const cols = parseInt(prompt('Number of columns:', '3'), 10) || 3;
+    let t = '<table><thead><tr>';
+    for (let c = 0; c < cols; c++) t += '<th>Header ' + (c+1) + '</th>';
+    t += '</tr></thead><tbody>';
+    for (let r = 0; r < rows - 1; r++) {
+        t += '<tr>';
+        for (let c = 0; c < cols; c++) t += '<td>&nbsp;</td>';
+        t += '</tr>';
+    }
+    t += '</tbody></table><p></p>';
+    document.getElementById('editor-content').focus();
+    document.execCommand('insertHTML', false, t);
 }
 
 function getEditorContent() {
     return document.getElementById('editor-content').innerHTML;
 }
 
-function setEditorContent(html) {
-    document.getElementById('editor-content').innerHTML = html || '';
+function setEditorContent(content) {
+    const el = document.getElementById('editor-content');
+    el.innerHTML = content || '';
+    updateWordCount();
 }
 
 // ─── EMBED MODAL ───
