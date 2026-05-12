@@ -526,24 +526,45 @@
         .dash-field select option { background: #1c2a3a; }
         .dash-field textarea { resize: vertical; min-height: 200px; line-height: 1.6; }
         .rich-toolbar {
-            display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.6rem; margin-bottom: -1px;
-            background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1);
-            border-radius: 8px 8px 0 0;
+            display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.5rem 0.75rem;
+            background: #1a2d42; border: 1.5px solid rgba(255,255,255,0.12);
+            border-radius: 8px 8px 0 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+            align-items: center;
         }
         .rich-toolbar button {
-            padding: 0.35rem 0.7rem; border-radius: 5px; border: none;
-            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7);
-            cursor: pointer; font-size: 0.8rem; font-weight: 600;
-            transition: all 0.15s;
+            width: 32px; height: 28px; border-radius: 4px; border: none;
+            background: transparent; color: rgba(255,255,255,0.65);
+            cursor: pointer; font-size: 0.85rem; font-weight: 700;
+            transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center;
         }
-        .rich-toolbar button:hover { background: var(--terracotta); color: white; }
+        .rich-toolbar button:hover  { background: rgba(255,255,255,0.12); color: white; }
+        .rich-toolbar button.active { background: rgba(200,90,42,0.35); color: var(--terracotta-light); }
+        .rich-toolbar .tb-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); margin: 0 2px; }
+        .rich-toolbar select {
+            height: 28px; padding: 0 6px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.75);
+            font-size: 0.78rem; cursor: pointer; outline: none;
+        }
+        .rich-toolbar select option { background: #1a2d42; }
         #editor-content {
-            min-height: 280px; padding: 1rem; width: 100%;
+            min-height: 320px; padding: 1.25rem; width: 100%;
             border: 1.5px solid rgba(255,255,255,0.1); border-top: none;
-            border-radius: 0 0 8px 8px; background: rgba(255,255,255,0.04);
-            color: white; font-family: inherit; font-size: 0.9rem; line-height: 1.7;
-            outline: none; resize: vertical;
+            border-radius: 0 0 8px 8px;
+            background: white; color: #1e2d3d;
+            font-family: 'Source Sans 3', sans-serif; font-size: 0.95rem; line-height: 1.75;
+            outline: none; overflow-y: auto;
         }
+        #editor-content:empty:before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
+        #editor-content h1 { font-size: 1.8rem; font-family: 'Libre Baskerville', serif; color: #0f2240; margin: 1rem 0 0.4rem; }
+        #editor-content h2 { font-size: 1.4rem; font-family: 'Libre Baskerville', serif; color: #1a365d; margin: 0.9rem 0 0.35rem; }
+        #editor-content h3 { font-size: 1.1rem; font-family: 'Libre Baskerville', serif; color: #c85a2a; margin: 0.7rem 0 0.3rem; }
+        #editor-content p  { margin: 0 0 0.75rem; }
+        #editor-content ul, #editor-content ol { margin: 0 0 0.75rem 1.5rem; }
+        #editor-content li { margin: 0.2rem 0; }
+        #editor-content blockquote { border-left: 4px solid #c85a2a; margin: 0.75rem 0; padding: 0.5rem 1rem; background: #fdf5f0; color: #555; font-style: italic; }
+        #editor-content a  { color: #1a365d; text-decoration: underline; }
+        #editor-content hr { border: none; border-top: 2px solid #c85a2a; margin: 1rem 0; }
+        #editor-content img { max-width: 100%; border-radius: 6px; margin: 0.5rem 0; display: block; }
         .embed-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
         .embed-btn {
             padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
@@ -643,6 +664,35 @@
             .tl-year { width: 50px; font-size: 0.9rem; }
             .tl-dot { left: 63px; }
         }
+        /* ─── AUTHOR PROFILE OVERLAY ─── */
+        #author-profile-overlay {
+            display: none; position: fixed; inset: 0; z-index: 9997;
+            background: var(--white); overflow-y: auto;
+        }
+        #author-profile-overlay.open { display: block; }
+        .apo-header {
+            background: var(--navy); padding: 1rem 2rem;
+            display: flex; align-items: center; gap: 1rem;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .apo-back { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.45rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-family: inherit; transition: background 0.2s; }
+        .apo-back:hover { background: rgba(255,255,255,0.2); }
+        .apo-hero {
+            background: linear-gradient(135deg, var(--navy) 0%, #234680 100%);
+            padding: 3rem 2rem 2.5rem; text-align: center;
+        }
+        .apo-avatar { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.25); margin: 0 auto 1.25rem; display: block; }
+        .apo-avatar-placeholder { width: 110px; height: 110px; border-radius: 50%; background: rgba(200,90,42,0.3); border: 4px solid rgba(200,90,42,0.45); margin: 0 auto 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; color: var(--terracotta-light); }
+        .apo-name  { font-family: 'Libre Baskerville', serif; font-size: 2rem; color: white; font-weight: 700; margin-bottom: 0.35rem; }
+        .apo-title { font-size: 1rem; color: rgba(255,255,255,0.65); margin-bottom: 0.2rem; }
+        .apo-org   { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 1.25rem; }
+        .apo-social-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
+        .apo-social-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 1rem; border-radius: 50px; font-size: 0.82rem; font-weight: 600; text-decoration: none; border: 1.5px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.07); transition: all 0.2s; }
+        .apo-social-btn:hover { background: rgba(255,255,255,0.16); color: white; border-color: rgba(255,255,255,0.4); }
+        .apo-body  { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
+        .apo-bio   { font-size: 1.05rem; color: var(--text-mid); line-height: 1.85; margin-bottom: 2.5rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+        .apo-pubs-title { font-family: 'Libre Baskerville', serif; font-size: 1.4rem; color: var(--navy); margin-bottom: 1.5rem; }
+
         /* ─── AUTHOR CARDS ─── */
         .author-card {
             background: #152235; border: 1px solid rgba(255,255,255,0.08);
@@ -1496,20 +1546,43 @@
                             </div>
                             <div class="dash-field">
                                 <label>Content</label>
-                                <div class="rich-toolbar">
-                                    <button onclick="fmtText('bold')"><b>B</b></button>
-                                    <button onclick="fmtText('italic')"><i>I</i></button>
-                                    <button onclick="fmtText('underline')"><u>U</u></button>
-                                    <button onclick="insertHeading()">H2</button>
-                                    <button onclick="insertBullet()">• List</button>
-                                    <button onclick="insertHr()">— HR</button>
-                                    <button onclick="openEmbedModal('link')">🔗 Link</button>
-                                    <button onclick="openEmbedModal('embed')">{'</>'}Embed</button>
-                                    <button onclick="openEmbedModal('tweet')">🐦 Tweet</button>
-                                    <button onclick="openEmbedModal('audio')">🎙️ Audio</button>
-                                    <button onclick="openEmbedModal('video')">▶ Video</button>
+                                <div class="rich-toolbar" id="rich-toolbar">
+                                    <select onchange="execFormatBlock(this.value); this.selectedIndex=0;" title="Text style">
+                                        <option value="">Paragraph</option>
+                                        <option value="h1">Heading 1</option>
+                                        <option value="h2">Heading 2</option>
+                                        <option value="h3">Heading 3</option>
+                                        <option value="blockquote">Quote</option>
+                                    </select>
+                                    <div class="tb-sep"></div>
+                                    <button id="tb-bold"      title="Bold (Ctrl+B)"      onclick="execCmd('bold')"><b>B</b></button>
+                                    <button id="tb-italic"    title="Italic (Ctrl+I)"    onclick="execCmd('italic')"><i style="font-family:serif">I</i></button>
+                                    <button id="tb-underline" title="Underline (Ctrl+U)" onclick="execCmd('underline')"><u>U</u></button>
+                                    <button title="Strikethrough" onclick="execCmd('strikeThrough')" style="font-size:0.75rem;text-decoration:line-through;width:auto;padding:0 6px;">S̶</button>
+                                    <div class="tb-sep"></div>
+                                    <button title="Align Left"   onclick="execCmd('justifyLeft')"   style="font-size:0.9rem;">⬛</button>
+                                    <button title="Center"       onclick="execCmd('justifyCenter')" style="font-size:0.9rem;">☰</button>
+                                    <button title="Align Right"  onclick="execCmd('justifyRight')"  style="font-size:0.9rem;">▤</button>
+                                    <div class="tb-sep"></div>
+                                    <button title="Bullet List"    onclick="execCmd('insertUnorderedList')" style="font-size:0.9rem;">• ≡</button>
+                                    <button title="Numbered List"  onclick="execCmd('insertOrderedList')"   style="font-size:0.9rem;">1 ≡</button>
+                                    <button title="Indent"         onclick="execCmd('indent')"              style="font-size:0.9rem;">→|</button>
+                                    <button title="Outdent"        onclick="execCmd('outdent')"             style="font-size:0.9rem;">|←</button>
+                                    <div class="tb-sep"></div>
+                                    <button title="Insert Link"     onclick="editorInsertLink()"           style="font-size:0.9rem;">🔗</button>
+                                    <button title="Insert Image URL" onclick="editorInsertImage()"         style="font-size:0.9rem;">🖼</button>
+                                    <button title="Horizontal Rule" onclick="execCmd('insertHorizontalRule')" style="font-size:0.9rem;">─</button>
+                                    <div class="tb-sep"></div>
+                                    <button title="Undo (Ctrl+Z)"  onclick="execCmd('undo')"        style="font-size:0.9rem;">↩</button>
+                                    <button title="Redo (Ctrl+Y)"  onclick="execCmd('redo')"        style="font-size:0.9rem;">↪</button>
+                                    <button title="Clear formatting" onclick="execCmd('removeFormat')" style="font-size:0.68rem;width:auto;padding:0 5px;">✕fmt</button>
                                 </div>
-                                <textarea id="editor-content" placeholder="Write your full publication content here... You can use HTML or plain text. Use the toolbar above to embed links, tweets, iframes, audio and more."></textarea>
+                                <div id="editor-content"
+                                     contenteditable="true"
+                                     data-placeholder="Write your full publication content here…"
+                                     onkeydown="editorKeydown(event)"
+                                     onmouseup="updateToolbarState()"
+                                     onkeyup="updateToolbarState()"></div>
                             </div>
                             <div class="dash-field">
                                 <label>External Link (PDF, DOI, external report URL)</label>
@@ -1695,6 +1768,28 @@
 </div>
 
 <!-- ═══════════════════════════════════════════
+     AUTHOR PROFILE OVERLAY
+═══════════════════════════════════════════ -->
+<div id="author-profile-overlay">
+    <div class="apo-header">
+        <button class="apo-back" onclick="closeAuthorProfile()">← Back</button>
+        <span style="color:rgba(255,255,255,0.5); font-size:0.85rem;">Author Profile</span>
+    </div>
+    <div class="apo-hero">
+        <div id="apo-avatar-wrap"></div>
+        <div class="apo-name"  id="apo-name"></div>
+        <div class="apo-title" id="apo-title"></div>
+        <div class="apo-org"   id="apo-org"></div>
+        <div class="apo-social-row" id="apo-socials"></div>
+    </div>
+    <div class="apo-body">
+        <div class="apo-bio" id="apo-bio"></div>
+        <div class="apo-pubs-title">Publications</div>
+        <div class="pub-grid" id="apo-pubs-grid"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
      EMBED MODAL
 ═══════════════════════════════════════════ -->
 <div id="embed-modal">
@@ -1823,7 +1918,7 @@ function savePost() {
         id: editId || Date.now().toString(),
         title,
         excerpt: document.getElementById('post-excerpt').value.trim(),
-        content: document.getElementById('editor-content').value.trim(),
+        content: getEditorContent(),
         type: document.getElementById('post-type').value,
         theme: document.getElementById('post-theme').value,
         date: document.getElementById('post-date').value,
@@ -1846,9 +1941,10 @@ function savePost() {
 }
 
 function resetEditor() {
-    ['post-title','post-excerpt','editor-content','post-link','post-author','post-cover-url'].forEach(id => {
+    ['post-title','post-excerpt','post-link','post-author','post-cover-url'].forEach(id => {
         document.getElementById(id).value = '';
     });
+    setEditorContent('');
     document.getElementById('edit-post-id').value = '';
     document.getElementById('editor-title').textContent = 'New Publication';
     document.getElementById('post-type').value = 'report';
@@ -1864,7 +1960,6 @@ function editPost(id) {
     document.getElementById('edit-post-id').value = p.id;
     document.getElementById('post-title').value = p.title;
     document.getElementById('post-excerpt').value = p.excerpt || '';
-    document.getElementById('editor-content').value = p.content || '';
     document.getElementById('post-type').value = p.type;
     document.getElementById('post-theme').value = p.theme;
     document.getElementById('post-date').value = p.date;
@@ -1872,6 +1967,7 @@ function editPost(id) {
     document.getElementById('post-cover-url').value = p.cover || '';
     document.getElementById('post-link').value = p.link || '';
     document.getElementById('editor-title').textContent = 'Edit Publication';
+    setEditorContent(p.content || '');
     if (p.cover) updateCoverFromUrl(p.cover);
     showDashSection('new-post');
 }
@@ -1921,7 +2017,7 @@ function pubCardHTML(p) {
             <p class="pub-excerpt">${escHtml(p.excerpt || '')}</p>
             <div class="pub-footer">
                 <a href="${p.link ? escHtml(p.link) : '#'}" class="pub-read-link" ${p.link ? 'target="_blank" rel="noopener"' : `onclick="openPub('${p.id}')"`}>Read ${typeLabels[p.type] || 'More'} →</a>
-                <span style="font-size:0.78rem;color:var(--text-light)">${escHtml(p.author || '3Bi')}</span>
+                ${p.author ? `<a href="#" onclick="openAuthorProfile(${JSON.stringify(escHtml(p.author))}); return false;" style="font-size:0.78rem;color:var(--text-light);text-decoration:none;" onmouseover="this.style.color='var(--terracotta)'" onmouseout="this.style.color='var(--text-light)'">${escHtml(p.author)}</a>` : ''}
             </div>
         </div>
     </div>`;
@@ -1989,28 +2085,59 @@ function updateDashboardStats() {
 }
 
 // ─── RICH TEXT ───
-function fmtText(cmd) {
-    const ta = document.getElementById('editor-content');
-    const start = ta.selectionStart, end = ta.selectionEnd;
-    const sel = ta.value.substring(start, end);
-    const tags = { bold: ['<strong>','</strong>'], italic: ['<em>','</em>'], underline: ['<u>','</u>'] };
-    const [o, c] = tags[cmd];
-    ta.value = ta.value.substring(0,start) + o + sel + c + ta.value.substring(end);
+// ─── WYSIWYG EDITOR ───
+function execCmd(cmd, val) {
+    document.getElementById('editor-content').focus();
+    document.execCommand(cmd, false, val || null);
+    updateToolbarState();
 }
-function insertHeading() {
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.substring(0,pos) + '\n<h2></h2>\n' + ta.value.substring(pos);
+
+function execFormatBlock(tag) {
+    if (!tag) return;
+    document.getElementById('editor-content').focus();
+    document.execCommand('formatBlock', false, tag);
+    updateToolbarState();
 }
-function insertBullet() {
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.substring(0,pos) + '\n<ul>\n  <li></li>\n</ul>\n' + ta.value.substring(pos);
+
+function updateToolbarState() {
+    [['bold','tb-bold'],['italic','tb-italic'],['underline','tb-underline']].forEach(([cmd,id]) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.toggle('active', document.queryCommandState(cmd));
+    });
 }
-function insertHr() {
-    const ta = document.getElementById('editor-content');
-    const pos = ta.selectionStart;
-    ta.value = ta.value.substring(0,pos) + '\n<hr>\n' + ta.value.substring(pos);
+
+function editorKeydown(e) {
+    if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'b') { e.preventDefault(); execCmd('bold'); }
+        if (e.key === 'i') { e.preventDefault(); execCmd('italic'); }
+        if (e.key === 'u') { e.preventDefault(); execCmd('underline'); }
+        if (e.key === 'z') { e.preventDefault(); execCmd('undo'); }
+        if (e.key === 'y') { e.preventDefault(); execCmd('redo'); }
+    }
+}
+
+function editorInsertLink() {
+    const url = prompt('Enter URL:', 'https://');
+    if (!url) return;
+    const sel = window.getSelection();
+    const text = sel && sel.toString() ? sel.toString() : url;
+    document.getElementById('editor-content').focus();
+    document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" rel="noopener">${text}</a>`);
+}
+
+function editorInsertImage() {
+    const url = prompt('Enter image URL:', 'https://');
+    if (!url) return;
+    document.getElementById('editor-content').focus();
+    document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;border-radius:6px;margin:0.5rem 0;display:block;">`);
+}
+
+function getEditorContent() {
+    return document.getElementById('editor-content').innerHTML;
+}
+
+function setEditorContent(html) {
+    document.getElementById('editor-content').innerHTML = html || '';
 }
 
 // ─── EMBED MODAL ───
@@ -2090,6 +2217,77 @@ function saveSettings() {
     if (np) localStorage.setItem('3bi_admin_pass', np);
     alert('Settings saved.');
     document.getElementById('new-pass').value = '';
+}
+
+// ─── AUTHOR PROFILE OVERLAY ───
+function openAuthorProfile(authorName) {
+    const authors = getAuthors();
+    const a = authors.find(x => x.name === authorName);
+    const overlay = document.getElementById('author-profile-overlay');
+
+    // Avatar
+    const avatarWrap = document.getElementById('apo-avatar-wrap');
+    if (a && a.photo) {
+        avatarWrap.innerHTML = `<img class="apo-avatar" src="${escHtml(a.photo)}" alt="${escHtml(a.name)}">`;
+    } else {
+        const initials = authorName.split(' ').filter(Boolean).map(w=>w[0]).join('').substring(0,2).toUpperCase();
+        avatarWrap.innerHTML = `<div class="apo-avatar-placeholder">${initials}</div>`;
+    }
+
+    document.getElementById('apo-name').textContent  = authorName;
+    document.getElementById('apo-title').textContent = a ? (a.title || '') : '';
+    document.getElementById('apo-org').textContent   = a ? (a.org   || '') : '';
+
+    // Social links
+    const socials = document.getElementById('apo-socials');
+    socials.innerHTML = '';
+    if (a) {
+        if (a.twitter)  socials.innerHTML += `<a class="apo-social-btn" href="${escHtml(a.twitter)}"  target="_blank" rel="noopener">𝕏 Twitter</a>`;
+        if (a.linkedin) socials.innerHTML += `<a class="apo-social-btn" href="${escHtml(a.linkedin)}" target="_blank" rel="noopener">in LinkedIn</a>`;
+        if (a.academia) socials.innerHTML += `<a class="apo-social-btn" href="${escHtml(a.academia)}" target="_blank" rel="noopener">📖 Academia.edu</a>`;
+        if (a.email)    socials.innerHTML += `<a class="apo-social-btn" href="mailto:${escHtml(a.email)}">✉ Email</a>`;
+    }
+
+    // Bio
+    const bioEl = document.getElementById('apo-bio');
+    bioEl.textContent = a && a.bio ? a.bio : '';
+    bioEl.style.display = (a && a.bio) ? 'block' : 'none';
+
+    // Publications by this author
+    const pubs = getPosts().filter(p => p.author === authorName);
+    const pubGrid = document.getElementById('apo-pubs-grid');
+    if (pubs.length) {
+        const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
+        pubGrid.innerHTML = pubs.map(p => {
+            const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '';
+            const coverHTML = p.cover ? `<img src="${escHtml(p.cover)}" alt="${escHtml(p.title)}" onerror="this.style.display='none'">` : `<div class="pub-cover-placeholder">📄</div>`;
+            return `<div class="pub-card">
+                <div class="pub-cover">
+                    <div class="pub-type-badge ${escHtml(p.type)}">${typeLabels[p.type]||p.type}</div>
+                    ${coverHTML}
+                </div>
+                <div class="pub-body">
+                    <div class="pub-meta">${dateStr}${p.theme?' · '+escHtml(p.theme):''}</div>
+                    <h3 class="pub-title">${escHtml(p.title)}</h3>
+                    <p class="pub-excerpt">${escHtml(p.excerpt||'')}</p>
+                    <div class="pub-footer">
+                        <a href="${p.link?escHtml(p.link):'#'}" class="pub-read-link" ${p.link?'target="_blank" rel="noopener"':`onclick="openPub('${p.id}')"`}>Read ${typeLabels[p.type]||'More'} →</a>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    } else {
+        pubGrid.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;">No publications found for this author.</p>';
+    }
+
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAuthorProfile() {
+    document.getElementById('author-profile-overlay').classList.remove('open');
+    document.body.style.overflow = '';
 }
 
 // ─── UTILITY ───
