@@ -643,6 +643,40 @@
             .tl-year { width: 50px; font-size: 0.9rem; }
             .tl-dot { left: 63px; }
         }
+        /* ─── AUTHOR CARDS ─── */
+        .author-card {
+            background: #152235; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; overflow: hidden; transition: box-shadow 0.25s;
+        }
+        .author-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.3); }
+        .author-card-header {
+            background: rgba(255,255,255,0.04); padding: 1.25rem;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .author-avatar {
+            width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
+            flex-shrink: 0; border: 2px solid rgba(200,90,42,0.4);
+        }
+        .author-avatar-placeholder {
+            width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+            background: rgba(200,90,42,0.2); border: 2px solid rgba(200,90,42,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; color: var(--terracotta-light);
+        }
+        .author-card-name { font-family: 'Libre Baskerville', serif; color: white; font-size: 1rem; font-weight: 700; }
+        .author-card-title { font-size: 0.78rem; color: var(--terracotta-light); margin-top: 1px; }
+        .author-card-org   { font-size: 0.74rem; color: rgba(255,255,255,0.4); margin-top: 1px; }
+        .author-card-body  { padding: 1rem 1.25rem; }
+        .author-card-bio   { font-size: 0.82rem; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 0.85rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .author-social-links { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .author-social-link {
+            display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.65rem;
+            border-radius: 50px; font-size: 0.7rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.55); text-decoration: none; transition: all 0.15s;
+        }
+        .author-social-link:hover { background: rgba(255,255,255,0.12); color: white; }
+        .author-card-actions { display: flex; gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
     </style>
 </head>
 <body>
@@ -1399,6 +1433,7 @@
                     <li><a href="#" onclick="showDashSection('overview')" class="active" id="nav-overview"><span class="nav-icon">📊</span> Overview</a></li>
                     <li><a href="#" onclick="showDashSection('all-posts')" id="nav-all-posts"><span class="nav-icon">📚</span> All Publications</a></li>
                     <li><a href="#" onclick="showDashSection('new-post')" id="nav-new-post"><span class="nav-icon">✍</span> New Publication</a></li>
+                    <li><a href="#" onclick="showDashSection('authors')" id="nav-authors"><span class="nav-icon">👤</span> Authors</a></li>
                     <li><a href="#" onclick="showDashSection('media')" id="nav-media"><span class="nav-icon">🖼️</span> Media Library</a></li>
                     <li><a href="#" onclick="showDashSection('settings')" id="nav-settings"><span class="nav-icon">⚙</span> Site Settings</a></li>
                 </ul>
@@ -1551,6 +1586,94 @@
                 </div>
             </div>
 
+            <!-- Authors -->
+            <div class="dash-section" id="ds-authors">
+                <div class="dash-section-title">
+                    Authors
+                    <button class="dash-btn dash-btn-primary" onclick="showAuthorForm()">+ New Author</button>
+                </div>
+
+                <!-- Author Form (hidden until add/edit) -->
+                <div id="author-form-wrap" style="display:none; margin-bottom:2rem;">
+                    <div class="post-editor">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                            <h4 id="author-form-heading" style="color:white; font-family:'Libre Baskerville',serif; font-size:1.1rem;">New Author</h4>
+                            <button class="dash-btn dash-btn-ghost" onclick="hideAuthorForm()">Cancel</button>
+                        </div>
+                        <input type="hidden" id="author-edit-id" value="">
+
+                        <!-- Photo upload -->
+                        <div class="dash-field">
+                            <label>Profile Photo</label>
+                            <div style="display:flex; align-items:center; gap:1.25rem; margin-top:0.25rem;">
+                                <div id="author-photo-preview" style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.06); border:2px dashed rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden; font-size:1.8rem;">👤</div>
+                                <div>
+                                    <label for="author-photo-file" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.55rem 1.1rem; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:7px; cursor:pointer; color:rgba(255,255,255,0.8); font-size:0.85rem; font-weight:600; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+                                        📁 Choose from files
+                                    </label>
+                                    <input type="file" id="author-photo-file" accept="image/*" style="display:none;" onchange="handleAuthorPhotoUpload(this)">
+                                    <p style="color:rgba(255,255,255,0.35); font-size:0.78rem; margin-top:0.4rem;">JPG, PNG or WebP. Displayed as a circle.</p>
+                                    <button type="button" onclick="clearAuthorPhoto()" style="background:none;border:none;color:rgba(255,255,255,0.35);font-size:0.78rem;cursor:pointer;padding:0;margin-top:0.2rem;">✕ Remove photo</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                            <div class="dash-field">
+                                <label>Full Name *</label>
+                                <input type="text" id="author-name" placeholder="e.g. Mohamed ElMujtaba Eadam">
+                            </div>
+                            <div class="dash-field">
+                                <label>Title / Role</label>
+                                <input type="text" id="author-title" placeholder="e.g. Founder & Lead Analyst">
+                            </div>
+                            <div class="dash-field">
+                                <label>Organisation</label>
+                                <input type="text" id="author-org" placeholder="e.g. Build Back Better Initiative (3Bi)">
+                            </div>
+                            <div class="dash-field">
+                                <label>Email Address</label>
+                                <input type="email" id="author-email" placeholder="author@example.com">
+                            </div>
+                        </div>
+
+                        <div class="dash-field">
+                            <label>Short Bio</label>
+                            <textarea id="author-bio" placeholder="A brief biography shown with publications..." style="min-height:90px;"></textarea>
+                        </div>
+
+                        <!-- Social links -->
+                        <div style="margin-bottom:1rem;">
+                            <p style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.45); margin-bottom:0.75rem;">Social &amp; Academic Links</p>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                                <div class="dash-field" style="margin-bottom:0;">
+                                    <label>𝕏 / Twitter URL</label>
+                                    <input type="url" id="author-twitter" placeholder="https://x.com/username">
+                                </div>
+                                <div class="dash-field" style="margin-bottom:0;">
+                                    <label>LinkedIn URL</label>
+                                    <input type="url" id="author-linkedin" placeholder="https://linkedin.com/in/username">
+                                </div>
+                                <div class="dash-field" style="margin-bottom:0;">
+                                    <label>Academia.edu URL</label>
+                                    <input type="url" id="author-academia" placeholder="https://independent.academia.edu/username">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:0.75rem; margin-top:1.5rem;">
+                            <button class="dash-btn dash-btn-primary" style="padding:0.75rem 2rem;" onclick="saveAuthor()">💾 Save Author</button>
+                            <button class="dash-btn dash-btn-ghost" onclick="hideAuthorForm()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Authors Grid -->
+                <div id="author-cards-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:1.25rem;">
+                    <div id="no-authors-msg" style="color:rgba(255,255,255,0.35); font-size:0.9rem; grid-column:1/-1; padding:2rem; text-align:center;">No authors yet. Click "+ New Author" to add one.</div>
+                </div>
+            </div>
+
             <!-- Settings -->
             <div class="dash-section" id="ds-settings">
                 <div class="dash-section-title">Site Settings</div>
@@ -1680,6 +1803,7 @@ function showDashSection(id) {
     if (navEl) navEl.classList.add('active');
     if (id === 'all-posts') renderPostsTable();
     if (id === 'overview') updateDashboardStats();
+    if (id === 'authors') renderAuthorCards();
 }
 
 // ─── PUBLICATIONS DATA ───
@@ -1972,6 +2096,157 @@ function saveSettings() {
 function escHtml(str) {
     if (!str) return '';
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── AUTHORS ───
+function getAuthors()    { try { return JSON.parse(localStorage.getItem('3bi_authors') || '[]'); } catch { return []; } }
+function saveAuthors(a)  { localStorage.setItem('3bi_authors', JSON.stringify(a)); }
+
+function showAuthorForm(id) {
+    const form = document.getElementById('author-form-wrap');
+    form.style.display = 'block';
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('author-edit-id').value = '';
+    document.getElementById('author-name').value = '';
+    document.getElementById('author-title').value = '';
+    document.getElementById('author-org').value = '';
+    document.getElementById('author-email').value = '';
+    document.getElementById('author-bio').value = '';
+    document.getElementById('author-twitter').value = '';
+    document.getElementById('author-linkedin').value = '';
+    document.getElementById('author-academia').value = '';
+    document.getElementById('author-photo-file').value = '';
+    document.getElementById('author-form-heading').textContent = 'New Author';
+    resetAuthorPhotoPreview();
+
+    if (id) {
+        const a = getAuthors().find(x => x.id === id);
+        if (!a) return;
+        document.getElementById('author-edit-id').value = a.id;
+        document.getElementById('author-name').value = a.name || '';
+        document.getElementById('author-title').value = a.title || '';
+        document.getElementById('author-org').value = a.org || '';
+        document.getElementById('author-email').value = a.email || '';
+        document.getElementById('author-bio').value = a.bio || '';
+        document.getElementById('author-twitter').value = a.twitter || '';
+        document.getElementById('author-linkedin').value = a.linkedin || '';
+        document.getElementById('author-academia').value = a.academia || '';
+        document.getElementById('author-form-heading').textContent = 'Edit Author';
+        if (a.photo) setAuthorPhotoPreview(a.photo);
+    }
+}
+
+function hideAuthorForm() {
+    document.getElementById('author-form-wrap').style.display = 'none';
+}
+
+function handleAuthorPhotoUpload(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = function(e) { setAuthorPhotoPreview(e.target.result); };
+    reader.readAsDataURL(input.files[0]);
+}
+
+function setAuthorPhotoPreview(src) {
+    const el = document.getElementById('author-photo-preview');
+    el.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+    el.appendChild(img);
+    el.dataset.photo = src;
+}
+
+function resetAuthorPhotoPreview() {
+    const el = document.getElementById('author-photo-preview');
+    el.innerHTML = '👤';
+    el.dataset.photo = '';
+}
+
+function clearAuthorPhoto() {
+    document.getElementById('author-photo-file').value = '';
+    resetAuthorPhotoPreview();
+}
+
+function saveAuthor() {
+    const name = document.getElementById('author-name').value.trim();
+    if (!name) { alert('Please enter the author\'s name.'); return; }
+    const photoEl = document.getElementById('author-photo-preview');
+    const authors = getAuthors();
+    const editId = document.getElementById('author-edit-id').value;
+    const author = {
+        id: editId || 'author_' + Date.now(),
+        name,
+        title:    document.getElementById('author-title').value.trim(),
+        org:      document.getElementById('author-org').value.trim(),
+        email:    document.getElementById('author-email').value.trim(),
+        bio:      document.getElementById('author-bio').value.trim(),
+        twitter:  document.getElementById('author-twitter').value.trim(),
+        linkedin: document.getElementById('author-linkedin').value.trim(),
+        academia: document.getElementById('author-academia').value.trim(),
+        photo:    photoEl.dataset.photo || '',
+    };
+    if (editId) {
+        const idx = authors.findIndex(a => a.id === editId);
+        if (idx !== -1) authors[idx] = author; else authors.unshift(author);
+    } else {
+        authors.unshift(author);
+    }
+    saveAuthors(authors);
+    hideAuthorForm();
+    renderAuthorCards();
+}
+
+function deleteAuthor(id) {
+    if (!confirm('Delete this author? This cannot be undone.')) return;
+    saveAuthors(getAuthors().filter(a => a.id !== id));
+    renderAuthorCards();
+}
+
+function renderAuthorCards() {
+    const grid = document.getElementById('author-cards-grid');
+    const noMsg = document.getElementById('no-authors-msg');
+    if (!grid) return;
+    const authors = getAuthors();
+    // Remove old cards (keep the no-authors message element)
+    Array.from(grid.querySelectorAll('.author-card')).forEach(el => el.remove());
+    if (!authors.length) {
+        if (noMsg) noMsg.style.display = 'block';
+        return;
+    }
+    if (noMsg) noMsg.style.display = 'none';
+    authors.forEach(a => {
+        const initials = a.name.split(' ').filter(Boolean).map(w => w[0]).join('').substring(0,2).toUpperCase();
+        const avatarHTML = a.photo
+            ? `<img class="author-avatar" src="${escHtml(a.photo)}" alt="${escHtml(a.name)}">`
+            : `<div class="author-avatar-placeholder">${escHtml(initials)}</div>`;
+        const socials = [
+            a.twitter  ? `<a class="author-social-link" href="${escHtml(a.twitter)}" target="_blank" rel="noopener">𝕏 Twitter</a>` : '',
+            a.linkedin ? `<a class="author-social-link" href="${escHtml(a.linkedin)}" target="_blank" rel="noopener">in LinkedIn</a>` : '',
+            a.academia ? `<a class="author-social-link" href="${escHtml(a.academia)}" target="_blank" rel="noopener">📖 Academia</a>` : '',
+            a.email    ? `<a class="author-social-link" href="mailto:${escHtml(a.email)}">✉ Email</a>` : '',
+        ].filter(Boolean).join('');
+        const card = document.createElement('div');
+        card.className = 'author-card';
+        card.innerHTML = `
+            <div class="author-card-header">
+                ${avatarHTML}
+                <div>
+                    <div class="author-card-name">${escHtml(a.name)}</div>
+                    ${a.title ? `<div class="author-card-title">${escHtml(a.title)}</div>` : ''}
+                    ${a.org   ? `<div class="author-card-org">${escHtml(a.org)}</div>` : ''}
+                </div>
+            </div>
+            <div class="author-card-body">
+                ${a.bio ? `<div class="author-card-bio">${escHtml(a.bio)}</div>` : ''}
+                ${socials ? `<div class="author-social-links">${socials}</div>` : ''}
+                <div class="author-card-actions">
+                    <button class="post-action-btn btn-edit" onclick="showAuthorForm('${escHtml(a.id)}')">Edit</button>
+                    <button class="post-action-btn btn-del"  onclick="deleteAuthor('${escHtml(a.id)}')">Delete</button>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
 }
 
 // Close modals on overlay click
