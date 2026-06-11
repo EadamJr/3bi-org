@@ -747,6 +747,77 @@
         }
         .author-social-link:hover { background: rgba(255,255,255,0.12); color: white; }
         .author-card-actions { display: flex; gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
+
+        /* ─── SHARE DROPDOWN ─── */
+        .share-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .share-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.825rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        .share-btn:hover {
+            color: var(--terracotta);
+            background: rgba(200,90,42,0.06);
+        }
+        .share-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 100;
+            min-width: 160px;
+            padding: 0.5rem 0;
+            margin-bottom: 8px;
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .share-dropdown:hover .share-menu,
+        .share-dropdown:focus-within .share-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .share-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.6rem 1rem;
+            color: var(--text);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: background 0.15s, color 0.15s;
+            text-align: left;
+        }
+        .share-menu a:hover {
+            background: var(--sand);
+            color: var(--navy);
+        }
+        .share-menu svg {
+            flex-shrink: 0;
+            color: var(--text-light);
+            transition: color 0.15s;
+        }
+        .share-menu a:hover svg {
+            color: var(--navy);
+        }
     </style>
 </head>
 <body>
@@ -986,34 +1057,7 @@
                 <a href="#" class="btn btn-navy" onclick="showSection('resources')" style="white-space:nowrap; flex-shrink:0;">View All →</a>
             </div>
             <div class="pub-grid" id="home-pub-grid">
-                <!-- Populated by JS -->
-                <div class="pub-card">
-                    <div class="pub-cover"><div class="pub-type-badge report">Report</div><div class="pub-cover-placeholder">📄</div></div>
-                    <div class="pub-body">
-                        <div class="pub-meta">December 2024 · Climate-Conflict</div>
-                        <h3 class="pub-title">Climate Displacement and Conflict in the Sahel: Implications for Sudan's Borderlands</h3>
-                        <p class="pub-excerpt">An analysis of how climate-induced migration patterns are intersecting with ongoing conflict dynamics in Sudan's peripheral regions.</p>
-                        <div class="pub-footer"><a href="#" class="pub-read-link">Read Report →</a><span style="font-size:0.78rem;color:var(--text-light)">3Bi Research</span></div>
-                    </div>
-                </div>
-                <div class="pub-card">
-                    <div class="pub-cover"><div class="pub-type-badge analysis">Analysis</div><div class="pub-cover-placeholder">📊</div></div>
-                    <div class="pub-body">
-                        <div class="pub-meta">November 2024 · Governance</div>
-                        <h3 class="pub-title">Emergency Response Rooms: Documenting Sudan's Indigenous Crisis Infrastructure</h3>
-                        <p class="pub-excerpt">A documentation of Sudan's Resistance Committees and Emergency Response Rooms as community governance innovations during the civil war.</p>
-                        <div class="pub-footer"><a href="#" class="pub-read-link">Read Analysis →</a><span style="font-size:0.78rem;color:var(--text-light)">3Bi Research</span></div>
-                    </div>
-                </div>
-                <div class="pub-card">
-                    <div class="pub-cover"><div class="pub-type-badge paper">Policy Brief</div><div class="pub-cover-placeholder">📝</div></div>
-                    <div class="pub-body">
-                        <div class="pub-meta">October 2024 · Humanitarian-Dev Nexus</div>
-                        <h3 class="pub-title">Beyond Emergency: A Framework for Transitioning Sudan's Humanitarian Response</h3>
-                        <p class="pub-excerpt">Policy recommendations for donors and implementing agencies on bridging emergency response with long-term development programming.</p>
-                        <div class="pub-footer"><a href="#" class="pub-read-link">Read Brief →</a><span style="font-size:0.78rem;color:var(--text-light)">3Bi Policy</span></div>
-                    </div>
-                </div>
+                <!-- Populated dynamically by JS -->
             </div>
         </div>
     </section>
@@ -1936,94 +1980,169 @@ function showSection(id) {
     renderPublications();
 }
 
-// Show footer by default on home
-window.addEventListener('DOMContentLoaded', () => {
-    // Initialize mock data on first visit
-    if (!localStorage.getItem('3bi_posts') || JSON.parse(localStorage.getItem('3bi_posts')).length === 0) {
-        const mockAuthors = [
+// ─── SHARING HELPERS ───
+function getShareUrl(id) {
+    const base = window.location.origin + window.location.pathname;
+    if (window.location.href.startsWith('file:') || window.location.hostname === '') {
+        return 'https://www.3bisudan.org/?pub=' + encodeURIComponent(id);
+    }
+    return base + '?pub=' + encodeURIComponent(id);
+}
+
+function copyLinkToClipboard(event, id, url) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('Link copied to clipboard!');
+        }).catch(err => {
+            fallbackCopyText(url);
+        });
+    } else {
+        fallbackCopyText(url);
+    }
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showToast('Link copied to clipboard!');
+    } catch (err) {
+        console.error('Fallback copy failed', err);
+    }
+    document.body.removeChild(textArea);
+}
+
+function showToast(message) {
+    let toast = document.getElementById('share-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'share-toast';
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0f2240;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 10000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = '<span>🔗</span> ' + message;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(100px)';
+    }, 2500);
+}
+
+// ─── SEED DEFAULT DATA ───
+function seedDefaultData() {
+    // Seed authors
+    const authors = getAuthors();
+    if (authors.length === 0) {
+        const defaultAuthors = [
             {
-                id: "author_mohamed",
-                name: "Mohamed ElMujtaba Eadam",
-                title: "Founder & Lead Analyst",
+                id: "author_3bi_team",
+                name: "3Bi Research Team",
+                title: "Policy Research Think-Tank",
                 org: "Build Back Better Initiative (3Bi)",
-                email: "contact@3bisudan.org",
-                bio: "Mohamed ElMujtaba Eadam is the founder and lead analyst of 3Bi, specializing in the climate-conflict nexus, governance, and democratic transitions in East Africa. He represents 3Bi at COP events through the ARCH Project.",
-                twitter: "https://x.com/EadamJr",
-                linkedin: "https://linkedin.com/in/mohamed-eadam",
-                academia: "https://independent.academia.edu/MohamedEadam",
+                email: "research@3bisudan.org",
+                bio: "An independent policy research group producing evidence-based solutions for Sudan and East Africa, bridging grassroots realities with national and regional policy frameworks.",
+                twitter: "https://x.com/3BiSudan",
+                linkedin: "https://linkedin.com/company/3bi-sudan",
+                academia: "https://independent.academia.edu/3BiSudan",
+                photo: ""
+            },
+            {
+                id: "author_3bi_policy",
+                name: "3Bi Policy",
+                title: "Policy Advisory Board",
+                org: "Build Back Better Initiative (3Bi)",
+                email: "policy@3bisudan.org",
+                bio: "Strategic advisory division delivering research and governance consulting for civic and political institutions.",
+                twitter: "https://x.com/3BiSudan",
+                linkedin: "https://linkedin.com/company/3bi-sudan",
+                academia: "",
                 photo: ""
             }
         ];
-        const mockPosts = [
-            {
-                id: "1",
-                title: "When the State Disappears: Sudan's ERRs and the Politics of Survival",
-                excerpt: "An in-depth analysis of Sudan's Resistance Committees and Emergency Response Rooms (ERRs) as grassroots mutual aid infrastructure emerging from civil war.",
-                content: `<h1>Introduction</h1><p>The outbreak of war in Khartoum on April 15, 2023, shattered the remaining formal structures of the Sudanese state. In the administrative vacuum that followed, the task of communal survival fell not to international agencies or municipal bodies, but to a decentralized network of neighborhood initiatives: the Emergency Response Rooms (ERRs).</p>
-                <h1>Nafeer as a Resilient Framework</h1><p>Rooted in the indigenous tradition of <em>nafeer</em>—a Sudanese custom of collective mutual assistance—the ERRs represent a profound innovation in grassroots crisis response. Unlike external NGO architectures, ERRs operate on horizontal, non-hierarchical principles, providing medical aid, establishing communal kitchens (<em>matabikh al-takaful</em>), and facilitating evacuation routes under active shelling.</p>
-                <blockquote>"The nafeer tradition is not merely a social custom; it is the administrative spine of communal survival in contemporary Sudan."</blockquote>
-                <h1>Decolonizing Aid and Governance</h1><p>For international donors, the success of the ERRs challenges the conventional, top-down humanitarian model. Decolonizing policy research in fragile contexts requires recognizing ERRs not merely as temporary 'implementing partners' but as embryonic organs of civilian self-governance. Their survival and autonomy are central to the democratization of aid in the Global South.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Intervention Area</th>
-                            <th>Operational Mechanism</th>
-                            <th>Primary Benefit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Communal Kitchens</td>
-                            <td>Decentralized local food sourcing</td>
-                            <td>Preventing localized famine</td>
-                        </tr>
-                        <tr>
-                            <td>Emergency Health</td>
-                            <td>Voluntary medical personnel networks</td>
-                            <td>Primary care under active conflict</td>
-                        </tr>
-                        <tr>
-                            <td>Evacuation Corridors</td>
-                            <td>Neighborhood tracking & coordination</td>
-                            <td>Safe transit for displaced civilians</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p>Ultimately, when the state disappears, community-led structures prove that crisis response can lay the foundation for long-term institutional resilience.</p>`,
-                type: "analysis",
-                theme: "Grassroots Empowerment",
-                date: "2026-05-15",
-                cover: "https://images.unsplash.com/photo-1547891306-7a8927598a36?auto=format&fit=crop&q=80&w=1200",
-                link: "",
-                author: "Mohamed ElMujtaba Eadam",
-                authorId: "author_mohamed"
-            },
-            {
-                id: "2",
-                title: "Pax to Bellum: Economic Shifts and Military Power in Sudan, 1956-2024",
-                excerpt: "This report traces Sudan's political economy through five distinct revenue eras, arguing that state violence has fragmented into militia-state hybrids.",
-                content: `<h1>The Pax Economica Periodization</h1><p>Sudan's post-independence history is typically analyzed through political coup cycles. However, 3Bi's <em>Pax Economica</em> framework argues that the true driver of state stability and violence is the geography of resource extraction. We periodize Sudan's economic history into five distinct eras:</p>
-                <h2>1. Pax Triticum (Agricultural Era)</h2><p>Up to 1969, focused on cotton, wheat, and domestic agricultural production. State authority was centralized around agricultural boards.</p>
-                <h2>2. Pax Gossypium (Cotton Export Era)</h2><p>From 1969 to 1989, characterized by heavy borrowing against cotton revenues and the rise of mercantilist networks.</p>
-                <h2>3. Pax Bancaria Islamica (Islamic Finance Era)</h2><p>From 1989 to 1999, the expansion of the Islamic banking system and the restructuring of capital flows.</p>
-                <h2>4. Pax Petrolea (Oil Boom Era)</h2><p>From 1999 to 2011, rentier state centralization driven by massive oil flows from Southern fields.</p>
-                <h2>5. Pax Aurea (Gold/Militia Era)</h2><p>From 2011 to the present, defined by the loss of Southern oil, the rise of artisanal gold mining in Darfur/Blue Nile, and the rise of revenue-autonomous armed actors.</p>
-                <blockquote>"The geography of revenue determines whether state violence remains monopolized or fragments into militia-state hybrids."</blockquote>
-                <p>This long-term shift shows that the current war is the terminal crisis of the rentier-gold extraction model. Sustainable peace requires rebuilding agricultural economies and reforming national financial institutions.</p>`,
-                type: "report",
-                theme: "Sudan/East Africa Political Economy",
-                date: "2026-05-01",
-                cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
-                link: "",
-                author: "Mohamed ElMujtaba Eadam",
-                authorId: "author_mohamed"
-            }
-        ];
-        localStorage.setItem('3bi_authors', JSON.stringify(mockAuthors));
-        localStorage.setItem('3bi_posts', JSON.stringify(mockPosts));
+        saveAuthors(defaultAuthors);
     }
 
+    // Seed posts
+    const posts = getPosts();
+    if (posts.length === 0) {
+        const defaultPosts = [
+            {
+                id: "sahel-climate-displacement",
+                title: "Climate Displacement and Conflict in the Sahel: Implications for Sudan's Borderlands",
+                excerpt: "An analysis of how climate-induced migration patterns are intersecting with ongoing conflict dynamics in Sudan's peripheral regions.",
+                content: `<h1>Climate Displacement and Conflict in the Sahel</h1><p>Climate change is no longer a future threat in the Sahel; it is an active driver of migration, resource competition, and conflict. In Sudan's borderlands, the degradation of arable land and unpredictable rainfall patterns have forced pastoralist and agricultural communities into closer contact, escalating historic tensions over land and water access.</p><h2>Key Findings</h2><ul><li>Resource depletion is shortening seasonal migration routes, bringing pastoralist herds into cultivated agricultural zones before crops can be harvested.</li><li>Local conflict resolution mechanisms (Ajaweed councils) are under immense strain due to the speed and scale of climate-induced displacement.</li><li>Current humanitarian aid is structured around conflict-related displacement, failing to address the long-term, environmental migration.</li></ul><h2>Policy Recommendations</h2><ol><li><strong>Revitalize Traditional Land Management:</strong> Support local governance structures to co-manage migration routes and pasture sharing.</li><li><strong>Climate-Resilient Infrastructure:</strong> Invest in water harvesting and sustainable pastoralist corridors along border regions.</li><li><strong>Integrated Humanitarian Funding:</strong> Establish funding lines that bridge emergency relief with climate adaptation and peacebuilding.</li></ol>`,
+                type: "report",
+                theme: "Climate-Conflict Nexus",
+                date: "2024-12-15",
+                author: "3Bi Research Team",
+                cover: "",
+                link: ""
+            },
+            {
+                id: "emergency-response-rooms",
+                title: "Emergency Response Rooms: Documenting Sudan's Indigenous Crisis Infrastructure",
+                excerpt: "A documentation of Sudan's Resistance Committees and Emergency Response Rooms as community governance innovations during the civil war.",
+                content: `<h1>Emergency Response Rooms: Sudan's Indigenous Crisis Infrastructure</h1><p>Following the outbreak of conflict in April 2023, the formal humanitarian architecture in Sudan collapsed or evacuated. In its place, youth-led Emergency Response Rooms (ERRs) emerged as the primary source of mutual aid, medical assistance, and food distribution across major urban centers, representing a profound innovation in grassroots crisis governance.</p><h2>Key Findings</h2><ul><li>ERRs leverage pre-existing social trust built during the 2018-2019 democratic revolution to organize decentralized mutual aid.</li><li>Despite lack of formal funding, ERRs successfully managed community kitchens, volunteer clinics, and evacuation corridors.</li><li>Formal aid organizations have struggled to directly fund ERRs due to strict compliance, counter-terrorism laws, and bureaucratic inertia.</li></ul><h2>Policy Recommendations</h2><ol><li><strong>Direct Funding Mechanisms:</strong> Donors must adapt compliance requirements to permit direct financial support to unregistered grassroots networks.</li><li><strong>Protection of Humanitarians:</strong> Recognize ERR volunteers as front-line humanitarian workers under international law.</li><li><strong>Community-Centered Design:</strong> Center future transitional governance discussions around the democratic practices developed inside local ERRs.</li></ol>`,
+                type: "analysis",
+                theme: "Governance & Democratization",
+                date: "2024-11-20",
+                author: "3Bi Research Team",
+                cover: "",
+                link: ""
+            },
+            {
+                id: "beyond-emergency-framework",
+                title: "Beyond Emergency: A Framework for Transitioning Sudan's Humanitarian Response",
+                excerpt: "Policy recommendations for donors and implementing agencies on bridging emergency response with long-term development programming.",
+                content: `<h1>Beyond Emergency: Transitioning Sudan's Response</h1><p>Sudan's humanitarian crisis requires more than open-ended emergency relief. To break the cycles of dependency and vulnerability, donors and development actors must implement a "Nexus" approach, which actively links emergency food and health interventions with local market rehabilitation, sustainable agriculture, and institutional capacity-building.</p><h2>Key Findings</h2><ul><li>Purely emergency aid is suppressing local agricultural markets, creating a secondary economic crisis for local food producers.</li><li>Local water and sanitation committees can sustain services far better when provided with spare parts and training rather than outsourced water-trucking.</li><li>Bridging the gap between emergency funding cycles (6-12 months) and development timelines (3-5 years) is critical for structural stability.</li></ul><h2>Policy Recommendations</h2><ol><li><strong>Local Market Integration:</strong> Prioritize cash transfers and local purchasing of food supplies to support regional farming communities.</li><li><strong>Infrastructure Support:</strong> Shift funding from temporary service delivery to strengthening local utility networks and community co-ops.</li><li><strong>Flexible Multi-Year Funding:</strong> Adopt flexible funding envelopes that allow partners to transition between relief and resilience work based on local conditions.</li></ol>`,
+                type: "paper",
+                theme: "Humanitarian-Dev Nexus",
+                date: "2024-10-10",
+                author: "3Bi Policy",
+                cover: "",
+                link: ""
+            }
+        ];
+        savePosts(defaultPosts);
+    }
+}
+
+// Show footer by default on home
+window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('site-footer').style.display = 'block';
+    seedDefaultData();
     renderPublications();
     updateDashboardStats();
     // Set today as default post date
@@ -2166,19 +2285,32 @@ function deletePost(id) {
 // ─── RENDER PUBLICATIONS (public site) ───
 function renderPublications() {
     const posts = getPosts();
+    
+    // Main publications page
     const grid = document.getElementById('main-pub-grid');
     const noPubs = document.getElementById('no-pubs');
-    if (!grid) return;
-    const filterEl = document.querySelector('.filter-btn.active');
-    const activeFilter = filterEl ? filterEl.dataset.filter || 'all' : 'all';
-    const filtered = activeFilter === 'all' ? posts : posts.filter(p => p.type === activeFilter);
-    if (filtered.length === 0) {
-        grid.innerHTML = '';
-        if (noPubs) noPubs.style.display = 'block';
-        return;
+    if (grid) {
+        const filterEl = document.querySelector('.filter-btn.active');
+        const activeFilter = filterEl ? filterEl.dataset.filter || 'all' : 'all';
+        const filtered = activeFilter === 'all' ? posts : posts.filter(p => p.type === activeFilter);
+        if (filtered.length === 0) {
+            grid.innerHTML = '';
+            if (noPubs) noPubs.style.display = 'block';
+        } else {
+            if (noPubs) noPubs.style.display = 'none';
+            grid.innerHTML = filtered.map(p => pubCardHTML(p)).join('');
+        }
     }
-    if (noPubs) noPubs.style.display = 'none';
-    grid.innerHTML = filtered.map(p => pubCardHTML(p)).join('');
+
+    // Homepage latest publications
+    const homeGrid = document.getElementById('home-pub-grid');
+    if (homeGrid) {
+        if (posts.length > 0) {
+            homeGrid.innerHTML = posts.slice(0, 3).map(p => pubCardHTML(p)).join('');
+        } else {
+            homeGrid.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;grid-column:1/-1;text-align:center;padding:2rem;">No publications found.</p>';
+        }
+    }
 }
 
 function pubCardHTML(p) {
@@ -2188,6 +2320,12 @@ function pubCardHTML(p) {
     const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
     const typeClass = p.type || 'paper';
     const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US', { month:'long', year:'numeric' }) : '';
+    
+    // Build share links
+    const shareUrl = p.link ? p.link : getShareUrl(p.id);
+    const titleEsc = encodeURIComponent(p.title);
+    const urlEsc = encodeURIComponent(shareUrl);
+
     return `<div class="pub-card" data-type="${escHtml(p.type)}">
         <div class="pub-cover">
             <div class="pub-type-badge ${escHtml(typeClass)}">${typeLabels[p.type] || p.type}</div>
@@ -2198,7 +2336,33 @@ function pubCardHTML(p) {
             <h3 class="pub-title">${escHtml(p.title)}</h3>
             <p class="pub-excerpt">${escHtml(p.excerpt || '')}</p>
             <div class="pub-footer">
-                <a href="${p.link ? escHtml(p.link) : '?pub=' + encodeURIComponent(p.id)}" class="pub-read-link" ${p.link ? 'target="_blank" rel="noopener"' : ''}>Read ${typeLabels[p.type] || 'More'} →</a>
+                <a href="${p.link ? escHtml(p.link) : '?pub=' + encodeURIComponent(p.id)}" class="pub-read-link" target="_blank" rel="noopener">Read ${typeLabels[p.type] || 'More'} →</a>
+                
+                <div class="share-dropdown">
+                    <button class="share-btn" title="Share this publication" onclick="event.preventDefault(); event.stopPropagation();">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        Share
+                    </button>
+                    <div class="share-menu">
+                        <a href="https://twitter.com/intent/tweet?text=${titleEsc}&url=${urlEsc}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            X / Twitter
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text=${titleEsc}%20-%20${urlEsc}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.03-5.118-2.905-6.993C16.557 1.873 14.08 .842 11.458.842c-5.442 0-9.87 4.421-9.875 9.866-.001 1.837.525 3.562 1.52 5.089L2.09 20.15l4.557-1.196zm10.743-5.275c-.3-.15-1.78-.877-2.053-.976-.275-.1-.475-.15-.675.15-.2.3-.775.976-.95 1.176-.175.2-.35.225-.65.075-1.04-.52-1.786-.92-2.507-2.16-.316-.543-.105-.833.097-1.036.182-.18.4-.474.6-.71.197-.236.262-.404.393-.672.13-.27.065-.506-.033-.707-.1-.2-.875-2.1-.475-2.8.2-.3.4-.375.525-.375.125 0 .25 0 .375.025.125.025.25.075.375.225.2.3.875 2.1.95 2.25.075.15.075.325-.025.525-.1.2-.2.35-.35.5-.15.15-.3.325-.125.6.35.6.8 1.1 1.45 1.67.8.7 1.48.92 1.78 1.07.3.15.475.125.65-.075.175-.2.775-.9 1-1.2.225-.3.45-.25.75-.1.3.15 1.9.9 2.225 1.07.325.175.525.25.6.375.075.125.075.675-.225.825z"/></svg>
+                            WhatsApp
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=${urlEsc}" target="_blank" rel="noopener" onclick="event.stopPropagation();">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            LinkedIn
+                        </a>
+                        <a href="#" onclick="copyLinkToClipboard(event, '${p.id}', '${shareUrl}');">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                            Copy Link
+                        </a>
+                    </div>
+                </div>
+
                 ${p.author ? `<a href="#" onclick="openAuthorProfile(${JSON.stringify(escHtml(p.author))}); return false;" style="font-size:0.78rem;color:var(--text-light);text-decoration:none;" onmouseover="this.style.color='var(--terracotta)'" onmouseout="this.style.color='var(--text-light)'">${escHtml(p.author)}</a>` : ''}
             </div>
         </div>
@@ -2274,21 +2438,32 @@ function updateDashboardStats() {
     const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : '';
 
     const authorBioHTML = author ? `
-        <div class="pub-author-card">
-            ${author.photo ? `<img src="${author.photo}" alt="${author.name}" class="pub-author-photo">` : `<div class="pub-author-photo-placeholder">${author.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}</div>`}
-            <div class="pub-author-details">
-                <div class="pub-author-name">${author.name}</div>
-                ${author.title ? `<div class="pub-author-title">${author.title}</div>` : ''}
-                ${author.org   ? `<div class="pub-author-org">${author.org}</div>` : ''}
-                ${author.bio   ? `<p class="pub-author-bio">${author.bio}</p>` : ''}
-                <div class="pub-author-socials">
-                    ${author.twitter  ? `<a href="${author.twitter}"  target="_blank" rel="noopener">𝕏 Twitter</a>` : ''}
-                    ${author.linkedin ? `<a href="${author.linkedin}" target="_blank" rel="noopener">in LinkedIn</a>` : ''}
-                    ${author.academia ? `<a href="${author.academia}" target="_blank" rel="noopener">📖 Academia</a>` : ''}
-                    ${author.email    ? `<a href="mailto:${author.email}">✉ Email</a>` : ''}
+        <div style="display:flex;align-items:flex-start;gap:1.25rem;margin-top:3rem;padding-top:2.5rem;border-top:2px solid #f0ece4;">
+            ${author.photo ? `<img src="${author.photo}" alt="${author.name}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid #ede7dc;">` : `<div style="width:72px;height:72px;border-radius:50%;background:#c85a2a;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:700;flex-shrink:0;">${author.name.split(' ').map(w=>w[0]).join('').substring(0,2)}</div>`}
+            <div>
+                <div style="font-family:'Libre Baskerville',serif;font-size:1.05rem;font-weight:700;color:#0f2240;margin-bottom:2px;">${author.name}</div>
+                ${author.title ? `<div style="font-size:0.85rem;color:#c85a2a;margin-bottom:2px;">${author.title}</div>` : ''}
+                ${author.org   ? `<div style="font-size:0.82rem;color:#617592;margin-bottom:0.6rem;">${author.org}</div>` : ''}
+                ${author.bio   ? `<p style="font-size:0.9rem;color:#3d5068;line-height:1.7;margin:0 0 0.75rem;">${author.bio}</p>` : ''}
+                <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+                    ${author.twitter  ? `<a href="${author.twitter}"  target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.7rem;border-radius:50px;font-size:0.75rem;font-weight:600;border:1.5px solid #ddd8ce;color:#3d5068;text-decoration:none;">𝕏 Twitter</a>` : ''}
+                    ${author.linkedin ? `<a href="${author.linkedin}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.7rem;border-radius:50px;font-size:0.75rem;font-weight:600;border:1.5px solid #ddd8ce;color:#3d5068;text-decoration:none;">in LinkedIn</a>` : ''}
+                    ${author.academia ? `<a href="${author.academia}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.7rem;border-radius:50px;font-size:0.75rem;font-weight:600;border:1.5px solid #ddd8ce;color:#3d5068;text-decoration:none;">📖 Academia.edu</a>` : ''}
+                    ${author.email    ? `<a href="mailto:${author.email}" style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.7rem;border-radius:50px;font-size:0.75rem;font-weight:600;border:1.5px solid #ddd8ce;color:#3d5068;text-decoration:none;">✉ Email</a>` : ''}
                 </div>
             </div>
-        </div>` : (p.author ? `<div class="pub-author-byline">By <strong>${p.author}</strong></div>` : '');
+        </div>` : (p.author ? `<div style="margin-top:3rem;padding-top:2rem;border-top:2px solid #f0ece4;font-size:0.9rem;color:#617592;">By <strong style="color:#0f2240;">${p.author}</strong></div>` : '');
+
+    // Sharing URLs
+    const shareUrl = p.link ? p.link : (function() {
+        const base = window.location.origin + window.location.pathname;
+        if (window.location.href.startsWith('file:') || window.location.hostname === '') {
+            return 'https://www.3bisudan.org/?pub=' + encodeURIComponent(p.id);
+        }
+        return base + '?pub=' + encodeURIComponent(p.id);
+    })();
+    const titleEsc = encodeURIComponent(p.title);
+    const urlEsc = encodeURIComponent(shareUrl);
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -2302,225 +2477,79 @@ function updateDashboardStats() {
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a365d'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='26' fill='%23e07b39'%3E3Bi%3C/text%3E%3C/svg%3E">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Source Sans 3', sans-serif; color: #1e2d3d; background: #eae7e1; line-height: 1.8; }
+        body { font-family: 'Source Sans 3', sans-serif; color: #1e2d3d; background: #fff; line-height: 1.8; }
 
-        /* Top navigation bar */
+        /* Top bar */
         .pub-topbar {
-            background: #ffffff; padding: 0.85rem 2rem;
+            background: #0f2240; padding: 0.75rem 2rem;
             display: flex; align-items: center; justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
-            border-bottom: 1px solid #ede7dc;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
-        .pub-topbar-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-        .pub-topbar-logo span { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.25rem; font-weight: 700; color: #14355F; line-height: 1.1; }
-        .pub-topbar-logo small { font-size: 0.65rem; color: #7A8A98; text-transform: uppercase; letter-spacing: 0.08em; display: block; font-family: 'Source Sans 3', sans-serif; }
-        .pub-back { color: #9C3D1E; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: color 0.2s; font-family: 'Source Sans 3', sans-serif; }
-        .pub-back:hover { color: #14355F; }
+        .pub-topbar-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+        .pub-topbar-logo span { font-family: 'Libre Baskerville', serif; font-size: 1.2rem; font-weight: 700; color: white; }
+        .pub-topbar-logo small { font-size: 0.65rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+        .pub-back { color: rgba(255,255,255,0.65); font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: color 0.2s; }
+        .pub-back:hover { color: white; }
 
-        /* Paper sheet container (MS Word style) */
-        .pub-sheet {
-            background: #ffffff;
-            max-width: 850px;
-            margin: 3rem auto;
-            padding: 4.5rem 5.5rem;
-            box-shadow: 0 4px 20px rgba(11,28,44,0.08), 0 1px 3px rgba(11,28,44,0.04);
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
+        /* Hero / cover */
+        .pub-hero {
+            background: linear-gradient(160deg, #0f2240 0%, #1a365d 100%);
+            padding: 4rem 2rem 3.5rem;
         }
-
-        /* Tricolour Stripe at top of sheet */
-        .pub-stripe {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 5px;
-            display: flex;
+        .pub-hero-inner { max-width: 820px; margin: 0 auto; }
+        .pub-type-tag {
+            display: inline-block; background: #c85a2a; color: white;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+            padding: 0.25rem 0.8rem; border-radius: 4px; margin-bottom: 1.25rem;
         }
-        .pub-stripe span {
-            flex: 1;
-            height: 100%;
+        .pub-hero h1 {
+            font-family: 'Libre Baskerville', serif; font-size: clamp(1.7rem, 4vw, 2.6rem);
+            color: white; line-height: 1.25; margin-bottom: 1.25rem; font-weight: 700;
         }
-
-        /* Letterhead / Header */
-        .pub-letterhead {
-            border-bottom: 1.5px solid #ede7dc;
-            padding-bottom: 1.5rem;
-            margin-bottom: 2.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .pub-hero-meta {
+            display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: center;
+            font-size: 0.85rem; color: rgba(255,255,255,0.55);
         }
-        .pub-letterhead-meta {
-            text-align: right;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.72rem;
-            color: #7a8a98;
-            line-height: 1.5;
-        }
-        .pub-letterhead-meta strong {
-            color: #9C3D1E;
+        .pub-hero-meta strong { color: rgba(255,255,255,0.8); }
+        .pub-hero-excerpt {
+            margin-top: 1.25rem; font-size: 1.05rem; color: rgba(255,255,255,0.65);
+            line-height: 1.75; max-width: 680px;
         }
 
-        /* Title and Byline */
-        .pub-sheet-title {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: clamp(1.8rem, 4.5vw, 2.4rem);
-            color: #0B1C2C;
-            line-height: 1.3;
-            margin-bottom: 1.25rem;
-            font-weight: 700;
-        }
-        .pub-sheet-byline {
-            font-family: 'Source Sans 3', sans-serif;
-            font-size: 0.92rem;
-            color: #617592;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        .pub-sheet-byline strong { color: #14355F; }
-        .pub-theme-badge {
-            background: rgba(30,74,128,0.08);
-            color: #1E4A80;
-            padding: 0.15rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
+        /* Cover image */
+        .pub-cover-img-wrap { max-width: 820px; margin: 0 auto; }
+        .pub-cover-img-wrap img { width: 100%; max-height: 420px; object-fit: cover; display: block; }
 
-        /* Cover Image inside sheet */
-        .pub-sheet-cover {
-            margin-bottom: 2.5rem;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid #ede7dc;
-            box-shadow: 0 4px 12px rgba(11,28,44,0.03);
-        }
-        .pub-sheet-cover img { width: 100%; max-height: 480px; object-fit: cover; display: block; }
-
-        /* Content Body (WordPress/Word Typography) */
-        .pub-sheet-body {
-            font-family: Georgia, 'Times New Roman', serif;
-            font-size: 1.125rem;
-            color: #1C2A3A;
-            line-height: 1.85;
-        }
-        .pub-sheet-body p { margin-bottom: 1.5rem; }
-        .pub-sheet-body h1 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 1.8rem;
-            color: #14355F;
-            margin: 2.5rem 0 1rem;
-            font-weight: 700;
-            border-bottom: 1px solid #ede7dc;
-            padding-bottom: 0.5rem;
-        }
-        .pub-sheet-body h2 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 1.45rem;
-            color: #14355F;
-            margin: 2rem 0 0.8rem;
-            font-weight: 700;
-        }
-        .pub-sheet-body h3 {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            font-size: 1.2rem;
-            color: #9C3D1E;
-            margin: 1.75rem 0 0.6rem;
-            font-weight: 700;
-        }
-        .pub-sheet-body ul, .pub-sheet-body ol { margin: 0 0 1.5rem 2rem; }
-        .pub-sheet-body li { margin: 0.4rem 0; }
-        .pub-sheet-body blockquote {
-            border-left: 4px solid #9C3D1E;
-            margin: 1.5rem 0;
-            padding: 0.8rem 1.5rem;
-            background: #fdfaf4;
-            color: #4a5568;
-            font-style: italic;
-            border-radius: 0 6px 6px 0;
-        }
-        .pub-sheet-body a { color: #9C3D1E; text-decoration: underline; transition: color 0.15s; }
-        .pub-sheet-body a:hover { color: #14355F; }
-        .pub-sheet-body hr { border: none; border-top: 2px solid #ede7dc; margin: 2.5rem 0; }
-        .pub-sheet-body img { max-width: 100%; border-radius: 6px; margin: 1.5rem auto; display: block; border: 1px solid #ede7dc; }
-        .pub-sheet-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; font-family: 'Source Sans 3', sans-serif; }
-        .pub-sheet-body th { background: #14355F; color: white; padding: 0.75rem 1rem; text-align: left; font-weight: 600; }
-        .pub-sheet-body td { padding: 0.7rem 1rem; border-bottom: 1px solid #ede7dc; color: #3d5068; }
-        .pub-sheet-body tr:nth-child(even) td { background: rgba(232, 220, 200, 0.15); }
-
-        /* Author bio block */
-        .pub-author-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 1.5rem;
-            margin-top: 3.5rem;
-            padding: 2rem;
-            background: #fdfbf7;
-            border: 1px solid #ede7dc;
-            border-radius: 8px;
-        }
-        .pub-author-photo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 3px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .pub-author-photo-placeholder { width: 80px; height: 80px; border-radius: 50%; background: #c85a2a; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.6rem; font-weight: 700; flex-shrink: 0; border: 3px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .pub-author-details { flex: 1; }
-        .pub-author-name { font-family: 'Libre Baskerville', Georgia, serif; font-size: 1.15rem; font-weight: 700; color: #0B1C2C; margin-bottom: 4px; }
-        .pub-author-title { font-size: 0.85rem; color: #9C3D1E; font-weight: 600; margin-bottom: 2px; font-family: 'Source Sans 3', sans-serif; }
-        .pub-author-org { font-size: 0.8rem; color: #7A8A98; margin-bottom: 0.75rem; font-family: 'Source Sans 3', sans-serif; }
-        .pub-author-bio { font-size: 0.92rem; color: #4a5568; line-height: 1.65; margin-bottom: 1rem; }
-        .pub-author-socials { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .pub-author-socials a { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; border-radius: 50px; font-size: 0.78rem; font-weight: 600; border: 1px solid #ede7dc; color: #4a5568; text-decoration: none; background: #ffffff; transition: all 0.2s; }
-        .pub-author-socials a:hover { background: #ede7dc; color: #14355F; border-color: #7A8A98; }
-        .pub-author-byline { margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid #ede7dc; font-size: 0.95rem; color: #617592; }
-        .pub-author-byline strong { color: #0B1C2C; }
-
-        /* External PDF / Target Link button */
-        .pub-pdf-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.85rem 1.8rem;
-            background: #14355F;
-            color: white !important;
-            border-radius: 6px;
-            text-decoration: none !important;
-            font-size: 0.95rem;
-            font-weight: 600;
-            font-family: 'Source Sans 3', sans-serif;
-            transition: background 0.2s, transform 0.15s;
-            box-shadow: 0 4px 12px rgba(20,53,95,0.15);
-        }
-        .pub-pdf-btn:hover {
-            background: #1e4a80;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(20,53,95,0.2);
-        }
+        /* Body */
+        .pub-body { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+        .pub-body h1 { font-family:'Libre Baskerville',serif; font-size:1.9rem; color:#0f2240; margin:1.5rem 0 0.6rem; }
+        .pub-body h2 { font-family:'Libre Baskerville',serif; font-size:1.5rem; color:#1a365d; margin:1.4rem 0 0.5rem; }
+        .pub-body h3 { font-family:'Libre Baskerville',serif; font-size:1.15rem; color:#c85a2a; margin:1.1rem 0 0.4rem; }
+        .pub-body p  { margin: 0 0 1.1rem; font-size: 1.05rem; }
+        .pub-body ul, .pub-body ol { margin: 0 0 1.1rem 1.5rem; font-size: 1.05rem; }
+        .pub-body li { margin: 0.3rem 0; }
+        .pub-body blockquote { border-left: 4px solid #c85a2a; margin: 1.25rem 0; padding: 0.6rem 1.25rem; background: #fdf5f0; color: #555; font-style: italic; font-size: 1.05rem; }
+        .pub-body a  { color: #1a365d; }
+        .pub-body hr { border: none; border-top: 2px solid #ede7dc; margin: 2rem 0; }
+        .pub-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; display: block; }
+        .pub-body strong { font-weight: 700; }
+        .pub-body em { font-style: italic; }
+        .pub-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.95rem; }
+        .pub-body th { background: #0f2240; color: white; padding: 0.6rem 1rem; text-align: left; }
+        .pub-body td { padding: 0.5rem 1rem; border-bottom: 1px solid #ede7dc; }
 
         /* Footer */
         .pub-footer-bar {
-            padding: 2.5rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            font-family: 'Source Sans 3', sans-serif;
+            background: #0f2240; padding: 2rem;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
         }
-        .pub-footer-bar span { font-size: 0.85rem; color: #7A8A98; }
-        .pub-footer-bar a { color: #14355F; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: color 0.15s; }
-        .pub-footer-bar a:hover { color: #9C3D1E; }
+        .pub-footer-bar span { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+        .pub-footer-bar a { color: rgba(255,255,255,0.6); font-size: 0.85rem; text-decoration: none; }
+        .pub-footer-bar a:hover { color: white; }
 
-        @media (max-width: 890px) {
-            .pub-sheet { margin: 1.5rem 1rem; padding: 3rem 2.5rem; }
-        }
         @media (max-width: 640px) {
-            .pub-sheet { padding: 2rem 1.5rem; }
-            .pub-letterhead { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .pub-letterhead-meta { text-align: left; }
-            .pub-author-card { flex-direction: column; align-items: center; text-align: center; }
-            .pub-author-socials { justify-content: center; }
+            .pub-hero { padding: 2.5rem 1.25rem 2rem; }
+            .pub-body { padding: 2rem 1.25rem 3rem; }
         }
     </style>
 </head>
@@ -2529,90 +2558,98 @@ function updateDashboardStats() {
 <nav class="pub-topbar">
     <a class="pub-topbar-logo" href="/">
         <svg width="32" height="32" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-            <rect width="44" height="44" rx="8" fill="#14355F"/>
-            <rect x="8" y="10" width="14" height="4" rx="2" fill="#B8893A"/>
-            <rect x="8" y="17" width="20" height="4" rx="2" fill="#9C3D1E"/>
-            <rect x="8" y="24" width="14" height="4" rx="2" fill="#B8893A"/>
+            <rect width="44" height="44" rx="8" fill="#c85a2a"/>
+            <rect x="8" y="10" width="14" height="4" rx="2" fill="white"/>
+            <rect x="8" y="17" width="20" height="4" rx="2" fill="rgba(255,255,255,0.6)"/>
+            <rect x="8" y="24" width="14" height="4" rx="2" fill="white"/>
         </svg>
         <div><span>3Bi</span><small>Build Back Better Initiative</small></div>
     </a>
-    <a class="pub-back" href="/">← Back to Website</a>
+    <a class="pub-back" href="javascript:history.back()">← Back</a>
 </nav>
 
-<div class="pub-sheet">
-    <!-- Nile Palette Tricolour Stripe -->
-    <div class="pub-stripe">
-        <span style="background: #14355F;"></span>
-        <span style="background: #9C3D1E;"></span>
-        <span style="background: #B8893A;"></span>
-    </div>
-
-    <!-- Letterhead -->
-    <div class="pub-letterhead">
-        <div style="display:inline-flex; align-items:center;">
-            <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-label="3Bi Logo" style="width:36px; height:36px; vertical-align:middle;">
-                <defs>
-                    <linearGradient id="logoGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#0f2240"/>
-                        <stop offset="100%" stop-color="#1a4a7a"/>
-                    </linearGradient>
-                    <linearGradient id="accentGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#c85a2a"/>
-                        <stop offset="100%" stop-color="#e07b39"/>
-                    </linearGradient>
-                </defs>
-                <rect width="44" height="44" rx="9" fill="url(#logoGrad3)"/>
-                <rect x="8" y="10" width="14" height="4" rx="2" fill="url(#accentGrad3)"/>
-                <rect x="8" y="17" width="20" height="4" rx="2" fill="#1a8a7a"/>
-                <rect x="8" y="24" width="14" height="4" rx="2" fill="url(#accentGrad3)"/>
-                <text x="30" y="32" font-family="Georgia,serif" font-weight="700" font-size="14" fill="white" text-anchor="middle">Bi</text>
-                <path d="M8 33 Q22 28 36 33" stroke="#c9922a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            </svg>
-            <div style="display:inline-block; vertical-align:middle; margin-left:10px; text-align:left;">
-                <div style="font-family:'Libre Baskerville', Georgia, serif; font-size:1.15rem; font-weight:700; color:#0f2240; line-height:1.1;">3Bi</div>
-                <div style="font-size:0.65rem; color:#7A8A98; text-transform:uppercase; letter-spacing:0.08em; line-height:1.2;">Build Back Better Initiative</div>
-            </div>
+<div class="pub-hero">
+    <div class="pub-hero-inner">
+        <div class="pub-type-tag">${typeLabels[p.type] || p.type || 'Publication'}</div>
+        <h1>${p.title}</h1>
+        <div class="pub-hero-meta">
+            ${dateStr ? `<span>${dateStr}</span>` : ''}
+            ${p.theme  ? `<span>· ${p.theme}</span>` : ''}
+            ${p.author ? `<span>· By <strong>${p.author}</strong></span>` : ''}
+            ${p.ref    ? `<span style="font-family:monospace;font-size:0.78rem;opacity:0.6;">${p.ref}</span>` : ''}
         </div>
-        <div class="pub-letterhead-meta">
-            <div><strong>TYPE:</strong> ${typeLabels[p.type] || p.type || 'Publication'}</div>
-            <div><strong>THEME:</strong> ${p.theme || 'General'}</div>
-            <div><strong>DATE:</strong> ${dateStr}</div>
-            ${p.ref ? `<div><strong>REF:</strong> ${p.ref}</div>` : ''}
-        </div>
-    </div>
+        ${p.excerpt ? `<p class="pub-hero-excerpt">${p.excerpt}</p>` : ''}
 
-    <!-- Title and Metadata -->
-    <h1 class="pub-sheet-title">${p.title}</h1>
-    <div class="pub-sheet-byline">
-        <span>By <strong>${p.author || '3Bi Research Team'}</strong></span>
-        <span>·</span>
-        <span>${dateStr}</span>
-        ${p.theme ? `<span>·</span> <span class="pub-theme-badge">${p.theme}</span>` : ''}
-    </div>
-
-    <!-- Cover Image -->
-    ${p.cover ? `<div class="pub-sheet-cover"><img src="${p.cover}" alt="${p.title.replace(/"/g,'&quot;')}"></div>` : ''}
-
-    <!-- Content Body -->
-    <div class="pub-sheet-body">
-        ${p.content || `<p>${p.excerpt || ''}</p>`}
-        
-        ${p.link ? `
-        <div style="margin-top:3.5rem; padding-top:2rem; border-top:1px solid #ede7dc; text-align:center;">
-            <a href="${p.link}" target="_blank" rel="noopener" class="pub-pdf-btn">
-                <span>📄</span> View Full PDF Document / Target Link
+        <div class="pub-share-bar" style="margin-top: 1.75rem; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span style="font-size: 0.75rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">Share:</span>
+            <a href="https://twitter.com/intent/tweet?text=${titleEsc}&url=${urlEsc}" target="_blank" rel="noopener" class="pub-share-icon" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); transition: all 0.2s;" onmouseover="this.style.background='white';this.style.color='black';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.8)';this.style.transform='none'" title="Share on X (Twitter)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
-        </div>` : ''}
-
-        ${authorBioHTML}
+            <a href="https://api.whatsapp.com/send?text=${titleEsc}%20-%20${urlEsc}" target="_blank" rel="noopener" class="pub-share-icon" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); transition: all 0.2s;" onmouseover="this.style.background='#25D366';this.style.color='white';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.8)';this.style.transform='none'" title="Share on WhatsApp">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.03-5.118-2.905-6.993C16.557 1.873 14.08 .842 11.458.842c-5.442 0-9.87 4.421-9.875 9.866-.001 1.837.525 3.562 1.52 5.089L2.09 20.15l4.557-1.196zm10.743-5.275c-.3-.15-1.78-.877-2.053-.976-.275-.1-.475-.15-.675.15-.2.3-.775.976-.95 1.176-.175.2-.35.225-.65.075-1.04-.52-1.786-.92-2.507-2.16-.316-.543-.105-.833.097-1.036.182-.18.4-.474.6-.71.197-.236.262-.404.393-.672.13-.27.065-.506-.033-.707-.1-.2-.875-2.1-.475-2.8.2-.3.4-.375.525-.375.125 0 .25 0 .375.025.125.025.25.075.375.225.2.3.875 2.1.95 2.25.075.15.075.325-.025.525-.1.2-.2.35-.35.5-.15.15-.3.325-.125.6.35.6.8 1.1 1.45 1.67.8.7 1.48.92 1.78 1.07.3.15.475.125.65-.075.175-.2.775-.9 1-1.2.225-.3.45-.25.75-.1.3.15 1.9.9 2.225 1.07.325.175.525.25.6.375.075.125.075.675-.225.825z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=${urlEsc}" target="_blank" rel="noopener" class="pub-share-icon" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); transition: all 0.2s;" onmouseover="this.style.background='#0A66C2';this.style.color='white';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.8)';this.style.transform='none'" title="Share on LinkedIn">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <button onclick="copyPublicationLink(this, '${shareUrl}')" class="pub-share-icon" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: none; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='white';this.style.color='black';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.8)';this.style.transform='none'" title="Copy Link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            </button>
+        </div>
     </div>
 </div>
 
+${p.cover ? `<div class="pub-cover-img-wrap"><img src="${p.cover}" alt="${p.title.replace(/"/g,'&quot;')}"></div>` : ''}
+
+<div class="pub-body">
+    ${p.content || `<p>${p.excerpt || ''}</p>`}
+    ${authorBioHTML}
+</div>
+
+${p.link ? `<div style="max-width:720px;margin:0 auto;padding:0 2rem 3rem;"><a href="${p.link}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.5rem;background:#0f2240;color:white;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:600;">📄 View Full PDF / External Link →</a></div>` : ''}
+
 <footer class="pub-footer-bar">
     <span>© ${new Date().getFullYear()} Build Back Better Initiative (3Bi) · <a href="/">www.3bisudan.org</a></span>
-    <a href="/">← Return to Main Page</a>
+    <a href="/">← All Publications</a>
 </footer>
 
+<script>
+function copyPublicationLink(btn, url) {
+    const copyPromise = (navigator.clipboard && navigator.clipboard.writeText) 
+        ? navigator.clipboard.writeText(url)
+        : new Promise((resolve, reject) => {
+            try {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                resolve();
+            } catch (e) {
+                reject(e);
+            }
+        });
+
+    copyPromise.then(() => {
+        const oldHTML = btn.innerHTML;
+        const oldBG = btn.style.background;
+        const oldColor = btn.style.color;
+        btn.innerHTML = 'Copied!';
+        btn.style.background = '#1a8a7a';
+        btn.style.color = 'white';
+        setTimeout(() => {
+            btn.innerHTML = oldHTML;
+            btn.style.background = oldBG;
+            btn.style.color = oldColor;
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+</script>
 </body>
 </html>`;
 
@@ -2827,25 +2864,7 @@ function openAuthorProfile(authorName) {
     const pubs = getPosts().filter(p => p.author === authorName);
     const pubGrid = document.getElementById('apo-pubs-grid');
     if (pubs.length) {
-        const typeLabels = { report:'Report', paper:'Policy Paper', analysis:'Analysis', announcement:'Announcement' };
-        pubGrid.innerHTML = pubs.map(p => {
-            const dateStr = p.date ? new Date(p.date).toLocaleDateString('en-US',{month:'long',year:'numeric'}) : '';
-            const coverHTML = p.cover ? `<img src="${escHtml(p.cover)}" alt="${escHtml(p.title)}" onerror="this.style.display='none'">` : `<div class="pub-cover-placeholder">📄</div>`;
-            return `<div class="pub-card">
-                <div class="pub-cover">
-                    <div class="pub-type-badge ${escHtml(p.type)}">${typeLabels[p.type]||p.type}</div>
-                    ${coverHTML}
-                </div>
-                <div class="pub-body">
-                    <div class="pub-meta">${dateStr}${p.theme?' · '+escHtml(p.theme):''}</div>
-                    <h3 class="pub-title">${escHtml(p.title)}</h3>
-                    <p class="pub-excerpt">${escHtml(p.excerpt||'')}</p>
-                    <div class="pub-footer">
-                        <a href="${p.link?escHtml(p.link):'?pub='+encodeURIComponent(p.id)}" class="pub-read-link" ${p.link?'target="_blank" rel="noopener"':''}>Read ${typeLabels[p.type]||'More'} →</a>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
+        pubGrid.innerHTML = pubs.map(p => pubCardHTML(p)).join('');
     } else {
         pubGrid.innerHTML = '<p style="color:var(--text-light);font-size:0.9rem;">No publications found for this author.</p>';
     }
