@@ -477,8 +477,8 @@
         .pub-body h2 { font-family: 'Libre Baskerville', serif; font-size: 1.55rem; color: var(--navy-mid); margin: 1.8rem 0 0.7rem; font-weight: 700; }
         .pub-body h3 { font-family: 'Libre Baskerville', serif; font-size: 1.25rem; color: var(--terracotta); margin: 1.4rem 0 0.6rem; font-weight: 700; }
         .pub-body p { margin-bottom: 1.5rem; }
-        .pub-body ul, .pub-body ol { margin: 0 0 1.5rem 2rem; }
-        .pub-body li { margin: 0.4rem 0; }
+        .pub-body ul, .pub-body ol { padding-inline-start: 1.75rem; margin-bottom: 1.25rem; }
+        .pub-body li { margin-bottom: 0.5rem; padding-inline-start: 0.25rem; }
         .pub-body blockquote {
             border-inline-start: 4px solid var(--terracotta); margin: 1.75rem 0; padding: 0.75rem 1.5rem;
             background: var(--cream); color: var(--text-mid); font-style: italic; border-radius: 4px;
@@ -613,9 +613,10 @@
         #editor-content h1 { font-size: 20pt; color: #1f3864; margin: 16pt 0 8pt; font-weight: 700; border-bottom: 1px solid #ddd; padding-bottom: 4pt; }
         #editor-content h2 { font-size: 16pt; color: #2e3d56; margin: 14pt 0 6pt; font-weight: 700; }
         #editor-content h3 { font-size: 13pt; color: #2e3d56; margin: 12pt 0 5pt; font-weight: 700; }
-        #editor-content ul { margin: 0 0 10pt 20pt; list-style-type: disc; }
-        #editor-content ol { margin: 0 0 10pt 20pt; list-style-type: decimal; }
-        #editor-content li { margin: 3pt 0; }
+        #editor-content ul, #editor-content ol { padding-inline-start: 1.75rem; margin-bottom: 1.25rem; }
+        #editor-content ul { list-style-type: disc; }
+        #editor-content ol { list-style-type: decimal; }
+        #editor-content li { margin-bottom: 0.5rem; padding-inline-start: 0.25rem; }
         #editor-content blockquote { border-left: 4px solid #c85a2a; margin: 10pt 0; padding: 6pt 15pt; background: #fdf5f0; color: #555; font-style: italic; }
         #editor-content table { border-collapse: collapse; width: 100%; margin: 10pt 0; font-size: 11pt; }
         #editor-content td, #editor-content th { border: 1px solid #bbb; padding: 5pt 10pt; }
@@ -742,20 +743,87 @@
             body.rtl-mode .tl-dot { right: 63px; left: auto; }
         }
 
+        /* ─── GLOBAL LIST BULLET & OFFSET STYLINGS ─── */
+        ul, ol { padding-inline-start: 1.75rem; margin-bottom: 1.25rem; }
+        li { margin-bottom: 0.5rem; padding-inline-start: 0.25rem; }
+        body.rtl-mode ul, body.rtl-mode ol { padding-inline-start: 1.75rem; }
+
+        /* ─── AUTHORS WORKSPACE STYLINGS ─── */
+        .author-card {
+            display: flex;
+            flex-direction: column;
+            background: #15253d;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+        .author-avatar, .author-avatar-placeholder {
+            width: 56px !important;
+            height: 56px !important;
+            max-width: 56px !important;
+            max-height: 56px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            flex-shrink: 0 !important;
+        }
+        .author-avatar-placeholder {
+            background: var(--terracotta);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* ─── RTL GENERAL OVERRIDES ─── */
+        body.rtl-mode {
+            text-align: right;
+        }
+        body.rtl-mode .nav-links {
+            margin-right: auto;
+            margin-left: 0;
+        }
+        body.rtl-mode .dropdown {
+            left: auto;
+            right: 0;
+        }
+        body.rtl-mode .hero-stats {
+            flex-direction: row-reverse;
+        }
+        body.rtl-mode .service-card {
+            flex-direction: row-reverse;
+        }
+        body.rtl-mode .form-group label {
+            text-align: right;
+        }
+        body.rtl-mode .contact-item {
+            flex-direction: row-reverse;
+            text-align: right;
+        }
+        body.rtl-mode input,
+        body.rtl-mode select,
+        body.rtl-mode textarea {
+            text-align: right;
+        }
+        body.rtl-mode .sec-desc,
+        body.rtl-mode .hero-desc,
+        body.rtl-mode .about-body p,
+        body.rtl-mode .contact-info p {
+            text-align: right;
+        }
+
         /* ─── PRINT CUSTOM LAYOUT STYLING ─── */
         @media print {
-            body * { visibility: hidden; }
-            #pub-reader, #pub-reader * { visibility: visible; }
-            #pub-reader { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; }
-            .pub-topbar, .pub-footer-bar, .pub-share-bar, .print-btn, .pub-back, .pub-share-icon { display: none !important; }
-            @page { size: A4; margin: 20mm; }
-            .pub-hero { background: none !important; color: black !important; padding: 0 !important; }
-            .pub-hero h1 { color: #0f2240 !important; font-size: 24pt !important; margin-bottom: 10pt !important; }
-            .pub-hero-meta { color: #3d5068 !important; }
-            .pub-hero-excerpt { color: #3d5068 !important; font-style: italic; border-left: 3px solid #c85a2a; padding-left: 10px; margin-top: 15pt !important; }
-            .pub-body { padding: 20px 0 !important; font-size: 11pt; }
-            .pub-cover-img-wrap { margin: 20px 0 !important; padding: 0 !important; }
-            .pub-cover-img-wrap img { max-height: 280px !important; border-radius: 0; border: none; }
+            body { background: #ffffff !important; color: #000000 !important; font-size: 11pt; line-height: 1.6; }
+            #pub-reader { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .pub-hero { background: transparent !important; color: #000000 !important; padding: 0 0 20pt 0 !important; border-bottom: 2px solid #0f2240 !important; }
+            .pub-hero h1 { color: #0f2240 !important; font-size: 24pt !important; font-weight: bold !important; margin-bottom: 12pt !important; }
+            .pub-body h1, .pub-body h2, .pub-body h3 { page-break-after: avoid; break-after: avoid; color: #0f2240 !important; }
+            p, li, blockquote { page-break-inside: avoid; break-inside: avoid; }
+            .pub-cover-img-wrap, .pub-topbar, .pub-footer-bar, .pub-share-bar, .print-btn { display: none !important; }
         }
     </style>
 </head>
@@ -1950,6 +2018,14 @@
             document.title = defaultTitle;
             const metaDesc = document.querySelector('meta[name="description"]');
             if (metaDesc) metaDesc.setAttribute('content', defaultDesc);
+
+            // If viewing a publication, re-render it to update translation in-place
+            const params = new URLSearchParams(window.location.search);
+            const pubId = params.get('pub');
+            const reader = document.getElementById('pub-reader');
+            if (pubId && reader && reader.style.display === 'block') {
+                showPublicationReader(pubId);
+            }
         }
 
         // ─── DYNAMIC VIEW SYSTEM & ROUTING ───
@@ -2162,6 +2238,7 @@
 
         window.addEventListener('hashchange', handleRouting);
         window.addEventListener('load', handleRouting);
+        window.addEventListener('popstate', handleRouting);
 
         // ─── ISOLATED TAB PUBLICATION READER VIEW ───
         function showPublicationReader(pubId) {
@@ -2285,6 +2362,29 @@
             });
         }
 
+        function launchPublication(el) {
+            const pubId = el.getAttribute('data-id');
+            const posts = getPosts();
+            const p = posts.find(x => x.id === pubId);
+            if (!p) return;
+            
+            // Hide all public views
+            document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+            
+            // Cleanly hide all global application shells
+            const navbar = document.getElementById('navbar');
+            const footer = document.getElementById('site-footer');
+            if (navbar) navbar.style.display = 'none';
+            if (footer) footer.style.display = 'none';
+            
+            // Dynamically write data into reader
+            showPublicationReader(pubId);
+            
+            // Silently push the target state context parameter directly into the URL history trail
+            const targetUrl = window.location.origin + window.location.pathname + '?pub=' + encodeURIComponent(p.id);
+            history.pushState({ pubId: p.id }, p.title, targetUrl);
+        }
+
         function closePublicationReader() {
             history.pushState(null, '', window.location.pathname);
             handleRouting();
@@ -2405,7 +2505,7 @@
                         <h3 class="pub-title">${escHtml(title)}</h3>
                         <p class="pub-excerpt">${escHtml(excerpt || '')}</p>
                         <div class="pub-footer">
-                            <a href="?pub=${encodeURIComponent(p.id)}" class="pub-read-link" onclick="history.pushState(null, '', '?pub=${encodeURIComponent(p.id)}'); handleRouting(); return false;">Read More →</a>
+                            <a href="?pub=${encodeURIComponent(p.id)}" class="pub-read-link" data-id="${escHtml(p.id)}" onclick="launchPublication(this); return false;">Read More →</a>
                             
                             <div class="share-dropdown">
                                 <button class="share-btn">Share</button>
