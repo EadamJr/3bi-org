@@ -148,14 +148,33 @@
         .hero-geo { position: absolute; inset: 0; pointer-events: none; opacity: 0.8; }
         .hero-geo svg { width: 100%; height: 100%; }
         .hero-inner {
-            max-width: 1320px; margin: 0 auto; padding: 4rem 2rem; position: relative; z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+            position: relative;
+            z-index: 1;
         }
         .hero-kicker {
-            display: inline-flex; align-items: center; gap: 0.6rem;
-            background: rgba(200,90,42,0.15); border: 1px solid rgba(200,90,42,0.3);
-            color: var(--terracotta-light); font-size: 0.8rem; font-weight: 700;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            padding: 0.45rem 1rem; border-radius: 50px; margin-bottom: 1.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            align-self: flex-start;
+            margin-bottom: 1.5rem;
+            text-align: start;
+            width: auto;
+            background: rgba(200,90,42,0.15);
+            border: 1px solid rgba(200,90,42,0.3);
+            color: var(--terracotta-light);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.45rem 1rem;
+            border-radius: 50px;
         }
         .hero-kicker span { width: 6px; height: 6px; background: var(--terracotta-light); border-radius: 50%; display: inline-block; }
         .hero h1 {
@@ -807,6 +826,13 @@
         body.rtl-mode .hero-desc,
         body.rtl-mode .about-body p,
         body.rtl-mode .contact-info p {
+            text-align: right;
+        }
+        body.rtl-mode .hero-inner {
+            align-items: flex-end;
+        }
+        body.rtl-mode .hero-kicker {
+            align-self: flex-end;
             text-align: right;
         }
 
