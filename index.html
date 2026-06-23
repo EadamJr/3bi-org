@@ -829,11 +829,15 @@
             text-align: right;
         }
         body.rtl-mode .hero-inner {
-            align-items: flex-end;
+            align-items: flex-end !important; /* Forces layout tracking directly from the right axis */
         }
         body.rtl-mode .hero-kicker {
-            align-self: flex-end;
-            text-align: right;
+            align-self: flex-end !important;
+            text-align: right !important;
+        }
+        body.rtl-mode .hero h1,
+        body.rtl-mode .hero-desc {
+            text-align: right !important;
         }
 
         /* ─── PRINT CUSTOM LAYOUT STYLING ─── */
